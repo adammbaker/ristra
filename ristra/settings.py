@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+from socket import gethostname, gethostbyname
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -22,12 +23,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    u'localhost',
+    gethostname(),
+    gethostbyname(gethostname()),
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'bootstrap4',
+    'intake.apps.IntakeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -102,8 +109,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/intake/'
 try:
     from ristra.local_settings import *
-except:
-    print('(!) Unable to load local settings')
+except Exception as e:
+    print('(!) Unable to load local settings', e)
