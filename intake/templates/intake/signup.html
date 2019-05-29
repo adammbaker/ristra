@@ -5,10 +5,20 @@
 {% endblock %}
 
 {% block content %}
-    <!-- <h4>login</h4>
-    {% include 'intake/login-form.html' with login_form=login_form %} -->
-    <h4><a href="{% url 'login' %}">login</a></h4>
-    <h4>sign up</h4>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h4>Already have an account? <a href="{% url 'login' %}">Login</a></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                - or - <h4>continue Signing Up</h4>
+            </div>
+        </div>
+    </div>
+    <p><p>
+
     {% include 'intake/signup-form.html' %}
 
 {% endblock %}
