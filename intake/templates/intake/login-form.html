@@ -1,0 +1,7 @@
+{% load bootstrap4 %}
+
+<form role="login-form" class="form-horizontal" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form layout="horizontal" %}
+    {% buttons submit='Login' reset='Cancel' layout='horizontal' %}{% endbuttons %}
+</form>

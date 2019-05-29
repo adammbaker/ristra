@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.views.generic.base import TemplateView
 
 # Create your views here.
 ''' VIEWS
@@ -42,3 +44,23 @@ from django.shortcuts import render
 
 def index(request):
     return HttpResponse("Hello, world. You're at the Intake landing page.")
+
+class HomePageView(TemplateView):
+    template_name = "intake/home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(HomePageView, self).get_context_data(**kwargs)
+        messages.info(self.request, "hello http://example.com")
+        return context
+
+def login(request):
+    return HttpResponse("Hello, world. You're at the Intake login page.")
+
+
+class LoginPageView(TemplateView):
+    template_name = "intake/login.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(LoginPageView, self).get_context_data(**kwargs)
+        messages.info(self.request, "hello login")
+        return context
