@@ -1,11 +1,11 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from intake.forms import SignUpForm
+from intake.forms import forms
 
 
 def signup(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = forms.SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()  # load the profile instance created by the signal
@@ -19,5 +19,5 @@ def signup(request):
             login(request, user)
             return redirect('home')
     else:
-        form = SignUpForm()
+        form = forms.SignUpForm()
     return render(request, 'intake/signup.html', {'form': form})

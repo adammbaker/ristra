@@ -8,16 +8,8 @@
     <!-- <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script> -->
     <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
     This is <em>Ristra</em> for <strong>Albuquerque</strong>.
-
-    {% if user.is_authenticated %}
-        Hi, {{user.username}}!
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login' %}">login</a>
-    {% endif %}
-
     <!-- Success Alert -->
-    <div class="alert alert-success alert-dismissible hide fade show">
+    <div class="alert alert-success alert-dismissible fade show">
         <strong>Success!</strong> Your message has been sent successfully.
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>

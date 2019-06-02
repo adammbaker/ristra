@@ -1,7 +1,15 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic.base import TemplateView
+
+# from intake.forms import family
+# from intake.forms import forms, family, intakebuses
+# from intake.forms.family import FamilyForm
+from intake.models import *
 
 # Create your views here.
 ''' VIEWS
@@ -64,3 +72,53 @@ class LoginPageView(TemplateView):
         context = super(LoginPageView, self).get_context_data(**kwargs)
         messages.info(self.request, "hello login")
         return context
+
+@login_required
+def landing_page(request):
+    'Determine the appropriate landing page for the user'
+    resp = []
+    resp.append('There are %d locations.' % Locations.objects.count())
+    resp.append('There are %d buses.' % IntakeBuses.objects.count())
+    resp.append('There are %d families.' % Families.objects.count())
+    return HttpResponse('<p>'.join(resp))
+    if not Families.objects.exists():
+        return HttpResponseRedirect(reverse('intake buses landing page'))
+    if not IntakeBuses.objects.exists():
+        return HttpResponseRedirect(reverse('location landing page'))
+    if not Location.objects.exists():
+        return HttpResponseRedirect(reverse('location add page'))
+
+# def locations(request):
+#     'Show locations, or send to Location Add form page if none'
+#     if not Families.objects.exists():
+#         return HttpResponseRedirect(reverse('home'))
+
+# def intake_buses(request):
+#     'Show intake buses, or send to Location landing page if none'
+#     if request.method =='POST':
+#         form = intakebuses.IntakeBusForm(request.POST)
+#         if form.is_valid():
+#             return HttpResponseRedirect('home')
+#     else:
+#         form = intakebuses.IntakeBusForm()
+#     return render(request, 'intake/intakebus-add.html', {'form': form})
+
+# @login_required
+# def family(request):
+#     'Show families, or send to Buses landing page if no families'
+#     if request.method =='POST':
+#         form = FamilyForm(request.POST)
+#         if form.is_valid():
+#             return HttpResponseRedirect('home')
+#     else:
+#         form = FamilyForm()
+#     return render(request, 'intake/family-add.html', {'form': form})
+#
+# class FamilyAddPageView(LoginRequiredMixin, TemplateView):
+#     template_name = "intake/family-add.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(FamilyAddPageView, self).get_context_data(**kwargs)
+#         context['form'] = FamilyForm()
+#         messages.info(self.request, "hello fam")
+#         return context

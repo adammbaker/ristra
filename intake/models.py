@@ -4,10 +4,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Create your models here.
-class Notes(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    text = models.TextField("notes")
-
 class VolunteerTypes(models.Model):
     id = models.BigAutoField(primary_key=True)
     volunteer_type = models.CharField(max_length=300)
@@ -21,7 +17,7 @@ class Volunteers(models.Model):
     email = models.EmailField("volunteer's email", max_length=300, help_text='Required. Inform a valid email address.', null=True)
     phone_number = models.CharField("volunteer's phone number", max_length=300)
     volunteer_type = models.ManyToManyField(VolunteerTypes)
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING, null=True)
+    notes = models.TextField(null=True, blank=True)
 
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
@@ -29,10 +25,10 @@ def update_user_profile(sender, instance, created, **kwargs):
         Volunteers.objects.create(user=instance)
     instance.volunteers.save()
 
-class Location(models.Model):
+class Locations(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=300)
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)
 
 class IntakeBuses(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -42,7 +38,7 @@ class IntakeBuses(models.Model):
     )
     number = models.CharField(help_text="Identifying number for bus", max_length=300, null=True)
     origin = models.CharField("origin of bus", max_length=100)   #TK: Necessary?
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)
 
 
 # class Volunteers(models.Model):
@@ -64,7 +60,7 @@ class IntakeBuses(models.Model):
 #     email_address = models.CharField("volunteer's email", max_length=300)
 #     phone_number = models.CharField("volunteer's phone number", max_length=300)
 #     volunteer_type = models.ManyToManyField(VolunteerTypes)
-#     notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+#     notes = models.TextField(null=True, blank=True)
 
 class Lodging(models.Model):
     LODGING_CHOICES = [
@@ -195,7 +191,7 @@ class TravelPlans(models.Model):
         choices=TRAVEL_TYPE_CHOICES,
         default='other',
     )
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)
 
 class Sponsors(models.Model):
     STATE_CHOICES = [
@@ -265,9 +261,9 @@ class Sponsors(models.Model):
     )
     relation = models.CharField("Sponsor's relation to asylee", max_length=300)
     address = models.TextField("Sponsor's street address")    #TK: Necessary?
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)
 
-class Family(models.Model):
+class Families(models.Model):
     LANGUAGE_CHOICES = [
         ('Latin', (
                 ('portuguese', 'Brazilian/Portuguese'),
@@ -331,7 +327,7 @@ class Family(models.Model):
         blank=True,
         null=True,
     )
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)
 
 class Asylees(models.Model):
     COUNTRY_OF_ORIGIN_CHOICES = [
@@ -378,12 +374,12 @@ class Asylees(models.Model):
         choices=COUNTRY_OF_ORIGIN_CHOICES,
         default='guatemala'
     )
-    family = models.ForeignKey(Family, on_delete=models.DO_NOTHING) #TK: FK or M2M?
+    family = models.ForeignKey(Families, on_delete=models.DO_NOTHING) #TK: FK or M2M?
     phone_number = models.CharField("sponsor's phone number", max_length=300)
     intake_volunteer = models.ForeignKey(Volunteers, on_delete=models.DO_NOTHING)   #TK: FK or M2M?
     tsa_done = models.BooleanField("Is TSA done?", default=False)   #TK: Necessary?
     legal_done = models.BooleanField("Is legal done?", default=False) #TK: Necessary?
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)
 
 class Medical(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -408,4 +404,4 @@ class Medical(models.Model):
         null=True
     )
     description = models.TextField()
-    notes = models.ForeignKey(Notes, on_delete=models.DO_NOTHING)
+    notes = models.TextField(null=True, blank=True)

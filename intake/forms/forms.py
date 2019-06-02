@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from intake.models import VolunteerTypes
+from intake.models import Families, VolunteerTypes
 
 class SignUpForm(UserCreationForm):
     name = forms.CharField(help_text="First and last name", max_length=300)
