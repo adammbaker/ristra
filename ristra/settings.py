@@ -33,7 +33,9 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'qr_code',
     'bootstrap4',
+    'bootstrap_datepicker_plus',
     'intake.apps.IntakeConfig',
     'django.contrib.admin',
     'django.contrib.auth',

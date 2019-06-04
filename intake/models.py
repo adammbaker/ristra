@@ -1,23 +1,54 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from intake.encryption import Encryption
+
 # Create your models here.
+class Organizations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(help_text="Name of the organization", max_length=300)
+    location = models.CharField(help_text="City, State of the organization", max_length=300)
+    head_name = models.CharField(help_text="Head of organization's name", max_length=300, default='J Doe')
+    head_email = models.EmailField(help_text="Head of organization's email", max_length=300, default='hello@.com')
+    head_phone_number = models.CharField(help_text="Head of organization's phone number", max_length=300, default='505-867-5309')
+
+    def obscure_code(self):
+        enc = Encryption(self.name)
+        self.code = enc.encode(self.id)
+
+    def __str__(self):
+        return '%(org_name)s (%(org_loc)s)' % {
+            'org_name': self.name,
+            'org_loc': self.location,
+        }
+
 class VolunteerTypes(models.Model):
     id = models.BigAutoField(primary_key=True)
-    volunteer_type = models.CharField(max_length=300)
+    volunteer_type = models.CharField(max_length=300, unique=True)
 
     def __str__(self):
         return '%(vtype)s' % {'vtype': self.volunteer_type}
 
 class Volunteers(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    name = models.CharField("volunteer's name", max_length=300)
-    email = models.EmailField("volunteer's email", max_length=300, help_text='Required. Inform a valid email address.', null=True)
-    phone_number = models.CharField("volunteer's phone number", max_length=300)
-    volunteer_type = models.ManyToManyField(VolunteerTypes)
-    notes = models.TextField(null=True, blank=True)
+    user = models.OneToOneField(User, help_text="", on_delete=models.CASCADE, null=True)
+    name = models.CharField(help_text="Volunteer's name", max_length=300)
+    email = models.EmailField(help_text="Volunteer's email", max_length=300, null=True)
+    phone_number = models.CharField(help_text="Volunteer's phone number", max_length=300)
+    volunteer_type = models.ManyToManyField(VolunteerTypes, help_text="Volunteer's capacities")
+    organizations = models.ManyToManyField(Organizations, help_text="Organizations to which the volunteer belongs")
+    notes = models.TextField(help_text="Additional notes", null=True, blank=True)
+
+    def __str__(self):
+        vol_type = ''
+        if self.volunteer_type.exists():
+            vol_type = '[%s]' % ', '.join(self.volunteer_type.values_list('volunteer_type',flat=True))
+        return '%(name)s %(volunteer_type)s' % {
+            'name': self.name,
+            'volunteer_type': vol_type,
+        }
 
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
@@ -27,18 +58,32 @@ def update_user_profile(sender, instance, created, **kwargs):
 
 class Locations(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=300)
-    notes = models.TextField(null=True, blank=True)
+    name = models.CharField(help_text="Name of the refugee staging location", max_length=300)
+    notes = models.TextField(help_text="Additional notes", null=True, blank=True)
+
+    def __str__(self):
+        return '%(name)s' % {
+            'name': self.name,
+        }
 
 class IntakeBuses(models.Model):
     id = models.BigAutoField(primary_key=True)
     arrival_time = models.DateTimeField(
+        help_text="Bus' time of arrival at staging location",
         blank=True,
         null=True
     )
+    destination = models.ForeignKey(Locations, help_text="Where the bus dropped off asylees", on_delete=models.DO_NOTHING, null=True)
     number = models.CharField(help_text="Identifying number for bus", max_length=300, null=True)
-    origin = models.CharField("origin of bus", max_length=100)   #TK: Necessary?
+    origin = models.CharField(help_text="Where the bus came from", max_length=100)   #TK: Necessary?
     notes = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return 'Bus %(number)s arrived on %(arrived)s from %(origin)s' % {
+            'number': self.number,
+            'arrived': self.arrival_time.strftime("%b %d, '%y %H:%M"),
+            'origin': self.origin,
+        }
 
 
 # class Volunteers(models.Model):
@@ -70,11 +115,12 @@ class Lodging(models.Model):
     ]
     id = models.BigAutoField(primary_key=True)
     lodging_type = models.CharField(
+        help_text="What type of lodging",
         max_length=2,
         choices=LODGING_CHOICES,
         default='dorm',
     )
-    description = models.CharField(max_length=200)
+    description = models.CharField(help_text="Description of lodging", max_length=200)
 
 class TravelPlans(models.Model):
     STATE_CHOICES = [
@@ -159,10 +205,11 @@ class TravelPlans(models.Model):
     id = models.BigAutoField(primary_key=True)
     arranged_by = models.ForeignKey(
         Volunteers,
+        help_text="Volunteer who arranged travel plans",
         verbose_name="Travel arranged by (volunteer)",
         on_delete=models.DO_NOTHING
     )
-    confirmation = models.CharField("Confirmation code", max_length=200)
+    confirmation = models.CharField(help_text="Confirmation details", max_length=200)
     destination_city = models.CharField(max_length=200)
     destination_state = models.CharField(
         max_length=2,

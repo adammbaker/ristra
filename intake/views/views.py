@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.template import loader
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
@@ -88,37 +89,33 @@ def landing_page(request):
     if not Location.objects.exists():
         return HttpResponseRedirect(reverse('location add page'))
 
-# def locations(request):
-#     'Show locations, or send to Location Add form page if none'
-#     if not Families.objects.exists():
-#         return HttpResponseRedirect(reverse('home'))
+def join_organization(request, secret):
+    'Adds a user to an organization'
+    for org in Organizations.objects.all():
+        decrypted = box.decrypt(secret).decode('UTF-8')
+        random.seed(int(decrypted))
+        secret_random = random.random()
+        random.seed(org.id)
+        if secret_random == random.random():
+            return HttpResponse('%(user)s added to %(org_name)' % {'user': user.username,'org_name': org.name})
 
-# def intake_buses(request):
-#     'Show intake buses, or send to Location landing page if none'
-#     if request.method =='POST':
-#         form = intakebuses.IntakeBusForm(request.POST)
-#         if form.is_valid():
-#             return HttpResponseRedirect('home')
-#     else:
-#         form = intakebuses.IntakeBusForm()
-#     return render(request, 'intake/intakebus-add.html', {'form': form})
+def qr_code(request):
+    'Generate and display a QR code'
+    template = loader.get_template('intake/qr.html')
+    context = {
+        'qr_url': 'http://192.168.0.2:8000/index/',
+    }
+    return HttpResponse(template.render(context, request))
 
-# @login_required
-# def family(request):
-#     'Show families, or send to Buses landing page if no families'
-#     if request.method =='POST':
-#         form = FamilyForm(request.POST)
-#         if form.is_valid():
-#             return HttpResponseRedirect('home')
-#     else:
-#         form = FamilyForm()
-#     return render(request, 'intake/family-add.html', {'form': form})
-#
-# class FamilyAddPageView(LoginRequiredMixin, TemplateView):
-#     template_name = "intake/family-add.html"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(FamilyAddPageView, self).get_context_data(**kwargs)
-#         context['form'] = FamilyForm()
-#         messages.info(self.request, "hello fam")
-#         return context
+def user_overview(request):
+    'Gives an overview of the user'
+    vol_obj = Volunteers.objects.get(user__username=request.user.username)
+    orgs = ''
+    if vol_obj.organizations.exists():
+        orgs = vol_obj.organizations.all()
+    template = loader.get_template('intake/user-overview.html')
+    context = {
+        'vol': vol_obj,
+        'orgs': orgs,
+    }
+    return HttpResponse(template.render(context, request))

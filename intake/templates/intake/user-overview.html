@@ -1,0 +1,18 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    User Overview
+{% endblock %}
+
+{% block content %}
+<h1>Hi, {{vol.user.username}}</h1>
+
+{% if orgs %}
+    {% for org in orgs %}
+        <h3>{{org.name}}</h3>
+    {% endfor %}
+{% else %}
+You are not a member of any organizations. Join one.
+{% endif %}
+
+{% endblock %}
