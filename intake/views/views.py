@@ -99,6 +99,11 @@ def join_organization(request, secret):
         if secret_random == random.random():
             return HttpResponse('%(user)s added to %(org_name)' % {'user': user.username,'org_name': org.name})
 
+def organization_info(request, secret):
+    'Shows information about the requested organization'
+    for org in Organizations.objects.all():
+        pass
+
 def qr_code(request):
     'Generate and display a QR code'
     template = loader.get_template('intake/qr.html')

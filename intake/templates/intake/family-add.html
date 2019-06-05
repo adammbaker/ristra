@@ -17,6 +17,7 @@
     {% buttons submit=model reset='Cancel' layout='horizontal' %}{% endbuttons %}
 </form>
 
+
 <table border="1">
 {% for field in form.visible_fields %}
   <tr>
@@ -29,7 +30,7 @@
           {% endfor %}
         </ul>
       {% endif %}
-      {% if field == field.lodging %}
+      {% if field.lodging %}
         **
         {% else %}
         &&

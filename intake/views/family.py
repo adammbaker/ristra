@@ -17,6 +17,7 @@ def families(request):
         form = FamilyForm(request.POST)
         if form.is_valid():
             family = form.save(commit=False)
+            print('FL', family.lodging)
             family.save()
             print('Saving family:', Families.objects.last())
             return HttpResponse("This is what you see on the family view and when there are buses.")
