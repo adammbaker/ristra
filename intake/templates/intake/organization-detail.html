@@ -1,0 +1,64 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    Organization Detail
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <h1>{{org.name}}</h1>
+        <h5 class="card-subtitle mb-2 text-muted">{{org.location}}</h5>
+        {{org.notes}}
+        <br>
+        <a href="{{org.url}}" class="card-link">{{org.url}}</a>
+    </div>
+    <br><br>
+
+    {% if locations or perms.intake.add_locations %}
+    <!-- LOCATIONS -->
+    <div class="card-group">
+    <div class="card bg-light mb-3">
+    <div class="card-header">LOCATIONS</div>
+        <div class="card-group">
+            {% for location in locations %}
+                {{location.to_card|safe}}
+            {% endfor %}
+            {% if perms.locations.add_locations %}
+                <div class="card-body">
+                    <h1 class="card-title">Location</h1>
+                    <a href="{% url 'location add' %}" class="card-link" title="Add a new location to {{org.name}}">
+                        <button type="button" class="btn btn-success">Add New</button>
+                    </a>
+                </div>
+                <div class="card-footer">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    {% endif %}
+
+    <!-- POINT OF CONTACT -->
+    <div class="card-group">
+    <div class="card bg-light mb-3">
+    <div class="card-header">POINT OF CONTACT</div>
+        <div class="card-group">
+            {{org.point_of_contact.to_card|safe}}
+        </div>
+    </div>
+    </div>
+
+    <!-- DEPUTIES -->
+    <div class="card-group">
+    <div class="card bg-light mb-3">
+    <div class="card-header">DEPUTIES</div>
+        <div class="card-group">
+            {% for deputy in org.deputies.all %}
+                {{deputy.to_card|safe}}
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 
 from intake.forms.intakebuses import IntakeBusForm
-from intake.models import IntakeBuses, Locations
+from intake.models import IntakeBuses, Location
 
 @login_required
 def intake_buses(request):

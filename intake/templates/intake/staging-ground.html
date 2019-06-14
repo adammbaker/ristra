@@ -1,0 +1,13 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    Staging Ground
+{% endblock %}
+
+{% block content %}
+
+    {% for org in user.volunteers.organizations.all %}
+        {% include 'intake/organization-brief.html' with url=url %}
+    {% endfor %}
+
+{% endblock %}

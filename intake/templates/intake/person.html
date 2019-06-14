@@ -1,0 +1,16 @@
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title">{{person.name}}</h1>
+        <h6 class="card-subtitle mb-2 text-muted">{{person.user.username}}</h6>
+        <p class="card-text">{{person.notes}}</p>
+        <small class="text-muted"><a href="mailto:{{person.email}}" class="card-link">email</a></small>
+    </div>
+    <div class="card-footer">
+        {% for language in person.languages.all %}
+            <span class="badge badge-pill badge-primary">{{language}}</span>
+        {% endfor %}
+        {% for capacity in person.capacities.all %}
+            <span class="badge badge-pill badge-secondary">{{capacity}}</span>
+        {% endfor %}
+    </div>
+</div>

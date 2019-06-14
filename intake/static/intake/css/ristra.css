@@ -1,0 +1,4 @@
+.no-decoration a {
+    color: inherit;
+    text-decoration: underline;
+}

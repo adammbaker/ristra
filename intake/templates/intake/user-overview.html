@@ -5,12 +5,11 @@
 {% endblock %}
 
 {% block content %}
-<h1>Hi, {{vol.user.username}}</h1>
+<h1>Hi, {{user.volunteers.name}}!</h1>
 
-{% if orgs %}
-    {% for org in orgs %}
-        <h3>{{org.name}}</h3>
-    {% endfor %}
+{% if user.volunteers.affiliations.exists %}
+    <h3>Below are some organizations to which you are affiliated</h3><br><br>
+    {% include 'intake/organization-brief.html' with orgs=user.volunteers.affiliations.all %}
 {% else %}
 You are not a member of any organizations. Join one.
 {% endif %}

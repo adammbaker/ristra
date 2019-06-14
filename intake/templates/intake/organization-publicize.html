@@ -1,0 +1,41 @@
+{% extends 'intake/bootstrap.html' %}
+
+{% load bootstrap4 %}
+{% load qr_code %}
+{% load tz %}
+
+{% block bootstrap4_content %}
+    <div class="container-fluid text-center">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>Join {{org.name}}</h1>
+                <h5 class="card-subtitle mb-2 text-muted">{{org.location}}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <a href="{{short_url}}">
+                    {% qr_from_text short_url size="m" %}
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                – or visit –
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <a href="{{short_url}}">
+                    {{short_url}}
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                valid until {{expiration_date|localtime}}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

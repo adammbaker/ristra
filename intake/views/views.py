@@ -114,13 +114,15 @@ def qr_code(request):
 
 def user_overview(request):
     'Gives an overview of the user'
-    vol_obj = Volunteers.objects.get(user__username=request.user.username)
-    orgs = ''
-    if vol_obj.organizations.exists():
-        orgs = vol_obj.organizations.all()
     template = loader.get_template('intake/user-overview.html')
     context = {
-        'vol': vol_obj,
-        'orgs': orgs,
+    }
+    return HttpResponse(template.render(context, request))
+
+def staging(request):
+    'Staging ground for prototyping'
+    template = loader.get_template('intake/user-overview.html')
+    context = {
+        'url': 'http://www.ristra.com',
     }
     return HttpResponse(template.render(context, request))

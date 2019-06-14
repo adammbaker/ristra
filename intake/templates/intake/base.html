@@ -1,5 +1,8 @@
 {% extends 'intake/bootstrap.html' %}
 
+{% load static %}
+<link href="{% static '/css/ristra.css' %}" rel="stylesheet">
+
 {% load bootstrap4 %}
 
 {% block bootstrap4_content %}
@@ -12,10 +15,14 @@
             <div class="col col-sm-1"><a href="{% url 'home' %}">home</a></div>
             {% if user.is_authenticated %}
                 <div class="col col-sm-auto"><a href="{% url 'families' %}">family</a></div>
-                <div class="col col-sm-1 ml-auto"><a href="{% url 'org overview' id=1 %}">Org</a></div>
+
+                <div class="col col-sm-2 ml-auto"><a href="{% url 'user overview' %}">
+                    {{user.username}}
+                </a></div>
+
                 <div class="col col-auto"><a href="{% url 'logout' %}">logout</a></div>
             {% else %}
-                <div class="col col-sm-1"><a href="{% url 'login' %}">login</a></div>
+                <div class="col col-sm-1 ml-auto"><a href="{% url 'login' %}">login</a></div>
             {% endif %}
             </div>
             </div>

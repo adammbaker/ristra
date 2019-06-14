@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title">{{card.body.title}}</h1>
+        <h6 class="card-subtitle mb-2 text-muted">{{card.body.subtitle}}</h6>
+        <p class="card-text">{{card.body.text}}</p>
+        <small class="text-muted"><a href="mailto:{{card.url}}" class="card-link">{{card.body.url_text}}</a></small>
+    </div>
+    <div class="card-footer">
+        {% for field in primary_badges %}
+            <span class="badge badge-primary">{{field}}</span>
+        {% endfor %}
+        {% for field in secondary_badges %}
+            <span class="badge badge-secondary">{{field}}</span>
+        {% endfor %}
+        {% if footer %}
+            <a href="{{footer.url}}" class="card-link">{{footer.text}}</a>
+        {% endif %}
+    </div>
+</div>
