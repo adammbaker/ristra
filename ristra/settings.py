@@ -112,21 +112,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-<<<<<<< HEAD
-STATIC_URL = '/static/intake/'
-=======
 STATIC_URL = '/static/'
->>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-<<<<<<< HEAD
-=======
 AUTH_USER_MODEL = 'intake.User'
 
->>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
 try:
     from ristra.local_settings import *
 except Exception as e:

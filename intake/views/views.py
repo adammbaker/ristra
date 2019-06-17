@@ -90,11 +90,6 @@ class HomePageView(TemplateView):
 # def login(request):
 #     return HttpResponse("Hello, world. You're at the Intake login page.")
 
-<<<<<<< HEAD
-#
-=======
-
->>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
 # class LoginPageView(TemplateView):
 #     template_name = "intake/login.html"
 #
@@ -102,61 +97,6 @@ class HomePageView(TemplateView):
 #         context = super(LoginPageView, self).get_context_data(**kwargs)
 #         messages.info(self.request, "hello login")
 #         return context
-<<<<<<< HEAD
-#
-# @login_required
-# def landing_page(request):
-#     'Determine the appropriate landing page for the user'
-#     resp = []
-#     resp.append('There are %d locations.' % Locations.objects.count())
-#     resp.append('There are %d buses.' % IntakeBuses.objects.count())
-#     resp.append('There are %d families.' % Families.objects.count())
-#     return HttpResponse('<p>'.join(resp))
-#     if not Families.objects.exists():
-#         return HttpResponseRedirect(reverse('intake buses landing page'))
-#     if not IntakeBuses.objects.exists():
-#         return HttpResponseRedirect(reverse('location landing page'))
-#     if not Location.objects.exists():
-#         return HttpResponseRedirect(reverse('location add page'))
-#
-# def join_organization(request, secret):
-#     'Adds a user to an organization'
-#     for org in Organizations.objects.all():
-#         decrypted = box.decrypt(secret).decode('UTF-8')
-#         random.seed(int(decrypted))
-#         secret_random = random.random()
-#         random.seed(org.id)
-#         if secret_random == random.random():
-#             return HttpResponse('%(user)s added to %(org_name)' % {'user': user.username,'org_name': org.name})
-#
-# def organization_info(request, secret):
-#     'Shows information about the requested organization'
-#     for org in Organizations.objects.all():
-#         pass
-#
-# def qr_code(request):
-#     'Generate and display a QR code'
-#     template = loader.get_template('intake/qr.html')
-#     context = {
-#         'qr_url': 'http://192.168.0.2:8000/index/',
-#     }
-#     return HttpResponse(template.render(context, request))
-#
-# def user_overview(request):
-#     'Gives an overview of the user'
-#     template = loader.get_template('intake/user-overview.html')
-#     context = {
-#     }
-#     return HttpResponse(template.render(context, request))
-#
-# def staging(request):
-#     'Staging ground for prototyping'
-#     template = loader.get_template('intake/user-overview.html')
-#     context = {
-#         'url': 'http://www.ristra.com',
-#     }
-#     return HttpResponse(template.render(context, request))
-=======
 
 @login_required
 def landing_page(request):
@@ -210,4 +150,3 @@ def staging(request):
         'url': 'http://www.ristra.com',
     }
     return HttpResponse(template.render(context, request))
->>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a

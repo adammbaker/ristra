@@ -3,19 +3,6 @@ from django.urls import include, path, re_path
 from intake.views import views
 
 urlpatterns = [
-<<<<<<< HEAD
-    path('', views.HomePageView.as_view(), name='home'),
-
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/signup/', views.SignUpView.as_view(), name='signup'),
-
-    # path('organization/', include(([
-    #     path('', students.QuizListView.as_view(), name='quiz_list'),
-    #     path('interests/', students.StudentInterestsView.as_view(), name='student_interests'),
-    #     path('taken/', students.TakenQuizListView.as_view(), name='taken_quiz_list'),
-    #     path('quiz/<int:pk>/', students.take_quiz, name='take_quiz'),
-    # ], 'classroom'), namespace='organization')),
-=======
     # path('', central_dispatch.dispatch, name='dispatch'),
     path('', views.HomePageView.as_view(), name='home'),
 
@@ -25,7 +12,6 @@ urlpatterns = [
     #     path('taken/', point_of_contact.TakenQuizListView.as_view(), name='taken_quiz_list'),
     #     path('quiz/<int:pk>/', point_of_contact.take_quiz, name='take_quiz'),
     # ], 'classroom'), namespace='point_of_contact')),
->>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
     #
     # path('teachers/', include(([
     #     path('', teachers.QuizListView.as_view(), name='quiz_change_list'),
@@ -37,8 +23,6 @@ urlpatterns = [
     #     path('quiz/<int:quiz_pk>/question/<int:question_pk>/', teachers.question_change, name='question_change'),
     #     path('quiz/<int:quiz_pk>/question/<int:question_pk>/delete/', teachers.QuestionDeleteView.as_view(), name='question_delete'),
     # ], 'classroom'), namespace='teachers')),
-<<<<<<< HEAD
-=======
 
     path('landing', views.landing_page, name='landing page'),
     path('staging', views.staging, name='staging ground'),
@@ -65,5 +49,4 @@ urlpatterns = [
     # re_path(r'^join/(?P<secret>\w+)/$', views.join_organization, name='join org'),
     # re_path(r'^organizations/join/(?P<secret>[\w-]+)/$', organizations.organization_join, name='org join'),
     # re_path(r'^organizations/(?P<id>\w+)/$', organizations.organization_overview, name='org overview'),
->>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
 ]
