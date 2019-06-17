@@ -115,6 +115,9 @@ USE_TZ = True
 STATIC_URL = '/static/intake/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'intake.User'
+
 try:
     from ristra.local_settings import *
 except Exception as e:

@@ -1,6 +1,6 @@
 from django import forms
 
-from intake.models import Organization
+# from intake.models import Organization
 
 class OrganizationForm(forms.ModelForm):
     class Meta:
