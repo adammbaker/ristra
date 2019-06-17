@@ -1,8 +1,0 @@
-{% extends 'intake/base.html' %}
-
-{% load bootstrap4 %}
-{% load qr_code %}
-
-{% block content %}
-    {% qr_from_text qr_url size="s" %}
-{% endblock %}

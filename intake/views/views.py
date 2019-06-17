@@ -1,15 +1,17 @@
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template import loader
 from django.urls import reverse
+from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
 
 # from intake.forms import family
 # from intake.forms import forms, family, intakebuses
-# from intake.forms.family import FamilyForm
+from intake.forms.volunteer_forms import VolunteerSignUpForm
 from intake.models import *
 
 # Create your views here.
@@ -54,6 +56,29 @@ from intake.models import *
 def index(request):
     return HttpResponse("Hello, world. You're at the Intake landing page.")
 
+class SignUpView(CreateView):
+    model = Volunteer
+    form_class = VolunteerSignUpForm
+    template_name = 'intake/signup_form.html'
+
+    # def get_context_data(self, **kwargs):
+    #     kwargs['user_type'] = 'student'
+    #     return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        user.refresh_from_db()  # load the profile instance created by the signal
+        user.name = form.cleaned_data.get('name')
+        user.email = form.cleaned_data.get('email')
+        user.phone_number = form.cleaned_data.get('phone_number')
+        user.languages.set(form.cleaned_data.get('languages'))
+        user.capacities.set(form.cleaned_data.get('capacities'))
+        user.save()
+        raw_password = form.cleaned_data.get('password1')
+        user = authenticate(username=user.username, password=raw_password)
+        login(request, user)
+        return redirect('home')
+
 class HomePageView(TemplateView):
     template_name = "intake/home.html"
 
@@ -65,64 +90,64 @@ class HomePageView(TemplateView):
 def login(request):
     return HttpResponse("Hello, world. You're at the Intake login page.")
 
-
-class LoginPageView(TemplateView):
-    template_name = "intake/login.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(LoginPageView, self).get_context_data(**kwargs)
-        messages.info(self.request, "hello login")
-        return context
-
-@login_required
-def landing_page(request):
-    'Determine the appropriate landing page for the user'
-    resp = []
-    resp.append('There are %d locations.' % Locations.objects.count())
-    resp.append('There are %d buses.' % IntakeBuses.objects.count())
-    resp.append('There are %d families.' % Families.objects.count())
-    return HttpResponse('<p>'.join(resp))
-    if not Families.objects.exists():
-        return HttpResponseRedirect(reverse('intake buses landing page'))
-    if not IntakeBuses.objects.exists():
-        return HttpResponseRedirect(reverse('location landing page'))
-    if not Location.objects.exists():
-        return HttpResponseRedirect(reverse('location add page'))
-
-def join_organization(request, secret):
-    'Adds a user to an organization'
-    for org in Organizations.objects.all():
-        decrypted = box.decrypt(secret).decode('UTF-8')
-        random.seed(int(decrypted))
-        secret_random = random.random()
-        random.seed(org.id)
-        if secret_random == random.random():
-            return HttpResponse('%(user)s added to %(org_name)' % {'user': user.username,'org_name': org.name})
-
-def organization_info(request, secret):
-    'Shows information about the requested organization'
-    for org in Organizations.objects.all():
-        pass
-
-def qr_code(request):
-    'Generate and display a QR code'
-    template = loader.get_template('intake/qr.html')
-    context = {
-        'qr_url': 'http://192.168.0.2:8000/index/',
-    }
-    return HttpResponse(template.render(context, request))
-
-def user_overview(request):
-    'Gives an overview of the user'
-    template = loader.get_template('intake/user-overview.html')
-    context = {
-    }
-    return HttpResponse(template.render(context, request))
-
-def staging(request):
-    'Staging ground for prototyping'
-    template = loader.get_template('intake/user-overview.html')
-    context = {
-        'url': 'http://www.ristra.com',
-    }
-    return HttpResponse(template.render(context, request))
+#
+# class LoginPageView(TemplateView):
+#     template_name = "intake/login.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(LoginPageView, self).get_context_data(**kwargs)
+#         messages.info(self.request, "hello login")
+#         return context
+#
+# @login_required
+# def landing_page(request):
+#     'Determine the appropriate landing page for the user'
+#     resp = []
+#     resp.append('There are %d locations.' % Locations.objects.count())
+#     resp.append('There are %d buses.' % IntakeBuses.objects.count())
+#     resp.append('There are %d families.' % Families.objects.count())
+#     return HttpResponse('<p>'.join(resp))
+#     if not Families.objects.exists():
+#         return HttpResponseRedirect(reverse('intake buses landing page'))
+#     if not IntakeBuses.objects.exists():
+#         return HttpResponseRedirect(reverse('location landing page'))
+#     if not Location.objects.exists():
+#         return HttpResponseRedirect(reverse('location add page'))
+#
+# def join_organization(request, secret):
+#     'Adds a user to an organization'
+#     for org in Organizations.objects.all():
+#         decrypted = box.decrypt(secret).decode('UTF-8')
+#         random.seed(int(decrypted))
+#         secret_random = random.random()
+#         random.seed(org.id)
+#         if secret_random == random.random():
+#             return HttpResponse('%(user)s added to %(org_name)' % {'user': user.username,'org_name': org.name})
+#
+# def organization_info(request, secret):
+#     'Shows information about the requested organization'
+#     for org in Organizations.objects.all():
+#         pass
+#
+# def qr_code(request):
+#     'Generate and display a QR code'
+#     template = loader.get_template('intake/qr.html')
+#     context = {
+#         'qr_url': 'http://192.168.0.2:8000/index/',
+#     }
+#     return HttpResponse(template.render(context, request))
+#
+# def user_overview(request):
+#     'Gives an overview of the user'
+#     template = loader.get_template('intake/user-overview.html')
+#     context = {
+#     }
+#     return HttpResponse(template.render(context, request))
+#
+# def staging(request):
+#     'Staging ground for prototyping'
+#     template = loader.get_template('intake/user-overview.html')
+#     context = {
+#         'url': 'http://www.ristra.com',
+#     }
+#     return HttpResponse(template.render(context, request))

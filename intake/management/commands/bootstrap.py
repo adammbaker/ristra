@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from intake.models import Capacities, Languages, LodgingTypes, States
+from intake.models import Capacity, Language, LodgingType, State
 
 from datetime import datetime
 
@@ -36,7 +36,7 @@ class Command(BaseCommand):
             ('Other'),
         )
         for cap in volunteer_capacities:
-            cap, cap_c = Capacities.objects.get_or_create(name=cap)
+            cap, cap_c = Capacity.objects.get_or_create(name=cap)
             if cap_c:
                 self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(vtype)s to model Capacities' % {'vtype': cap}))
 
@@ -49,7 +49,7 @@ class Command(BaseCommand):
             ('other'),
         )
         for lt in lodging_types:
-            lt, lt_c = LodgingTypes.objects.get_or_create(lodging_type=lt)
+            lt, lt_c = LodgingType.objects.get_or_create(lodging_type=lt)
             if lt_c:
                 self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(ltype)s to model LodgingTypes' % {'ltype': lt}))
 
@@ -59,30 +59,30 @@ class Command(BaseCommand):
             ('English'),
             ('Spanish'),
             ('Portuguese'),
-            ("Maya Achi"),
-            ("Maya Awakatek"),
-            ("Maya Ch\'orti\'"),
-            ("Maya Chuj"),
-            ("Maya Itza\'"),
-            ("Maya Ixil"),
-            ("Maya Jakaltek"),
-            ("Maya K\'iche\'"),
-            ("Maya Kaqchiquel"),
-            ("Maya Mam"),
-            ("Maya Mopan"),
-            ("Maya Poqomam"),
-            ("Maya Poqomchi\'"),
-            ("Maya Q\'anjob\'al"),
-            ("Maya Q\'eqchi\'"),
-            ("Maya Sakapultek"),
-            ("Maya Sipakapense"),
-            ("Maya Tektitek"),
-            ("Maya Tz\'utujil"),
-            ("Maya Upsantek"),
+            ("Maya - Achi"),
+            ("Maya - Awakatek"),
+            ("Maya - Ch\'orti\'"),
+            ("Maya - Chuj"),
+            ("Maya - Itza\'"),
+            ("Maya - Ixil"),
+            ("Maya - Jakaltek"),
+            ("Maya - K\'iche\'"),
+            ("Maya - Kaqchiquel"),
+            ("Maya - Mam"),
+            ("Maya - Mopan"),
+            ("Maya - Poqomam"),
+            ("Maya - Poqomchi\'"),
+            ("Maya - Q\'anjob\'al"),
+            ("Maya - Q\'eqchi\'"),
+            ("Maya - Sakapultek"),
+            ("Maya - Sipakapense"),
+            ("Maya - Tektitek"),
+            ("Maya - Tz\'utujil"),
+            ("Maya - Upsantek"),
             ('Other')
         )
         for lang in languages:
-            lang, lang_c = Languages.objects.get_or_create(language=lang)
+            lang, lang_c = Language.objects.get_or_create(language=lang)
             if lang_c:
                 self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(lang)s to model Languages' % {'lang': lang}))
 
@@ -144,7 +144,7 @@ class Command(BaseCommand):
         )
         self.stdout.write(self.style.WARNING('Initializing model States'))
         for st, state in states:
-            state, state_c = States.objects.get_or_create(
+            state, state_c = State.objects.get_or_create(
                 name=state,
                 abbreviation=st
             )
