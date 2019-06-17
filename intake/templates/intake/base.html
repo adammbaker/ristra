@@ -1,0 +1,48 @@
+{% extends 'intake/bootstrap.html' %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/intake/css/ristra.css' %}" rel="stylesheet">
+
+{% load bootstrap4 %}
+
+{% block bootstrap4_content %}
+    <div class="container">
+        <title>{% block title %}Ristra Refuge{% endblock %}</title>
+
+        <p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        <h1>Ristra Refuge</h1>
+                    </div>
+                    <div class="col-6 text-right">
+                        {% if user.is_authenticated %}
+                            <p class="pt-3">Logged in as <strong>{{ user.username }}</strong> <a href="{% url 'logout' %}">Log out</a>.</p>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
+                            <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            <div class="row">
+            <div class="col col-sm-1"><a href="{% url 'home' %}">home</a></div>
+            {% if user.is_authenticated %}
+                <div class="col col-sm-auto"><a href="{% url 'families' %}">family</a></div>
+
+                <div class="col col-sm-2 ml-auto"><a href="{% url 'user overview' %}">
+                    {{user.username}}
+                </a></div>
+
+                <div class="col col-auto"><a href="{% url 'logout' %}">logout</a></div>
+            {% endif %}
+            </div>
+            </div>
+        </p>
+
+        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+        {% block content %}(no content){% endblock %}
+    </div>
+
+{% endblock %}

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+from socket import gethostname, gethostbyname
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -19,18 +20,24 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'if^i-lkreg5ryv^x%0ps6l_bje^7%*fl9py7w(@si0aei17b7p'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    u'localhost',
+    gethostname(),
+    gethostbyname(gethostname()),
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'qr_code',
+    'shortener',
+    'bootstrap4',
+    'bootstrap_datepicker_plus',
+    'intake.apps.IntakeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -69,18 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ristra.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -105,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Denver'
 
 USE_I18N = True
 
@@ -117,4 +112,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+<<<<<<< HEAD
+STATIC_URL = '/static/intake/'
+=======
 STATIC_URL = '/static/'
+>>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
+<<<<<<< HEAD
+=======
+AUTH_USER_MODEL = 'intake.User'
+
+>>>>>>> 1de81742667c6c2c1dacb728a0ca459f82801b8a
+try:
+    from ristra.local_settings import *
+except Exception as e:
+    print('(!) Unable to load local settings', e)
