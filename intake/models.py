@@ -15,8 +15,16 @@ from django.db import models
 from django.utils.html import escape, mark_safe
 
 class User(AbstractUser):
-    is_student = models.BooleanField(default=False)
-    is_teacher = models.BooleanField(default=False)
+    is_team_lead = models.BooleanField(default=False)
+    is_point_of_contact = models.BooleanField(default=False)
+    name = models.CharField(verbose_name='Your name', max_length=300)
+    email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
+    phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
+#     languages = models.ManyToManyField('Languages', verbose_name="Languages spoken")
+#     capacities = models.ManyToManyField('Capacities', verbose_name="Volunteer capacities")
+#     affiliations = models.ManyToManyField('Organizations', verbose_name="Organizations to which the volunteer is affiliated")
+#     campaigns = models.ManyToManyField('shortener.UrlMap', verbose_name="Active intake campaigns")
+#     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
 
 class Lead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -51,6 +59,9 @@ class TeamLead(models.Model):
     # quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='team_lead')
     # score = models.FloatField()
     # date = models.DateTimeField(auto_now_add=True)
+
+# class PointOfContact(models.Model):
+#     point_of_contact = models.ForeignKey('Organization')
 
 # class Languages(models.Model):
 #     language = models.CharField(verbose_name="Language", max_length=500, unique=True)

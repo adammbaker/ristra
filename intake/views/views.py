@@ -62,17 +62,17 @@ class HomePageView(TemplateView):
         messages.info(self.request, "hello http://example.com")
         return context
 
-def login(request):
-    return HttpResponse("Hello, world. You're at the Intake login page.")
+# def login(request):
+#     return HttpResponse("Hello, world. You're at the Intake login page.")
 
 
-class LoginPageView(TemplateView):
-    template_name = "intake/login.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(LoginPageView, self).get_context_data(**kwargs)
-        messages.info(self.request, "hello login")
-        return context
+# class LoginPageView(TemplateView):
+#     template_name = "intake/login.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(LoginPageView, self).get_context_data(**kwargs)
+#         messages.info(self.request, "hello login")
+#         return context
 
 @login_required
 def landing_page(request):
