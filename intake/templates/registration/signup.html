@@ -3,6 +3,7 @@
 {% block content %}
   <h2>Sign up for a free account</h2>
   <p class="lead">Select below the type of account you want to create</p>
-  <a href="{% url 'volunteer_signup' %}" class="btn btn-volunteer btn-lg" role="button">I'm a Volunteer</a>
-  <a href="{% url 'team_lead_signup' %}" class="btn btn-team-lead btn-lg" role="button">I'm a Team Lead</a>
+  <a href="{% url 'volunteer_signup' %}"><button type="button" class="btn btn-volunteer btn-lg" role="button">I'm a Volunteer</button></a>
+  <a href="{% url 'team_lead_signup' %}"><button type="button" class="btn btn-team-lead btn-lg" role="button">I'm a Team Lead</button></a>
+  <a href="{% url 'point_of_contact_signup' %}"><button type="button" class="btn btn-point_of_contact btn-lg" role="button">I'm a Point of Contact</button></a>
 {% endblock %}

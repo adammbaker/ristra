@@ -1,0 +1,46 @@
+{% extends 'intake/base.html' %}
+
+{% block content %}
+
+<h1>{{org.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">{{org.location}}</h6>
+<p class="card-text">{{org.notes}}</p>
+<a href="{{org.url}}" class="card-link">{{org.url}}</a>
+<br><br>
+
+  <div class="card">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Location</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for unit in org.locations.all %}
+          <tr>
+            <td class="align-middle">{{ unit.name }}</td>
+            <td class="align-middle">{{ unit.organization.location }}</td>
+            <td class="text-right">
+              <a href="{% url 'location:detail' unit.id %}" class="card_link">See more</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="bg-light text-center font-italic" colspan="10">No locations found matching your request</td>
+          </tr>
+        {% endfor %}
+        {% if user.is_point_of_contact or user.is_team_lead %}
+        <tr>
+            <td colspan="10">
+                <a href="{% url 'location:add' org.id %}" class="btn btn-primary">Add New Location&nbsp;
+                <span class="badge badge-light">+</span></a>
+            </td>
+        </tr>
+        {% endif %}
+      </tbody>
+      {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+    </table>
+  </div>
+{% endblock %}

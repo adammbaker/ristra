@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from intake.models import Capacity, Language, LodgingType, State
+from intake.models import Capacity, CountryOfOrigin, Language, LodgingType, Sex, State
 
 from datetime import datetime
 
@@ -18,6 +18,8 @@ class Command(BaseCommand):
         self.initialize_lodging_types()
         self.initialize_languages()
         self.initialize_states()
+        self.initialize_countries_of_origin()
+        self.initialize_sex()
         done = datetime.today()
 
     def initialize_capacities(self):
@@ -59,6 +61,7 @@ class Command(BaseCommand):
             ('English'),
             ('Spanish'),
             ('Portuguese'),
+            ('French'),
             ("Maya - Achi"),
             ("Maya - Awakatek"),
             ("Maya - Ch\'orti\'"),
@@ -150,3 +153,115 @@ class Command(BaseCommand):
             )
             if state_c:
                 self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(name)s to model States' % {'name': state.name}))
+
+    def initialize_countries_of_origin(self):
+        countries = (
+            ("Guatemala"),
+            ("Honduras"),
+            ("El Salvador"),
+            ("Mexico"),
+            ("Argentina"),
+            ("Bolivia"),
+            ("Brazil"),
+            ("Chile"),
+            ("Colombia"),
+            ("Costa Rica"),
+            ("Cuba"),
+            ("Dominican Republic"),
+            ("Ecuador"),
+            ("French Guiana"),
+            ("Guadeloupe"),
+            ("Haiti"),
+            ("Martinique"),
+            ("Mexico"),
+            ("Nicaragua"),
+            ("Panama"),
+            ("Paraguay"),
+            ("Peru"),
+            ("Saint Martin"),
+            ("Uruguay"),
+            ("Venezuela"),
+            ("Algeria"),
+            ("Angola"),
+            ("Benin"),
+            ("Botswana"),
+            ("Burkina Faso"),
+            ("Burundi"),
+            ("Cameroon"),
+            ("Canary Islands"),
+            ("Cape Verde"),
+            ("Central African Republic"),
+            ("Ceuta"),
+            ("Chad"),
+            ("Comoros"),
+            ("Côte d'Ivoire"),
+            ("Democratic Republic of the Congo"),
+            ("Djibouti"),
+            ("Egypt"),
+            ("Equatorial Guinea"),
+            ("Eritrea"),
+            ("Ethiopia"),
+            ("Gabon"),
+            ("Gambia"),
+            ("Ghana"),
+            ("Guinea"),
+            ("Guinea-Bissau"),
+            ("Kenya"),
+            ("Lesotho"),
+            ("Liberia"),
+            ("Libya"),
+            ("Madagascar"),
+            ("Madeira"),
+            ("Malawi"),
+            ("Mali"),
+            ("Mauritania"),
+            ("Mauritius"),
+            ("Mayotte"),
+            ("Melilla"),
+            ("Morocco"),
+            ("Mozambique"),
+            ("Namibia"),
+            ("Niger"),
+            ("Nigeria"),
+            ("Republic of the Congo"),
+            ("Réunion"),
+            ("Rwanda"),
+            ("Saint Helena"),
+            ("São Tomé and Príncipe"),
+            ("Senegal"),
+            ("Seychelles"),
+            ("Sierra Leone"),
+            ("Somalia"),
+            ("South Africa"),
+            ("Sudan"),
+            ("Swaziland"),
+            ("Tanzania"),
+            ("Togo"),
+            ("Tunisia"),
+            ("Uganda"),
+            ("Western Sahara"),
+            ("Zambia"),
+            ("Zimbabwe"),
+            ('Other')
+        )
+        self.stdout.write(self.style.WARNING('Initializing model CountryOfOrigin'))
+        for country in countries:
+            coo, coo_c = CountryOfOrigin.objects.get_or_create(
+                country=country,
+            )
+            if coo_c:
+                self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(country)s to model CountryOfOrigin' % {'country': coo.country}))
+
+    def initialize_sex(self):
+        sex_choices = (
+            ("Female"),
+            ("Male"),
+            ('Other')
+        )
+        self.stdout.write(self.style.WARNING('Initializing model Sex'))
+        for sex in sex_choices:
+            so, so_c = Sex.objects.get_or_create(
+                sex=sex,
+            )
+            if so_c:
+                self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(sex)s to model Sex' % {'sex': so.sex}))

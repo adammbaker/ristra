@@ -29,6 +29,11 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
 
+    <h1>Campaigns</h1>
+    {% for campaign in user.campaigns.all %}
+    &nbsp;{{campaign.campaign.short_url}} - {{campaign.organization.name}} - {{campaign.campaign.date_expired}}<br>
+    {% endfor %}
+
     {% if user.is_authenticated %}
         <h6>User is authenticated</h6>
         {% if sesh == True %}

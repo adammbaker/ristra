@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from intake.models import Capacity, Language, Volunteer
+from intake.models import Capacity, Language, User
 
 
 # Create your forms here.
@@ -22,6 +22,6 @@ class VolunteerSignUpForm(UserCreationForm):
     # )
 
     class Meta(UserCreationForm.Meta):
-        model = Volunteer
+        model = User
         # fields = ('username', 'name', 'email', 'phone_number', 'languages', 'capacities', 'password1', 'password2',)
         # exclude = ('campaigns', )

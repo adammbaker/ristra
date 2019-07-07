@@ -1,0 +1,139 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    Family Detailed View
+{% endblock %}
+
+{% block content %}
+    <h1>{{fam.family_name}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">From {{fam.country_of_origin}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Language(s) spoken:
+        {% for language in fam.languages.all %}
+            {{language}}
+        {% endfor %}
+    </h6>
+    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{fam.intake_bus}} at {{fam.intake_bus.arrival_time}}</h6>
+    <p class="card-text">Heading to {{fam.destination}}</p>
+    <p class="card-text">{{fam.notes}}</p>
+    <br><br>
+
+<!-- Family members -->
+    <div class="card">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>Asylee Name</th>
+            <th>Sex</th>
+            <th>Age</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for unit in fam.asylees.all %}
+            <tr>
+              <td class="align-middle">{{ unit.name }}</td>
+              <td class="align-middle">{{ unit.sex }}</td>
+              <td class="align-middle">{{ unit.age }}</td>
+              <td class="text-right">
+                <a href="{% url 'asylee:detail' unit.id %}" class="card_link">See more</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td class="bg-light text-center font-italic" colspan="10">No asylees found matching your request</td>
+            </tr>
+          {% endfor %}
+          <tr>
+              <td colspan="10">
+                  <a href="{% url 'asylee:add' fam.id %}" class="btn btn-primary">Add New Asylee&nbsp;
+                  <span class="badge badge-light">+</span></a>
+              </td>
+          </tr>
+        </tbody>
+        {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+      </table>
+    </div>
+
+<br><br>
+
+<!-- Sponsor -->
+<div class="card">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>Sponsor Name</th>
+        <th>Phone Number</th>
+        <th>Location</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if fam.sponsor %}
+        <tr>
+          <td class="align-middle">{{ fam.sponsor.name }}</td>
+          <td class="align-middle">{{ fam.sponsor.phone_number }}</td>
+          <td class="align-middle">{{ fam.sponsor.location }}</td>
+          <td class="text-right">
+            <a href="{% url 'sponsor:detail' fam.sponsor_id %}" class="card_link">See more</a>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td class="bg-light text-center font-italic" colspan="10">No sponsor found matching your request</td>
+        </tr>
+      {% endif %}
+      <tr>
+          <td colspan="10">
+              <a href="{% url 'sponsor:add' fam.id %}" class="btn btn-primary">Add New Sponsor&nbsp;
+              <span class="badge badge-light">+</span></a>
+          </td>
+      </tr>
+    </tbody>
+    {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+  </table>
+</div>
+
+<br><br>
+
+<!-- Travel Plan -->
+<div class="card">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>Confirmation</th>
+        <th>Destination</th>
+        <th>Travel Date</th>
+        <th>City Van Date</th>
+        <th>Mode of Travel</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for unit in fam.travelplan %}
+        <tr>
+          <td class="align-middle">{{ unit.confirmation }}</td>
+          <td class="align-middle">{{ unit.destination }}</td>
+          <td class="align-middle">{{ unit.travel_date }}</td>
+          <td class="align-middle">{{ unit.city_van_date }}</td>
+          <td class="align-middle">{{ unit.mode_of_travel }}</td>
+          <td class="text-right">
+            <a href="{% url 'travelplan:detail' unit.id %}" class="card_link">See more</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td class="bg-light text-center font-italic" colspan="10">No travel plan found matching your request</td>
+        </tr>
+      {% endfor %}
+      <tr>
+          <td colspan="10">
+              <a href="{% url 'travelplan:add' fam.id %}" class="btn btn-primary">Add New Travel Plan&nbsp;
+              <span class="badge badge-light">+</span></a>
+          </td>
+      </tr>
+    </tbody>
+    {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+  </table>
+</div>
+
+  {% endblock %}

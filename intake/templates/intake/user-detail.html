@@ -1,0 +1,17 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    User Detail
+{% endblock %}
+
+{% block content %}
+    {% if user.name %}
+    <h1>Hi, {{user.name}}!</h1>
+    {% else %}
+    <h1>Hi, {{user.username}}!</h1>
+    {% endif %}
+    <br>
+
+{% include 'intake/card-group.html' with group=user.affiliations.all title_header='Affiliations' title_add='Affiliation' add=True add_url='home' %}
+
+{% endblock %}

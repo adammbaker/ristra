@@ -21,6 +21,12 @@ body {
   border-color: #8980a5;
 }
 
+.btn-point-of-contact {
+  color: #fff;
+  background-color: #BA6375;
+  border-color: #BA6375;
+}
+
 .btn-team-lead:hover,
 .btn-team-lead:active {
   color: #fff;

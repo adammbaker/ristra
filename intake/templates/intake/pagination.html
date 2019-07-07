@@ -1,0 +1,27 @@
+{% if is_paginated %}
+<tfoot>
+    <tr>
+        <div class="pagination">
+            <span class="page-links">
+                <th>
+                </th>
+                <th>
+                {% if page_obj.has_previous %}
+                  <!-- the url will be the main view of the object -->
+                    <a href="{% url 'organization:detail' org.id %}?page={{ page_obj.previous_page_number }}">previous</a>&nbsp;&nbsp;
+                {% endif %}
+                <span class="page-current">
+                    page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                  <!-- the url will be the main view of the object -->
+                    &nbsp;&nbsp;<a href="{% url 'organization:detail' org.id %}?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+                </th>
+                <th>
+                </th>
+            </span>
+        </div>
+    </tr>
+  </tfoot>
+{% endif %}

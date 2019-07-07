@@ -57,9 +57,9 @@ def index(request):
     return HttpResponse("Hello, world. You're at the Intake landing page.")
 
 class SignUpView(CreateView):
-    model = Volunteer
+    model = User
     form_class = VolunteerSignUpForm
-    template_name = 'intake/signup_form.html'
+    template_name = 'intake/signup-form.html'
 
     # def get_context_data(self, **kwargs):
     #     kwargs['user_type'] = 'student'
@@ -84,6 +84,7 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
+        context['active_view'] = 'home'
         messages.info(self.request, "hello http://example.com")
         return context
 
@@ -139,6 +140,14 @@ def qr_code(request):
 def user_overview(request):
     'Gives an overview of the user'
     template = loader.get_template('intake/user-overview.html')
+    context = {
+    }
+    return HttpResponse(template.render(context, request))
+
+@login_required
+def user_detail(request):
+    'Gives a detailed view of the user'
+    template = loader.get_template('intake/user-detail.html')
     context = {
     }
     return HttpResponse(template.render(context, request))

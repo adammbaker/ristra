@@ -1,0 +1,24 @@
+{% load my_tags %}
+
+<div class="card-group">
+<div class="card bg-light mb-3">
+<div class="card-header">{{title_header|upper}}</div>
+    <div class="card-group"  style="display: inline-block;">
+        {% for card in group %}
+            {{card.to_card|safe}}
+        {% endfor %}
+
+        {% if add %}
+            <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">{{title_add}}</h1>
+            </div>
+            <div class="card-footer">
+                <a href="{% url add_url param %}" class="card-link">Add New {{title_add}}</a>
+            </div>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+</div>

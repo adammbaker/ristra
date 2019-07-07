@@ -3,27 +3,65 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.utils import timezone
 from intake.generic_card import GenericCard
 from shortener import shortener
 from shortener.models import UrlMap
 
+import hashlib
+from datetime import timedelta
+
 # Create your models here.
+class Capacity(models.Model):
+    name = models.CharField(verbose_name="Capacity", max_length=500, unique=True)
+    notes = models.TextField(verbose_name="Description of capacity", null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Capacity'
+        verbose_name_plural = 'Capacities'
+
+    def __str__(self):
+        return '%(name)s' % {'name': self.name}
+
 class User(AbstractUser):
     is_team_lead = models.BooleanField(default=False)
     is_point_of_contact = models.BooleanField(default=False)
     name = models.CharField(verbose_name='Your name', max_length=300)
     email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
-#     languages = models.ManyToManyField('Languages', verbose_name="Languages spoken")
-#     capacities = models.ManyToManyField('Capacities', verbose_name="Volunteer capacities")
-#     affiliations = models.ManyToManyField('Organizations', verbose_name="Organizations to which the volunteer is affiliated")
-#     campaigns = models.ManyToManyField('shortener.UrlMap', verbose_name="Active intake campaigns")
-#     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
+    languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
+    capacities = models.ManyToManyField('Capacity', verbose_name='Your capacities')
+    # affiliations = models.ManyToManyField('Organization', verbose_name='Affiliated organizations')
+    campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
+    notes = models.TextField(help_text="Additional notes", null=True, blank=True)
+
+    def to_card(self):
+        gc = GenericCard()
+        gc.body.title = self.name if self.name else None
+        gc.body.subtitle = self.username if self.username else None
+        gc.body.text = self.notes if self.notes else None
+        gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
+        gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
+        return str(gc)
+
+    def __str__(self):
+        return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
+            'name': self.name,
+            'username': self.username,
+            'capacities': ', '.join(map(str, self.capacities.all())),
+            'languages': ', '.join(map(str, self.languages.all()))
+        }
+
+class Campaign(models.Model):
+    # campaign = models.ForeignKey('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.CASCADE, null=True)
+    campaign = models.OneToOneField('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.SET_NULL, null=True)
+    organization = models.OneToOneField('Organization', on_delete=models.SET_NULL, null=True)
 
 class Lead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    specialty = models.OneToOneField('Capacity', on_delete=models.SET_NULL, related_name='team_lead', null=True)
+    specialty = models.OneToOneField('Capacity', verbose_name='Team lead area', on_delete=models.SET_NULL, related_name='capacity', null=True)
+    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    # organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
     # quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
     # interests = models.ManyToManyField(Subject, related_name='interested_students')
     #
@@ -37,135 +75,320 @@ class Lead(models.Model):
     def __str__(self):
         return self.user.username
 
-class Capacity(models.Model):
-    name = models.CharField(verbose_name="Capacity", max_length=500, unique=True)
-    notes = models.TextField(verbose_name="Description of capacity", null=True, blank=True)
+class PointOfContact(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    # organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
 
-    class Meta:
-        verbose_name = 'Capacity'
-        verbose_name_plural = 'Capacities'
+    def to_card(self):
+        return self.user.to_card()
 
     def __str__(self):
-        return '%(name)s' % {'name': self.name}
+        return '%(name)s [POC]' % {'name': self.user.name}
 
-class TeamLead(models.Model):
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='team_lead')
+class Organization(models.Model):
+    is_valid = models.BooleanField(default=False)
+    name = models.CharField(verbose_name='Name of the organization', max_length=500, unique=True)
+    city = models.CharField(verbose_name='City', max_length=500, null=True)
+    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="State", null=True)
+    url = models.CharField(verbose_name='Website', max_length=500, null=True)
+    locations = models.ManyToManyField('Location', verbose_name='Locations')
+    # point_of_contact = models.ForeignKey('Volunteer', models.DO_NOTHING, verbose_name="Point of contact", related_name="pointofcontact", null=True)
+    # deputies = models.ManyToManyField('Volunteer', verbose_name="Deputized volunteers", related_name="deputies")
+    notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
+
+    @property
+    def location(self):
+        return '%(city)s, %(state)s' % {
+            'city': self.city,
+            'state': self.state.abbreviation.upper(),
+        }
+
+    def to_card(self):
+        gc = GenericCard()
+        gc.body.title = self.name if self.name else None
+        gc.body.subtitle = self.location if self.location else None
+        gc.body.text = self.notes if self.notes else None
+        gc.body.card_link = (self.url, self.url) if self.url else None
+        gc.footer.see_more = '/organization/%d' % self.id
+        return str(gc)
+
+    class Meta:
+        verbose_name = 'Organization'
+        verbose_name_plural = 'Organizations'
+
+    def __str__(self):
+        return '%(org_name)s (%(org_city)s, %(org_state)s)' % {
+            'org_name': self.name,
+            'org_city': self.city,
+            'org_state': self.state,
+        }
+
+# class TeamLead(models.Model):
+#     lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='team_lead')
     # organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='team_lead')
     # quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='team_lead')
     # score = models.FloatField()
     # date = models.DateTimeField(auto_now_add=True)
 
-# class PointOfContact(models.Model):
-#     point_of_contact = models.ForeignKey('Organization')
+class Language(models.Model):
+    language = models.CharField(verbose_name="Language", max_length=500, unique=True)
 
-# class Languages(models.Model):
-#     language = models.CharField(verbose_name="Language", max_length=500, unique=True)
-#
-#     class Meta:
-#         verbose_name = 'Language'
-#         verbose_name_plural = 'Languages'
-#
-#     def __str__(self):
-#         return '%(language)s' % {'language': self.language}
-#
-# class LodgingTypes(models.Model):
-#     lodging_type = models.CharField(verbose_name="State", max_length=50, unique=True)
-#     notes = models.TextField(verbose_name="Description of capacity", null=True, blank=True)
-#
-#     class Meta:
-#         verbose_name = 'Lodging'
-#         verbose_name_plural = 'Lodging'
-#
-#     def __str__(self):
-#         return '%(lodging_type)s' % {'lodging_type': self.lodging_type}
-#
-# class States(models.Model):
-#     name = models.CharField(verbose_name="State", max_length=50)
-#     abbreviation = models.CharField(verbose_name="State abbreviation", max_length=5, unique=True)
-#
-#     class Meta:
-#         verbose_name = 'State'
-#         verbose_name_plural = 'States'
-#
-#     def __str__(self):
-#         return '%(state)s' % {'state': self.name}
-#
-# class Organization(models.Model):
-#     name = models.CharField(verbose_name="Name of the organization", max_length=500, unique=True)
-#     city = models.CharField(verbose_name="City", max_length=500, null=True)
-#     state = models.ForeignKey('States', models.DO_NOTHING, verbose_name="State", null=True)
-#     url = models.CharField(verbose_name="Website", max_length=500, null=True)
-#     point_of_contact = models.ForeignKey('Volunteer', models.DO_NOTHING, verbose_name="Point of contact", related_name="pointofcontact", null=True)
-#     deputies = models.ManyToManyField('Volunteer', verbose_name="Deputized volunteers", related_name="deputies")
-#     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
-#
-#     @property
-#     def location(self):
-#         return '%(city)s, %(state)s' % {
-#             'city': self.city,
-#             'state': self.state.abbreviation.upper(),
-#         }
-#
-#     def to_card(self):
-#         gc = GenericCard()
-#         gc.body.title = self.name if self.name else None
-#         gc.body.subtitle = self.location if self.location else None
-#         gc.body.text = self.notes if self.notes else None
-#         gc.body.card_link = (self.url, self.url) if self.url else None
-#         gc.footer.see_more = '/organization/%d' % self.id
-#         return str(gc)
-#
-#     class Meta:
-#         verbose_name = 'Organization'
-#         verbose_name_plural = 'Organizations'
-#
-#     def __str__(self):
-#         return '%(org_name)s (%(org_city)s, %(org_state)s)' % {
-#             'org_name': self.name,
-#             'org_city': self.city,
-#             'org_state': self.state,
-#         }
-#
-# class Volunteer(models.Model):
-#     user = models.OneToOneField(User, help_text="", on_delete=models.CASCADE, null=True)
-#     name = models.CharField(verbose_name="Volunteer's name", max_length=300)
-#     email = models.EmailField(verbose_name="Volunteer's email", max_length=300, null=True)
-#     phone_number = models.CharField(verbose_name="Volunteer's phone number", max_length=300)
-#     languages = models.ManyToManyField('Languages', verbose_name="Languages spoken")
-#     capacities = models.ManyToManyField('Capacities', verbose_name="Volunteer capacities")
-#     affiliations = models.ManyToManyField('Organizations', verbose_name="Organizations to which the volunteer is affiliated")
-#     campaigns = models.ManyToManyField('shortener.UrlMap', verbose_name="Active intake campaigns")
+    class Meta:
+        verbose_name = 'Language'
+        verbose_name_plural = 'Languages'
+
+    def __str__(self):
+        return '%(language)s' % {'language': self.language}
+
+class State(models.Model):
+    name = models.CharField(verbose_name="State", max_length=50)
+    abbreviation = models.CharField(verbose_name="State abbreviation", max_length=5, unique=True)
+
+    class Meta:
+        verbose_name = 'State'
+        verbose_name_plural = 'States'
+
+    def __str__(self):
+        return '%(state)s' % {'state': self.name}
+
+class CountryOfOrigin(models.Model):
+    country = models.CharField(max_length=300, primary_key=True)
+
+    def __str__(self):
+        return '%(country)s' % {'country': self.country}
+
+class Sex(models.Model):
+    sex = models.CharField(max_length=6, primary_key=True)
+
+    def __str__(self):
+        return '%(sex)s' % {'sex': self.sex}
+
+class LodgingType(models.Model):
+    lodging_type = models.CharField(verbose_name="Type of lodging", max_length=50, unique=True)
+    notes = models.TextField(verbose_name="Description", null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Lodging'
+        verbose_name_plural = 'Lodging'
+
+    def __str__(self):
+        return '%(lodging_type)s' % {'lodging_type': self.lodging_type}
+
+class RequestQueue(models.Model):
+    point_of_contact = models.OneToOneField('PointOfContact', on_delete=models.CASCADE, null=True)
+    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+
+class Location(models.Model):
+    # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    intakebuses = models.ManyToManyField('IntakeBus', verbose_name='Intake Buses')
+    name = models.CharField(verbose_name="Name of the staging location", max_length=300)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def organization(self):
+        return self.organization_set.first()
+
+    # def __str__(self):
+    #     return '%(name)s (%(org)s)' % {
+    #         'name': self.name,
+    #         'org': Organization.objects.filter(loca),
+    #     }
+
+    def __str__(self):
+        return '%(name)s' % {
+            'name': self.name,
+        }
+
+class IntakeBus(models.Model):
+    # destination = models.OneToOneField('Location', on_delete=models.CASCADE, null=True)
+    families = models.ManyToManyField('Family', verbose_name='Families')
+    origin = models.CharField(max_length=300, verbose_name='City of Origin of the bus')
+    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Originating state", null=True)
+    arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now())
+    number = models.CharField(verbose_name="Descriptive bus name", max_length=300, null=True, blank=True)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def location(self):
+        return self.location_set.first()
+
+    @property
+    def origin_location(self):
+        return '%(city)s, %(st_abbr)s' % {
+            'city': self.origin,
+            'st_abbr': self.state.abbreviation.upper()
+        }
+
+    def __str__(self):
+        return 'Bus %(number)s arrived on %(arrived)s from %(origin)s, %(state)s' % {
+            'number': self.number,
+            'arrived': self.arrival_time.strftime("%b %d, '%y %H:%M"),
+            'origin': self.origin,
+            'state': self.state.abbreviation
+        }
+
+class Family(models.Model):
+    family_name = models.CharField(max_length=300, verbose_name='Shared family name', unique=True)
+    languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
+    intake_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    # intake_bus = models.ForeignKey('IntakeBus', on_delete=models.SET_NULL, null=True)
+    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees')
+    sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
+    travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
+    lodging = models.CharField(verbose_name="Lodging", max_length=300, null=True)
+    destination_city = models.CharField(verbose_name="Destination city", max_length=300, null=True)
+    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
+    days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
+    days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
+    country_of_origin = models.ForeignKey('CountryOfOrigin', on_delete=models.SET_NULL, null=True)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def intakebus(self):
+        return self.intakebus_set.first()
+
+    @property
+    def destination(self):
+        return '%(city)s, %(st_abbr)s' % {
+            'city': self.destination_city,
+            'st_abbr': self.state.abbreviation.upper()
+        }
+
+    def __str__(self):
+        return '%(name)s' % {
+            'name': self.family_name
+        }
+
+class Asylee(models.Model):
+    name = models.CharField(max_length=300, verbose_name="Asylee's name")
+    # family = models.ForeignKey('Family', on_delete=models.SET_NULL, null=True)
+    medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
+    sex = models.ForeignKey('Sex', on_delete=models.CASCADE)
+    date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
+    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
+    tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
+    legal_done = models.BooleanField(verbose_name="Legal paperwork done?", default=True)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def family(self):
+        return self.family_set.first()
+
+    @property
+    def age(self):
+        return (timezone.now().date() - self.date_of_birth).days//365
+
+class Sponsor(models.Model):
+    name = models.CharField(max_length=300, verbose_name="Sponsor's name", unique=True)
+    phone_number = models.CharField(verbose_name="Sponsor's phone #", max_length=300, null=True)
+    address = models.CharField(verbose_name="Sponsor's address", max_length=300, null=True)
+    city = models.CharField(verbose_name="Sponsor's city", max_length=300, null=True)
+    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Sponsor's state", null=True)
+    # family = models.OneToOneField('Family', on_delete=models.SET_NULL, null=True)
+    relation = models.CharField(max_length=300, verbose_name="Relation to family", null=True)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def location(self):
+        return '%(city)s, %(st_abbr)s' % {
+            'city': self.city,
+            'st_abbr': self.state.abbreviation.upper()
+        }
+
+class TravelPlan(models.Model):
+    TRAVEL_MODE_CHOICES = [
+        ('Air', (
+                ('alaska', 'Alaska (AS)'),
+                ('american', 'American (AA)'),
+                ('delta', 'Delta (DL)'),
+                ('frontier', 'Frontier (F9)'),
+                ('jetblue', 'Jet Blue (B6)'),
+                ('southwest', 'Southwest (WN)'),
+                ('united', 'United (UA)'),
+            )
+        ),
+        ('Bus', (
+                ('greyhound', 'Greyhound'),
+            )
+        ),
+        ('Train', (
+                ('amtrak', 'Amtrak'),
+            )
+        ),
+        ('other', 'Other'),
+    ]
+    arranged_by = models.OneToOneField('User', on_delete=models.CASCADE)
+    confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
+    destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
+    destination_state = models.state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
+    travel_date = models.DateTimeField(verbose_name="Departure time of travel", null=True)
+    city_van_date = models.DateTimeField(verbose_name="Departure time on City Van", null=True)
+    travel_food_prepared = models.BooleanField(verbose_name="Is travel food prepared?", default=False)
+    eta = models.DateTimeField(verbose_name="Estimated time of arrival", null=True)
+    travel_mode = models.CharField(verbose_name="Mode of travel", max_length=100, choices=TRAVEL_MODE_CHOICES, default='other')
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def destination(self):
+        return '%(city)s, %(st_abbr)s' % {
+            'city': self.destination_city,
+            'st_abbr': self.destination_state.abbreviation.upper()
+        }
+
+class Medical(models.Model):
+    # patient = models.OneToOneField('Asylee', on_delete=models.CASCADE)
+    provider = models.ForeignKey('User', on_delete=models.CASCADE)
+    issue_time = models.DateTimeField(verbose_name="Time the issue arose", auto_now_add=True)
+    resolution_time = models.DateTimeField(verbose_name="Time the issue was resolved", editable=True, null=True)
+    description = models.TextField(verbose_name="Description of issue", null=True, blank=True)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def asylee(self):
+        return self.asylee_set.first()
+
+# class Token(models.Model):
+#     shorthash = models.CharField(max_length=20, null=True)
+#     creation_date = models.DateTimeField(auto_now_add=True, editable=False)
+#     expiration_date = models.DateTimeField(null=True)
+#     max_uses = models.SmallIntegerField(null=True)
+#     reference_id = models.SmallIntegerField(null=True)
 #     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
 #
-#     def to_card(self):
-#         gc = GenericCard()
-#         gc.body.title = self.name if self.name else None
-#         gc.body.subtitle = self.user.username if self.user.username else None
-#         gc.body.text = self.notes if self.notes else None
-#         gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
-#         gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
-#         return str(gc)
+#     def decrement(self):
+#         if self.max_uses:
+#             self.max_uses -= 1
+#             self.save()
 #
-#     class Meta:
-#         verbose_name = 'Volunteer'
-#         verbose_name_plural = 'Volunteers'
+#     @property
+#     def is_expired(self):
+#         if self.max_uses:
+#             return self.max_uses <= 0
+#         if self.expiration_date:
+#             return timezone.now() >= self.expiration_date
+#         return None
+#
+#     @property
+#     def hash(self):
+#         if not self.shorthash:
+#             hash = hashlib.sha256((str(self.id) + str(self.creation_date)).encode('utf-8')).hexdigest()[:6]
+#             self.shorthash = hash
+#             self.save()
+#             return hash
+#         return self.shorthash
 #
 #     def __str__(self):
-#         return '%(name)s [%(langs)s] [%(caps)s]' % {
-#             'name': self.name if self.name else self.user.username,
-#             'langs': ', '.join(map(str, self.languages.all())) if self.languages.exists() else 'unspecified',
-#             'caps': ', '.join(map(str, self.capacities.all())) if self.capacities.exists() else 'unspecified',
-#         }
+#         return 'Token %(hash)s' % {'hash': self.hash}
 #
-# @receiver(post_save, sender=User)
-# def update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Volunteer.objects.create(user=instance)
-#     instance.Volunteer.save()
-#
-# class Lead(models.Model):
-#     volunteer = models.ForeignKey('Volunteer', related_name='leads', on_delete=models.SET_NULL, null=True)
-#     capacity = models.ForeignKey('Capacity', related_name='leads', on_delete=models.SET_NULL, null=True)
+# @receiver(post_save, sender=Token)
+# def save_token(sender, instance, **kwargs):
+#     if instance.max_uses is not None:
+#         if instance.max_uses < 1:
+#             instance.delete()
+#     if instance.expiration_date is not None:
+#         if timezone.now() >= instance.expiration_date:
+#             instance.delete()
 #
 # class Location(models.Model):
 #     organization = models.OneToOneField('Organizations', on_delete=models.CASCADE, null=True)
@@ -177,59 +400,6 @@ class TeamLead(models.Model):
 #             'name': self.name,
 #             'org': self.organization,
 #         }
-
-# class Organizations(models.Model):
-#     id = models.BigAutoField(primary_key=True)
-#     name = models.CharField(help_text="Name of the organization", max_length=300)
-#     location = models.CharField(help_text="City, State of the organization", max_length=300)
-#     head_name = models.CharField(help_text="Head of organization's name", max_length=300, default='J Doe')
-#     head_email = models.EmailField(help_text="Head of organization's email", max_length=300, default='hello@.com')
-#     head_phone_number = models.CharField(help_text="Head of organization's phone number", max_length=300, default='505-867-5309')
-#
-#     def obscure_code(self):
-#         enc = Encryption(self.name)
-#         self.code = enc.encode(self.id)
-#
-#     def __str__(self):
-#         return '%(org_name)s (%(org_loc)s)' % {
-#             'org_name': self.name,
-#             'org_loc': self.location,
-#         }
-
-# class VolunteerTypes(models.Model):
-#     id = models.BigAutoField(primary_key=True)
-#     volunteer_type = models.CharField(max_length=300, unique=True)
-#
-#     def __str__(self):
-#         return '%(vtype)s' % {'vtype': self.volunteer_type}
-
-# class Volunteers(models.Model):
-#     user = models.OneToOneField(User, help_text="", on_delete=models.CASCADE, null=True)
-#     name = models.CharField(help_text="Volunteer's name", max_length=300)
-#     email = models.EmailField(help_text="Volunteer's email", max_length=300, null=True)
-#     phone_number = models.CharField(help_text="Volunteer's phone number", max_length=300)
-#     volunteer_type = models.ManyToManyField(VolunteerTypes, help_text="Volunteer's capacities")
-#     organizations = models.ManyToManyField(Organizations, help_text="Organizations to which the volunteer belongs")
-#     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
-#
-#     def __str__(self):
-#         vol_type = ''
-#         if self.volunteer_type.exists():
-#             vol_type = '[%s]' % ', '.join(self.volunteer_type.values_list('volunteer_type',flat=True))
-#         return '%(name)s %(volunteer_type)s' % {
-#             'name': self.name,
-#             'volunteer_type': vol_type,
-#         }
-#
-# @receiver(post_save, sender=User)
-# def update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Volunteers.objects.create(user=instance)
-#     instance.volunteers.save()
-
-# class LodgingType(models.Model):
-#     lodging_type = models.CharField(verbose_name="Type of lodging", max_length=50, unique=True)
-#     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
 # class IntakeBuses(models.Model):
 #     id = models.BigAutoField(primary_key=True)
@@ -249,27 +419,6 @@ class TeamLead(models.Model):
 #             'arrived': self.arrival_time.strftime("%b %d, '%y %H:%M"),
 #             'origin': self.origin,
 #         }
-
-# class Volunteers(models.Model):
-#     # VOLUNTEER_CHOICES = [
-#     #     (ACTIVITIES, 'Activities'),
-#     #     (CHANGEOFADDRESS, 'Change of Address'),
-#     #     (CLOTHES, 'Clothes'),
-#     #     (DEPARTUREBAGS, 'Departure Bags'),
-#     #     (FOOD, 'Food'),
-#     #     (INTAKE, 'Intake'),
-#     #     (MEDICAL, 'Medical'),
-#     #     (TRAVEL, 'Travel'),
-#     #     (TRANSPORT, 'Transport'),
-#     #     (VOLCOORDINATOR, 'Volunteer Coordinator'),
-#     #     (OTHER, 'Other'),
-#     # ]
-#     id = models.BigAutoField(primary_key=True)
-#     name = models.CharField("volunteer's name", max_length=300)
-#     email_address = models.CharField("volunteer's email", max_length=300)
-#     phone_number = models.CharField("volunteer's phone number", max_length=300)
-#     volunteer_type = models.ManyToManyField(VolunteerTypes)
-#     notes = models.TextField(null=True, blank=True)
 #
 # class Lodging(models.Model):
 #     LODGING_CHOICES = [
@@ -618,3 +767,48 @@ class TeamLead(models.Model):
 #     )
 #     description = models.TextField()
 #     notes = models.TextField(null=True, blank=True)
+
+# class NewOrganization(models.Model):
+#     is_valid = models.BooleanField(default=False)
+#     name = models.CharField(verbose_name='Name of the organization', max_length=500, unique=True)
+#     city = models.CharField(verbose_name='City', max_length=500, null=True)
+#     state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="State", null=True)
+#     url = models.CharField(verbose_name='Website', max_length=500, null=True)
+#     locations = models.ManyToManyField('NewLocation', verbose_name='Locations')
+#     # point_of_contact = models.ForeignKey('Volunteer', models.DO_NOTHING, verbose_name="Point of contact", related_name="pointofcontact", null=True)
+#     # deputies = models.ManyToManyField('Volunteer', verbose_name="Deputized volunteers", related_name="deputies")
+#     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
+#
+#     @property
+#     def location(self):
+#         return '%(city)s, %(state)s' % {
+#             'city': self.city,
+#             'state': self.state.abbreviation.upper(),
+#         }
+#
+#     class Meta:
+#         verbose_name = 'Organization'
+#         verbose_name_plural = 'Organizations'
+#
+#     def __str__(self):
+#         return '%(org_name)s (%(org_city)s, %(org_state)s)' % {
+#             'org_name': self.name,
+#             'org_city': self.city,
+#             'org_state': self.state,
+#         }
+#
+# class NewLocation(models.Model):
+#     # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+#     # organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
+#     name = models.CharField(verbose_name="Name of the staging location", max_length=300)
+#     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+#
+#     @property
+#     def organization(self):
+#         return NewOrganization.objects.filter(locations__in=[self.id]).first()
+#
+#     def __str__(self):
+#         return '%(name)s (%(org)s)' % {
+#             'name': self.name,
+#             'org': self.organization,
+#         }

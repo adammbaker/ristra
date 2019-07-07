@@ -1,44 +1,8 @@
 from django import forms
+from intake.models import Family
 
-# from intake.models import Families
-#
-# class FamilyForm(forms.ModelForm):
-#     LANGUAGE_CHOICES = [
-#         ('Latin', (
-#                 ('portuguese', 'Brazilian/Portuguese'),
-#                 ('spanish', 'Spanish'),
-#             )
-#         ),
-#         ('Maya', (
-#                 ('achi', 'Achi'),
-#                 ('awakatek', 'Awakatek'),
-#                 ('chorti', "Ch\'orti\'"),
-#                 ('chuj', 'Chuj'),
-#                 ('itza', "Itza\'"),
-#                 ('ixil', 'Ixil'),
-#                 ('jakaltek', 'Jakaltek'),
-#                 ('kiche', "K\'iche\'"),
-#                 ('kaqchiquel', 'Kaqchiquel'),
-#                 ('mam', 'Mam'),
-#                 ('mopan', 'Mopan'),
-#                 ('poqomam', 'Poqomam'),
-#                 ('poqomchi', "Poqomchi\'"),
-#                 ('qanjobal', 'Q\'anjob\'al'),
-#                 ('qeqchi', 'Q\'eqchi\''),
-#                 ('sakapultek', 'Sakapultek'),
-#                 ('sipakapense', 'Sipakapense'),
-#                 ('tektitek', 'Tektitek'),
-#                 ('tzutujil', 'Tz\'utujil'),
-#                 ('upsantek', 'Upsantek'),
-#                 ('other', 'Other'),
-#             )
-#         ),
-#         ('other', 'Other'),
-#     ]
-#     language_spoken = forms.MultipleChoiceField(
-#         help_text="Languages spoken",
-#         choices=LANGUAGE_CHOICES,
-#     )
-#     class Meta:
-#         model = Families
-#         exclude = ['id']
+# Create your forms here.
+class FamilyForm(forms.ModelForm):
+    class Meta:
+        model = Family
+        fields = ['family_name','languages','intake_by','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','notes',]
