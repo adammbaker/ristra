@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from intake.choices import *
 from intake.generic_card import GenericCard
 from shortener import shortener
 from shortener.models import UrlMap
@@ -12,16 +14,16 @@ import hashlib
 from datetime import timedelta
 
 # Create your models here.
-class Capacity(models.Model):
-    name = models.CharField(verbose_name="Capacity", max_length=500, unique=True)
-    notes = models.TextField(verbose_name="Description of capacity", null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Capacity'
-        verbose_name_plural = 'Capacities'
-
-    def __str__(self):
-        return '%(name)s' % {'name': self.name}
+# class Capacity(models.Model):
+#     name = models.CharField(verbose_name="Capacity", max_length=500, unique=True)
+#     notes = models.TextField(verbose_name="Description of capacity", null=True, blank=True)
+#
+#     class Meta:
+#         verbose_name = 'Capacity'
+#         verbose_name_plural = 'Capacities'
+#
+#     def __str__(self):
+#         return '%(name)s' % {'name': self.name}
 
 class User(AbstractUser):
     is_team_lead = models.BooleanField(default=False)
@@ -29,8 +31,14 @@ class User(AbstractUser):
     name = models.CharField(verbose_name='Your name', max_length=300)
     email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
-    languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
-    capacities = models.ManyToManyField('Capacity', verbose_name='Your capacities')
+    # languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
+    languages = ArrayField(
+        models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
+    )
+    # capacities = models.ManyToManyField('Capacity', verbose_name='Your capacities')
+    capacities = ArrayField(
+        models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other')
+    )
     # affiliations = models.ManyToManyField('Organization', verbose_name='Affiliated organizations')
     campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
@@ -59,7 +67,8 @@ class Campaign(models.Model):
 
 class Lead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    specialty = models.OneToOneField('Capacity', verbose_name='Team lead area', on_delete=models.SET_NULL, related_name='capacity', null=True)
+    specialty = models.CharField(verbose_name="Team lead area", max_length=100, choices=CAPACITY_CHOICES, default='other')
+    # specialty = models.OneToOneField('Capacity', verbose_name='Team lead area', on_delete=models.SET_NULL, related_name='capacity', null=True)
     organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
     # organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
     # quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
@@ -90,7 +99,8 @@ class Organization(models.Model):
     is_valid = models.BooleanField(default=False)
     name = models.CharField(verbose_name='Name of the organization', max_length=500, unique=True)
     city = models.CharField(verbose_name='City', max_length=500, null=True)
-    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="State", null=True)
+    state = models.CharField(verbose_name="State", max_length=100, choices=STATE_CHOICES, default='nm')
+    # state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="State", null=True)
     url = models.CharField(verbose_name='Website', max_length=500, null=True)
     locations = models.ManyToManyField('Location', verbose_name='Locations')
     # point_of_contact = models.ForeignKey('Volunteer', models.DO_NOTHING, verbose_name="Point of contact", related_name="pointofcontact", null=True)
@@ -101,7 +111,7 @@ class Organization(models.Model):
     def location(self):
         return '%(city)s, %(state)s' % {
             'city': self.city,
-            'state': self.state.abbreviation.upper(),
+            'state': self.state.upper(),
         }
 
     def breadcrumbs(self, bc=''):
@@ -151,49 +161,49 @@ class Organization(models.Model):
     # score = models.FloatField()
     # date = models.DateTimeField(auto_now_add=True)
 
-class Language(models.Model):
-    language = models.CharField(verbose_name="Language", max_length=500, unique=True)
+# class Language(models.Model):
+#     language = models.CharField(verbose_name="Language", max_length=500, unique=True)
+#
+#     class Meta:
+#         verbose_name = 'Language'
+#         verbose_name_plural = 'Languages'
+#
+#     def __str__(self):
+#         return '%(language)s' % {'language': self.language}
+#
+# class State(models.Model):
+#     name = models.CharField(verbose_name="State", max_length=50)
+#     abbreviation = models.CharField(verbose_name="State abbreviation", max_length=5, unique=True)
+#
+#     class Meta:
+#         verbose_name = 'State'
+#         verbose_name_plural = 'States'
+#
+#     def __str__(self):
+#         return '%(state)s' % {'state': self.name}
+#
+# class CountryOfOrigin(models.Model):
+#     country = models.CharField(max_length=300, primary_key=True)
+#
+#     def __str__(self):
+#         return '%(country)s' % {'country': self.country}
+#
+# class Sex(models.Model):
+#     sex = models.CharField(max_length=6, primary_key=True)
+#
+#     def __str__(self):
+#         return '%(sex)s' % {'sex': self.sex}
 
-    class Meta:
-        verbose_name = 'Language'
-        verbose_name_plural = 'Languages'
-
-    def __str__(self):
-        return '%(language)s' % {'language': self.language}
-
-class State(models.Model):
-    name = models.CharField(verbose_name="State", max_length=50)
-    abbreviation = models.CharField(verbose_name="State abbreviation", max_length=5, unique=True)
-
-    class Meta:
-        verbose_name = 'State'
-        verbose_name_plural = 'States'
-
-    def __str__(self):
-        return '%(state)s' % {'state': self.name}
-
-class CountryOfOrigin(models.Model):
-    country = models.CharField(max_length=300, primary_key=True)
-
-    def __str__(self):
-        return '%(country)s' % {'country': self.country}
-
-class Sex(models.Model):
-    sex = models.CharField(max_length=6, primary_key=True)
-
-    def __str__(self):
-        return '%(sex)s' % {'sex': self.sex}
-
-class LodgingType(models.Model):
-    lodging_type = models.CharField(verbose_name="Type of lodging", max_length=50, unique=True)
-    notes = models.TextField(verbose_name="Description", null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Lodging'
-        verbose_name_plural = 'Lodging'
-
-    def __str__(self):
-        return '%(lodging_type)s' % {'lodging_type': self.lodging_type}
+# class LodgingType(models.Model):
+#     lodging_type = models.CharField(verbose_name="Type of lodging", max_length=50, unique=True)
+#     notes = models.TextField(verbose_name="Description", null=True, blank=True)
+#
+#     class Meta:
+#         verbose_name = 'Lodging'
+#         verbose_name_plural = 'Lodging'
+#
+#     def __str__(self):
+#         return '%(lodging_type)s' % {'lodging_type': self.lodging_type}
 
 class RequestQueue(models.Model):
     point_of_contact = models.OneToOneField('PointOfContact', on_delete=models.CASCADE, null=True)
@@ -202,6 +212,7 @@ class RequestQueue(models.Model):
 class Location(models.Model):
     # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
     intakebuses = models.ManyToManyField('IntakeBus', verbose_name='Intake Buses')
+    lodging_type = models.CharField(verbose_name="Type of lodging provided", max_length=100, choices=LODGING_CHOICES, default='other')
     name = models.CharField(verbose_name="Name of the staging location", max_length=300)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
@@ -244,8 +255,9 @@ class Location(models.Model):
 class IntakeBus(models.Model):
     # destination = models.OneToOneField('Location', on_delete=models.CASCADE, null=True)
     families = models.ManyToManyField('Family', verbose_name='Families')
-    origin = models.CharField(max_length=300, verbose_name='City of Origin of the bus')
-    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Originating state", null=True)
+    origin = models.CharField(max_length=300, verbose_name='City of origin of the bus')
+    state = models.CharField(verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES, default='other')
+    # state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Originating state", null=True)
     arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now())
     number = models.CharField(verbose_name="Descriptive bus name", max_length=300, null=True, blank=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
@@ -258,7 +270,7 @@ class IntakeBus(models.Model):
     def origin_location(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.origin,
-            'st_abbr': self.state.abbreviation.upper()
+            'st_abbr': self.state.upper()
         }
 
     def breadcrumbs(self, bc=''):
@@ -287,12 +299,15 @@ class IntakeBus(models.Model):
             'number': self.number,
             'arrived': self.arrival_time.strftime("%b %d, '%y %H:%M"),
             'origin': self.origin,
-            'state': self.state.abbreviation
+            'state': self.state
         }
 
 class Family(models.Model):
     family_name = models.CharField(max_length=300, verbose_name='Shared family name', unique=True)
-    languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
+    # languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
+    languages = ArrayField(
+        models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
+    )
     intake_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     # intake_bus = models.ForeignKey('IntakeBus', on_delete=models.SET_NULL, null=True)
     asylees = models.ManyToManyField('Asylee', verbose_name='Asylees')
@@ -300,10 +315,12 @@ class Family(models.Model):
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
     lodging = models.CharField(verbose_name="Lodging", max_length=300, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=300, null=True)
-    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
+    state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
+    # state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
     days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
     days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
-    country_of_origin = models.ForeignKey('CountryOfOrigin', on_delete=models.SET_NULL, null=True)
+    country_of_origin = models.CharField(verbose_name="Country of origin", max_length=100, choices=COUNTRY_CHOICES, default='guatemala')
+    # country_of_origin = models.ForeignKey('CountryOfOrigin', on_delete=models.SET_NULL, null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
@@ -314,7 +331,7 @@ class Family(models.Model):
     def destination(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.destination_city,
-            'st_abbr': self.state.abbreviation.upper()
+            'st_abbr': self.state.upper()
         }
 
     def breadcrumbs(self, bc=''):
@@ -344,7 +361,7 @@ class Asylee(models.Model):
     name = models.CharField(max_length=300, verbose_name="Asylee's name")
     # family = models.ForeignKey('Family', on_delete=models.SET_NULL, null=True)
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
-    sex = models.ForeignKey('Sex', on_delete=models.CASCADE)
+    sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
     tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
@@ -382,7 +399,8 @@ class Sponsor(models.Model):
     phone_number = models.CharField(verbose_name="Sponsor's phone #", max_length=300, null=True)
     address = models.CharField(verbose_name="Sponsor's address", max_length=300, null=True)
     city = models.CharField(verbose_name="Sponsor's city", max_length=300, null=True)
-    state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Sponsor's state", null=True)
+    state = models.CharField(verbose_name="Sponsor's state", max_length=100, choices=STATE_CHOICES, default='other')
+    # state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Sponsor's state", null=True)
     # family = models.OneToOneField('Family', on_delete=models.SET_NULL, null=True)
     relation = models.CharField(max_length=300, verbose_name="Relation to family", null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
@@ -391,7 +409,7 @@ class Sponsor(models.Model):
     def location(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.city,
-            'st_abbr': self.state.abbreviation.upper()
+            'st_abbr': self.state.upper()
         }
 
     def __str__(self):
@@ -420,31 +438,11 @@ class Sponsor(models.Model):
         return ''.join(bc)
 
 class TravelPlan(models.Model):
-    TRAVEL_MODE_CHOICES = [
-        ('Air', (
-                ('alaska', 'Alaska (AS)'),
-                ('american', 'American (AA)'),
-                ('delta', 'Delta (DL)'),
-                ('frontier', 'Frontier (F9)'),
-                ('jetblue', 'Jet Blue (B6)'),
-                ('southwest', 'Southwest (WN)'),
-                ('united', 'United (UA)'),
-            )
-        ),
-        ('Bus', (
-                ('greyhound', 'Greyhound'),
-            )
-        ),
-        ('Train', (
-                ('amtrak', 'Amtrak'),
-            )
-        ),
-        ('other', 'Other'),
-    ]
     arranged_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
-    destination_state = models.state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
+    destination_state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
+    # destination_state = models.state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
     travel_date = models.DateTimeField(verbose_name="Departure time of travel", null=True)
     city_van_date = models.DateTimeField(verbose_name="Departure time on City Van", null=True)
     travel_food_prepared = models.BooleanField(verbose_name="Is travel food prepared?", default=False)
@@ -456,7 +454,7 @@ class TravelPlan(models.Model):
     def destination(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.destination_city,
-            'st_abbr': self.destination_state.abbreviation.upper()
+            'st_abbr': self.destination_state.upper()
         }
 
     def breadcrumbs(self, bc=''):
@@ -942,7 +940,7 @@ class Medical(models.Model):
 #     def location(self):
 #         return '%(city)s, %(state)s' % {
 #             'city': self.city,
-#             'state': self.state.abbreviation.upper(),
+#             'state': self.state.upper(),
 #         }
 #
 #     class Meta:

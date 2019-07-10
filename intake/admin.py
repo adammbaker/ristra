@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-# from intake.models import Capacity, Languages, LodgingTypes, Organization, States, Volunteer
+# from intake.models import Capacity, LodgingTypes, Organization, States, Volunteer
 
 # Register your models here.
 # admin.site.register(Capacity)

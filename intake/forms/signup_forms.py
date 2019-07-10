@@ -1,21 +1,22 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from intake.models import Capacity, Language, Lead, Organization, PointOfContact, User
+from intake.choices import CAPACITY_CHOICES, LANGUAGE_CHOICES
+from intake.models import Lead, Organization, PointOfContact, User
 
 class TeamLeadSignUpForm(UserCreationForm):
-    languages = forms.ModelMultipleChoiceField(
+    languages = forms.MultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Language.objects.all(),
+        choices=LANGUAGE_CHOICES,
         required=True
     )
-    capacities = forms.ModelMultipleChoiceField(
+    capacities = forms.MultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Capacity.objects.all(),
+        choices=CAPACITY_CHOICES,
         required=True
     )
-    specialty = forms.ModelChoiceField(
-        queryset=Lead.specialty.get_queryset(id__gt=0),
+    specialty = forms.ChoiceField(
+        choices=CAPACITY_CHOICES,
         widget=forms.Select,
         required=True,
         help_text='Your area of specialty as team lead'
@@ -42,14 +43,14 @@ class TeamLeadSignUpForm(UserCreationForm):
         return user
 
 class PointOfContactSignUpForm(UserCreationForm):
-    languages = forms.ModelMultipleChoiceField(
+    languages = forms.MultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Language.objects.all(),
+        choices=LANGUAGE_CHOICES,
         required=True
     )
-    capacities = forms.ModelMultipleChoiceField(
+    capacities = forms.MultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Capacity.objects.all(),
+        choices=CAPACITY_CHOICES,
         required=True
     )
 
@@ -68,19 +69,14 @@ class PointOfContactSignUpForm(UserCreationForm):
         return user
 
 class VolunteerSignUpForm(UserCreationForm):
-    languages = forms.ModelMultipleChoiceField(
+    languages = forms.MultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Language.objects.all(),
+        choices=LANGUAGE_CHOICES,
         required=True
     )
-    affiliations = forms.ModelMultipleChoiceField(
+    capacities = forms.MultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Organization.objects.all(),
-        required=True
-    )
-    capacities = forms.ModelMultipleChoiceField(
-        help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        queryset=Capacity.objects.all(),
+        choices=CAPACITY_CHOICES,
         required=True
     )
     phone_number = forms.CharField(
@@ -89,7 +85,7 @@ class VolunteerSignUpForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'name', 'email', 'affiliations', 'phone_number', 'languages', 'capacities', 'password1', 'password2',)
+        fields = ('username', 'name', 'email', 'phone_number', 'languages', 'capacities', 'password1', 'password2',)
         # fields = ('username', 'name', 'email', 'phone_number', 'languages', 'capacities', 'password1', 'password2',)
 
     # @transaction.atomic

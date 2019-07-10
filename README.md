@@ -12,5 +12,4 @@ Join our Trello: https://trello.com/b/2WbNbMPk/ristra
 1. Run `python manage.py makemigrations intake`.
 1. Uncomment the line you previously commented and run `python manage.py makemigrations intake` again.
 1. Run `python manage.py migrate`.
-1. Run `python manage.py bootstrap`.
 1. Run `python manage.py createsuperuser` and enter your own credentials.
