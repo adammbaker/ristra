@@ -20,22 +20,28 @@ class TravelPlanCreationView(LoginRequiredMixin, CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        sponsor_name = form.cleaned_data['name']
-        sponsor_phone_number = form.cleaned_data['phone_number']
-        sponsor_address = form.cleaned_data['address']
-        sponsor_city = form.cleaned_data['city']
-        sponsor_state = form.cleaned_data['state']
-        sponsor_relation = form.cleaned_data['relation']
-        sponsor_notes = form.cleaned_data['notes']
+        tp_arranged_by = form.cleaned_data['arranged_by']
+        tp_confirmation = form.cleaned_data['confirmation']
+        tp_destination_city = form.cleaned_data['destination_city']
+        tp_destination_state = form.cleaned_data['destination_state']
+        tp_travel_date = form.cleaned_data['travel_date']
+        tp_city_van_date = form.cleaned_data['city_van_date']
+        tp_travel_food_prepared = form.cleaned_data['travel_food_prepared']
+        tp_eta = form.cleaned_data['eta']
+        tp_travel_mode = form.cleaned_data['travel_mode']
+        tp_notes = form.cleaned_data['notes']
         fam = get_object_or_404(Family, id=self.kwargs['fam_id'])
-        sponsor, sponsor_c = Sponsor.objects.get_or_create(
-            name = sponsor_name,
-            phone_number = sponsor_phone_number,
-            address = sponsor_address,
-            city = sponsor_city,
-            state = sponsor_state,
-            relation = sponsor_relation,
-            notes = sponsor_notes,
+        tp, tp_c = TravelPlan.objects.get_or_create(
+            arranged_by = tp_arranged_by,
+            confirmation = tp_confirmation,
+            destination_city = tp_destination_city,
+            destination_state = tp_destination_state,
+            travel_date = tp_travel_date,
+            city_van_date = tp_city_van_date,
+            travel_food_prepared = tp_travel_food_prepared,
+            eta = tp_eta,
+            travel_mode = tp_travel_mode,
+            notes = tp_notes,
         )
         print('FAM',fam.id, fam.family_name)
         fam.travelplan = tp

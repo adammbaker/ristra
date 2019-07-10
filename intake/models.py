@@ -104,6 +104,26 @@ class Organization(models.Model):
             'state': self.state.abbreviation.upper(),
         }
 
+    def breadcrumbs(self, bc=''):
+        model = self.name
+        if bc != '':
+            return """<li class="breadcrumb-item"><a href="/organization/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item">%(model)s</li>""" % {
+                'model': model
+            })
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
+
+    def test(self, msg=''):
+        return 'Org' + msg
+
     def to_card(self):
         gc = GenericCard()
         gc.body.title = self.name if self.name else None
@@ -189,6 +209,27 @@ class Location(models.Model):
     def organization(self):
         return self.organization_set.first()
 
+    def breadcrumbs(self, bc=''):
+        parent = self.organization
+        model = self.name
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
+
+    def test(self, msg=''):
+        return self.organization.test('Loc' + msg)
+
     # def __str__(self):
     #     return '%(name)s (%(org)s)' % {
     #         'name': self.name,
@@ -219,6 +260,27 @@ class IntakeBus(models.Model):
             'city': self.origin,
             'st_abbr': self.state.abbreviation.upper()
         }
+
+    def breadcrumbs(self, bc=''):
+        parent = self.location
+        model = self.number
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
+
+    def test(self, msg=''):
+        return self.location.test('Ibus' + msg)
 
     def __str__(self):
         return 'Bus %(number)s arrived on %(arrived)s from %(origin)s, %(state)s' % {
@@ -255,6 +317,24 @@ class Family(models.Model):
             'st_abbr': self.state.abbreviation.upper()
         }
 
+    def breadcrumbs(self, bc=''):
+        parent = self.intakebus
+        model = self.family_name
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
+
     def __str__(self):
         return '%(name)s' % {
             'name': self.family_name
@@ -279,6 +359,24 @@ class Asylee(models.Model):
     def age(self):
         return (timezone.now().date() - self.date_of_birth).days//365
 
+    def breadcrumbs(self, bc=''):
+        parent = self.family
+        model = self.name
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
+
 class Sponsor(models.Model):
     name = models.CharField(max_length=300, verbose_name="Sponsor's name", unique=True)
     phone_number = models.CharField(verbose_name="Sponsor's phone #", max_length=300, null=True)
@@ -295,6 +393,31 @@ class Sponsor(models.Model):
             'city': self.city,
             'st_abbr': self.state.abbreviation.upper()
         }
+
+    def __str__(self):
+        return '%(name)s - %(phone)s, lives in %(loc)s' % {
+            'name': self.name,
+            'phone': self.phone_number,
+            'loc': self.location,
+        }
+
+    def breadcrumbs(self, bc=''):
+        parent = self.family
+        model = self.name
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
 
 class TravelPlan(models.Model):
     TRAVEL_MODE_CHOICES = [
@@ -318,7 +441,7 @@ class TravelPlan(models.Model):
         ),
         ('other', 'Other'),
     ]
-    arranged_by = models.OneToOneField('User', on_delete=models.CASCADE)
+    arranged_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
     destination_state = models.state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Destination state", null=True)
@@ -336,6 +459,24 @@ class TravelPlan(models.Model):
             'st_abbr': self.destination_state.abbreviation.upper()
         }
 
+    def breadcrumbs(self, bc=''):
+        parent = self.family
+        model = 'Travel Plan'
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)d">%(model)s</a></li>""" % {
+                'model': model
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
+
 class Medical(models.Model):
     # patient = models.OneToOneField('Asylee', on_delete=models.CASCADE)
     provider = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -347,6 +488,24 @@ class Medical(models.Model):
     @property
     def asylee(self):
         return self.asylee_set.first()
+
+    def breadcrumbs(self, bc=''):
+        parent = self.asylee
+        model = 'Medical'
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)d">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return ''.join(bc)
 
 # class Token(models.Model):
 #     shorthash = models.CharField(max_length=20, null=True)
