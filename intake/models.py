@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from hashid_field import HashidAutoField, HashidField
 from intake.choices import *
 from intake.generic_card import GenericCard
 from shortener import shortener
@@ -25,6 +26,11 @@ from datetime import timedelta
 #     def __str__(self):
 #         return '%(name)s' % {'name': self.name}
 
+
+
+class Book(models.Model):
+    id = HashidAutoField(primary_key=True)
+
 class User(AbstractUser):
     is_team_lead = models.BooleanField(default=False)
     is_point_of_contact = models.BooleanField(default=False)
@@ -33,11 +39,13 @@ class User(AbstractUser):
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
     # languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
     languages = ArrayField(
-        models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
+        models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='english'),
+        null=True
     )
     # capacities = models.ManyToManyField('Capacity', verbose_name='Your capacities')
     capacities = ArrayField(
-        models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other')
+        models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other'),
+        null=True
     )
     # affiliations = models.ManyToManyField('Organization', verbose_name='Affiliated organizations')
     campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
@@ -49,15 +57,15 @@ class User(AbstractUser):
         gc.body.subtitle = self.username if self.username else None
         gc.body.text = self.notes if self.notes else None
         gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
-        gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
+        gc.footer.badge_groups = (('primary', self.languages), ('secondary', self.capacities))
         return str(gc)
 
     def __str__(self):
         return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
             'name': self.name,
             'username': self.username,
-            'capacities': ', '.join(map(str, self.capacities.all())),
-            'languages': ', '.join(map(str, self.languages.all()))
+            'capacities': ', '.join(self.capacities) if self.capacities else '',
+            'languages': ', '.join(self.languages) if self.languages else ''
         }
 
 class Campaign(models.Model):
@@ -258,7 +266,7 @@ class IntakeBus(models.Model):
     origin = models.CharField(max_length=300, verbose_name='City of origin of the bus')
     state = models.CharField(verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES, default='other')
     # state = models.ForeignKey('State', models.DO_NOTHING, verbose_name="Originating state", null=True)
-    arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now())
+    arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now)
     number = models.CharField(verbose_name="Descriptive bus name", max_length=300, null=True, blank=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 

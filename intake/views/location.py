@@ -2,7 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
+# from django.views.generic.edit import UpdateView
 from intake.forms.location import LocationForm
 from intake.models import Location, Organization
 
@@ -49,3 +50,11 @@ class LocationDetailView(LoginRequiredMixin, ListView):
         # Create any data and add it to the context
         context['active_view'] = self.context_object_name
         return context
+
+class LocationUpdateView(UpdateView):
+    model = Location
+    fields = ['name','lodging_type','notes',]
+    template_name = 'intake/location-edit-form.html'
+
+    def get_object(self, **kwargs):
+        return self.model.objects.get(id=self.kwargs['loc_id'])

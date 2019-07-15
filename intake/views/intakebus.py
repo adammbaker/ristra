@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView
 from intake.forms.intakebus import IntakeBusForm
-from intake.models import Family, IntakeBus, Location
+from intake.models import IntakeBus, Location
 
 # Create your views here.
 @method_decorator([login_required], name='dispatch')

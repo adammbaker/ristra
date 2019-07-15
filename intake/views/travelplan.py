@@ -44,7 +44,8 @@ class TravelPlanCreationView(LoginRequiredMixin, CreateView):
             notes = tp_notes,
         )
         print('FAM',fam.id, fam.family_name)
-        fam.travelplan = tp
+        print('TPP', tp, tp.id, tp_c)
+        fam.travel_plan = tp
         fam.save()
         # return to parent detail
         print('Sending to faimly detail for', fam.id)

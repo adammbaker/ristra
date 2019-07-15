@@ -1,12 +1,13 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import asylee, family, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, tokens, views
+from intake.views import asylee, campaigns, family, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, tokens, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
     path('', views.HomePageView.as_view(), name='home'),
     path('', views.HomePageView.as_view(), name='families'),
     path('requestqueue', requestqueue.request_queue, name='request queue'),
+    path('affiliate/<org_hashid>/<short_url>', campaigns.affiliate, name='affiliate'),
     # path('token/<int:poc_id>/', tokens.token_generate, name='org token generate'),
     # path('organization', organization.OrganizationCreationView.as_view(), name='families'),
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path('location/', include(([
         path('<int:loc_id>/', location.LocationDetailView.as_view(), name='detail'),
         path('add/<int:org_id>/', location.LocationCreationView.as_view(), name='add'),
+        path('edit/<int:loc_id>/', location.LocationUpdateView.as_view(), name='edit'),
     ], 'intake'), namespace='location')),
 
     path('intakebus/', include(([

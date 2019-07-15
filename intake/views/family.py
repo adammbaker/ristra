@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView
 from intake.forms.family import FamilyForm
-from intake.models import Asylee, Family, IntakeBus
+from intake.models import Family, IntakeBus
 
 # Create your views here.
 @method_decorator([login_required], name='dispatch')
@@ -24,6 +24,7 @@ class FamilyCreationView(LoginRequiredMixin, CreateView):
         fam_lodging = form.cleaned_data['lodging']
         fam_destination_city = form.cleaned_data['destination_city']
         fam_state = form.cleaned_data['state']
+        fam_languages = form.cleaned_data['languages']
         fam_days_traveling = form.cleaned_data['days_traveling']
         fam_days_detained = form.cleaned_data['days_detained']
         fam_country_of_origin = form.cleaned_data['country_of_origin']
@@ -35,6 +36,7 @@ class FamilyCreationView(LoginRequiredMixin, CreateView):
             lodging = fam_lodging,
             destination_city = fam_destination_city,
             state = fam_state,
+            languages = fam_languages,
             days_traveling = fam_days_traveling,
             days_detained = fam_days_detained,
             country_of_origin = fam_country_of_origin,
@@ -42,8 +44,7 @@ class FamilyCreationView(LoginRequiredMixin, CreateView):
         )
         ib.families.add(fam)
         ib.save()
-        print('Langs', form.cleaned_data['languages'])
-        fam.languages.set(form.cleaned_data['languages'])
+        print('------',fam)
         print(fam.languages)
         fam.save()
         print('IB', ib, ib.id)
