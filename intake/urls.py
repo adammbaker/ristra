@@ -1,58 +1,64 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import asylee, campaigns, family, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, tokens, views
+from intake.views import asylee, campaign, family, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, tokens, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
     path('', views.HomePageView.as_view(), name='home'),
     path('', views.HomePageView.as_view(), name='families'),
     path('requestqueue', requestqueue.request_queue, name='request queue'),
-    path('affiliate/<org_hashid>/<short_url>', campaigns.affiliate, name='affiliate'),
     # path('token/<int:poc_id>/', tokens.token_generate, name='org token generate'),
     # path('organization', organization.OrganizationCreationView.as_view(), name='families'),
 
     path('organization/', include(([
-        path('<int:org_id>/', organization.OrganizationDetailView.as_view(), name='detail'),
         path('add/', organization.OrganizationCreationView.as_view(), name='add'),
+        path('<org_id>/', organization.OrganizationDetailView.as_view(), name='detail'),
+        path('campaigns/<org_id>/', campaign.CampaignListView.as_view(), name='campaigns'),
         path('approve/<int:queue_id>/', requestqueue.organization_approve, name='approve'),
         path('decline/<int:queue_id>/', requestqueue.organization_decline, name='decline'),
     ], 'intake'), namespace='organization')),
 
     path('location/', include(([
-        path('<int:loc_id>/', location.LocationDetailView.as_view(), name='detail'),
-        path('add/<int:org_id>/', location.LocationCreationView.as_view(), name='add'),
-        path('edit/<int:loc_id>/', location.LocationUpdateView.as_view(), name='edit'),
+        path('<loc_id>/', location.LocationDetailView.as_view(), name='detail'),
+        path('add/<org_id>/', location.LocationCreationView.as_view(), name='add'),
+        path('edit/<loc_id>/', location.LocationUpdateView.as_view(), name='edit'),
     ], 'intake'), namespace='location')),
 
     path('intakebus/', include(([
-        path('<int:ib_id>/', intakebus.IntakeBusDetailView.as_view(), name='detail'),
-        path('add/<int:loc_id>/', intakebus.IntakeBusCreationView.as_view(), name='add'),
+        path('<ib_id>/', intakebus.IntakeBusDetailView.as_view(), name='detail'),
+        path('add/<loc_id>/', intakebus.IntakeBusCreationView.as_view(), name='add'),
     ], 'intake'), namespace='intakebus')),
 
     path('family/', include(([
-        path('<int:fam_id>/', family.FamilyDetailView.as_view(), name='detail'),
-        path('add/<int:ib_id>/', family.FamilyCreationView.as_view(), name='add'),
+        path('<fam_id>/', family.FamilyDetailView.as_view(), name='detail'),
+        path('add/<ib_id>/', family.FamilyCreationView.as_view(), name='add'),
     ], 'intake'), namespace='family')),
 
     path('asylee/', include(([
-        path('<int:asylee_id>/', asylee.AsyleeDetailView.as_view(), name='detail'),
-        path('add/<int:fam_id>/', asylee.AsyleeCreationView.as_view(), name='add'),
+        path('<asylee_id>/', asylee.AsyleeDetailView.as_view(), name='detail'),
+        path('add/<fam_id>/', asylee.AsyleeCreationView.as_view(), name='add'),
     ], 'intake'), namespace='asylee')),
 
     path('medical/', include(([
-        path('<int:med_id>/', medical.MedicalDetailView.as_view(), name='detail'),
-        path('add/<int:asylee_id>/', medical.MedicalCreationView.as_view(), name='add'),
+        path('<med_id>/', medical.MedicalDetailView.as_view(), name='detail'),
+        path('add/<asylee_id>/', medical.MedicalCreationView.as_view(), name='add'),
     ], 'intake'), namespace='medical')),
 
     path('sponsor/', include(([
-        path('<int:sponsor_id>/', sponsor.SponsorDetailView.as_view(), name='detail'),
-        path('add/<int:fam_id>/', sponsor.SponsorCreationView.as_view(), name='add'),
+        path('<sponsor_id>/', sponsor.SponsorDetailView.as_view(), name='detail'),
+        path('add/<fam_id>/', sponsor.SponsorCreationView.as_view(), name='add'),
     ], 'intake'), namespace='sponsor')),
 
     path('travelplan/', include(([
-        path('<int:tp_id>/', travelplan.TravelPlanDetailView.as_view(), name='detail'),
-        path('add/<int:fam_id>/', travelplan.TravelPlanCreationView.as_view(), name='add'),
+        path('<tp_id>/', travelplan.TravelPlanDetailView.as_view(), name='detail'),
+        path('add/<fam_id>/', travelplan.TravelPlanCreationView.as_view(), name='add'),
     ], 'intake'), namespace='travelplan')),
+
+    path('campaign/', include(([
+        path('add/', campaign.CampaignCreationView.as_view(), name='add'),
+        path('<camp_id>/', campaign.CampaignDetailView.as_view(), name='detail'),
+        path('affiliate/<camp_id>/', campaign.affiliate, name='affiliate'),
+    ], 'intake'), namespace='campaign')),
 
     # path('poc/', include(([
     #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),

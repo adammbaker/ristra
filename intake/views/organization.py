@@ -23,7 +23,19 @@ class OrganizationCreationView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         print('POC ID', self.request.user.id)
         poc = PointOfContact.objects.get(user_id=self.request.user.id)
-        org = form.save()
+        org_name = form.cleaned_data.get('name')
+        org_city = form.cleaned_data.get('city')
+        org_state = form.cleaned_data.get('state')
+        org_url = form.cleaned_data.get('url')
+        org_notes = form.cleaned_data.get('notes')
+        org, org_c = Organization.objects.get_or_create(
+            is_valid = False,
+            name = org_name,
+            city = org_city,
+            state = org_state,
+            url = org_url,
+            notes = org_notes,
+        )
         print('Setting up org', org.id, 'with poc as', poc)
         poc.organization = Organization.objects.get(id=org.id)
         poc.save()

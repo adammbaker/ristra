@@ -13,6 +13,7 @@ from shortener.models import UrlMap
 
 import hashlib
 from datetime import timedelta
+from socket import gethostbyname, gethostname
 
 # Create your models here.
 # class Capacity(models.Model):
@@ -25,11 +26,6 @@ from datetime import timedelta
 #
 #     def __str__(self):
 #         return '%(name)s' % {'name': self.name}
-
-
-
-class Book(models.Model):
-    id = HashidAutoField(primary_key=True)
 
 class User(AbstractUser):
     is_team_lead = models.BooleanField(default=False)
@@ -69,9 +65,26 @@ class User(AbstractUser):
         }
 
 class Campaign(models.Model):
+    id = HashidAutoField(primary_key=True)
     # campaign = models.ForeignKey('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.CASCADE, null=True)
     campaign = models.OneToOneField('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.SET_NULL, null=True)
-    organization = models.OneToOneField('Organization', on_delete=models.SET_NULL, null=True)
+    organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
+
+    @property
+    def url(self):
+        return 'http://%(base_url)s%(url_modifier)ss/%(short_url)s' % {
+            'base_url': gethostbyname(gethostname()),
+            'url_modifier': ':8000/',
+            'short_url': self.campaign.short_url
+        }
+
+    @property
+    def affiliate_url(self):
+        return 'http://%(base_url)s%(url_modifier)s%(aff_url)s' % {
+            'base_url': gethostbyname(gethostname()),
+            'url_modifier': ':8000',
+            'aff_url': self.campaign.full_url + '?campaign=' + str(self.id)
+        }
 
 class Lead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -104,6 +117,7 @@ class PointOfContact(models.Model):
         return '%(name)s [POC]' % {'name': self.user.name}
 
 class Organization(models.Model):
+    id = HashidAutoField(primary_key=True)
     is_valid = models.BooleanField(default=False)
     name = models.CharField(verbose_name='Name of the organization', max_length=500, unique=True)
     city = models.CharField(verbose_name='City', max_length=500, null=True)
@@ -125,7 +139,7 @@ class Organization(models.Model):
     def breadcrumbs(self, bc=''):
         model = self.name
         if bc != '':
-            return """<li class="breadcrumb-item"><a href="/organization/%(id)d">%(model)s</a></li>""" % {
+            return """<li class="breadcrumb-item"><a href="/organization/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc
         if bc == '':
@@ -218,6 +232,7 @@ class RequestQueue(models.Model):
     organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
 
 class Location(models.Model):
+    id = HashidAutoField(primary_key=True)
     # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
     intakebuses = models.ManyToManyField('IntakeBus', verbose_name='Intake Buses')
     lodging_type = models.CharField(verbose_name="Type of lodging provided", max_length=100, choices=LODGING_CHOICES, default='other')
@@ -232,7 +247,7 @@ class Location(models.Model):
         parent = self.organization
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -261,6 +276,7 @@ class Location(models.Model):
         }
 
 class IntakeBus(models.Model):
+    id = HashidAutoField(primary_key=True)
     # destination = models.OneToOneField('Location', on_delete=models.CASCADE, null=True)
     families = models.ManyToManyField('Family', verbose_name='Families')
     origin = models.CharField(max_length=300, verbose_name='City of origin of the bus')
@@ -285,7 +301,7 @@ class IntakeBus(models.Model):
         parent = self.location
         model = self.number
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -311,6 +327,7 @@ class IntakeBus(models.Model):
         }
 
 class Family(models.Model):
+    id = HashidAutoField(primary_key=True)
     family_name = models.CharField(max_length=300, verbose_name='Shared family name', unique=True)
     # languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
     languages = ArrayField(
@@ -346,7 +363,7 @@ class Family(models.Model):
         parent = self.intakebus
         model = self.family_name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -366,6 +383,7 @@ class Family(models.Model):
         }
 
 class Asylee(models.Model):
+    id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Asylee's name")
     # family = models.ForeignKey('Family', on_delete=models.SET_NULL, null=True)
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
@@ -388,7 +406,7 @@ class Asylee(models.Model):
         parent = self.family
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -403,6 +421,7 @@ class Asylee(models.Model):
         return ''.join(bc)
 
 class Sponsor(models.Model):
+    id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Sponsor's name", unique=True)
     phone_number = models.CharField(verbose_name="Sponsor's phone #", max_length=300, null=True)
     address = models.CharField(verbose_name="Sponsor's address", max_length=300, null=True)
@@ -431,7 +450,7 @@ class Sponsor(models.Model):
         parent = self.family
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -446,6 +465,7 @@ class Sponsor(models.Model):
         return ''.join(bc)
 
 class TravelPlan(models.Model):
+    id = HashidAutoField(primary_key=True)
     arranged_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
@@ -469,7 +489,7 @@ class TravelPlan(models.Model):
         parent = self.family
         model = 'Travel Plan'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s">%(model)s</a></li>""" % {
                 'model': model
             } + bc)
         if bc == '':
@@ -484,6 +504,7 @@ class TravelPlan(models.Model):
         return ''.join(bc)
 
 class Medical(models.Model):
+    id = HashidAutoField(primary_key=True)
     # patient = models.OneToOneField('Asylee', on_delete=models.CASCADE)
     provider = models.ForeignKey('User', on_delete=models.CASCADE)
     issue_time = models.DateTimeField(verbose_name="Time the issue arose", auto_now_add=True)
@@ -499,7 +520,7 @@ class Medical(models.Model):
         parent = self.asylee
         model = 'Medical'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)d">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':

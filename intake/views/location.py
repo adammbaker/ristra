@@ -16,6 +16,7 @@ class LocationCreationView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         kwargs['user_type'] = 'Location'
+        print('KEYS',self.kwargs.keys())
         kwargs['organization'] = Organization.objects.get(id=self.kwargs['org_id'])
         return super().get_context_data(**kwargs)
 
