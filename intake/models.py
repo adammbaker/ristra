@@ -157,7 +157,7 @@ class Organization(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append("""<li class="breadcrumb-item">%(model)s</li>""" % {
                 'model': model
             })
@@ -266,7 +266,7 @@ class Location(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
@@ -321,7 +321,7 @@ class IntakeBus(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
@@ -384,7 +384,7 @@ class Family(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
@@ -428,7 +428,7 @@ class Asylee(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
@@ -473,7 +473,7 @@ class Sponsor(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
@@ -513,7 +513,7 @@ class TravelPlan(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
@@ -545,7 +545,7 @@ class Medical(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
