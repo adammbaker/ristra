@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.html import mark_safe
 from hashid_field import HashidAutoField, HashidField
 from intake.choices import *
 from intake.generic_card import GenericCard
@@ -55,6 +56,16 @@ class User(AbstractUser):
         gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
         gc.footer.badge_groups = (('primary', self.languages), ('secondary', self.capacities))
         return str(gc)
+
+    def organizations(self):
+        'Return a QuerySet of Organizations the user has access to'
+        return Organization.objects.filter(
+            id__in=[x.organization.id for x in self.campaigns.all() if x.campaign.date_expired > timezone.now()]
+        )
+
+    def locations(self):
+        'Return a QuerySet of Locations for a given in-scope Organization'
+        return None
 
     def __str__(self):
         return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
@@ -146,12 +157,13 @@ class Organization(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append("""<li class="breadcrumb-item">%(model)s</li>""" % {
                 'model': model
             })
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
     def test(self, msg=''):
         return 'Org' + msg
@@ -173,7 +185,7 @@ class Organization(models.Model):
         return '%(org_name)s (%(org_city)s, %(org_state)s)' % {
             'org_name': self.name,
             'org_city': self.city,
-            'org_state': self.state,
+            'org_state': self.state.upper(),
         }
 
 # class TeamLead(models.Model):
@@ -254,12 +266,13 @@ class Location(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
     def test(self, msg=''):
         return self.organization.test('Loc' + msg)
@@ -308,12 +321,13 @@ class IntakeBus(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
     def test(self, msg=''):
         return self.location.test('Ibus' + msg)
@@ -370,12 +384,13 @@ class Family(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
     def __str__(self):
         return '%(name)s' % {
@@ -413,12 +428,13 @@ class Asylee(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
 class Sponsor(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -457,12 +473,13 @@ class Sponsor(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
 class TravelPlan(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -496,12 +513,13 @@ class TravelPlan(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
 class Medical(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -527,12 +545,13 @@ class Medical(models.Model):
             bc = []
             bc.append('<nav aria-label="breadcrumb">')
             bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>""")
             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
                 'model': model
             }))
             bc.append('</ol>')
             bc.append('</nav>')
-        return ''.join(bc)
+        return mark_safe(''.join(bc))
 
 # class Token(models.Model):
 #     shorthash = models.CharField(max_length=20, null=True)
