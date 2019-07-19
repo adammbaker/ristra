@@ -35,14 +35,12 @@
               <td class="bg-light text-center font-italic" colspan="10">No families found matching your request</td>
             </tr>
           {% endfor %}
-          {% if user.is_point_of_contact or user.is_team_lead %}
           <tr>
               <td colspan="10">
                   <a href="{% url 'family:add' intakebus.id %}" class="btn btn-primary">Add New Family&nbsp;
                   <span class="badge badge-light">+</span></a>
               </td>
           </tr>
-          {% endif %}
         </tbody>
         {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
       </table>
