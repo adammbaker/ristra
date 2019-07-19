@@ -21,6 +21,10 @@ class CampaignListView(LoginRequiredMixin, ListView):
     model = Campaign
     paginate_by = 0
 
+    def get_context_data(self, **kwargs):
+        kwargs['active_view'] = self.model.__name__
+        return super().get_context_data(**kwargs)
+
     def get_queryset(self):
         return self.request.user.campaigns.all()
 
