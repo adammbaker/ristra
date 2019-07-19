@@ -32,14 +32,14 @@
             <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
           </tr>
         {% endfor %}
-        {% if user.is_point_of_contact %}
+        <!-- {% if user.is_point_of_contact %}
         <tr>
             <td colspan="10">
                 <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>
-        {% endif %}
+        {% endif %} -->
       </tbody>
       {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
     </table>
