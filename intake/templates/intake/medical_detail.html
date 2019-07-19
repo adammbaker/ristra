@@ -6,11 +6,11 @@
 
 {% block content %}
 
-    <h1>Patient: {{med.asylee.name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">From {{med.asylee.family.country_of_origin}}</h6>
+    <h1>Patient: {{medical.asylee.name}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">From {{medical.asylee.family.country_of_origin}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Arrived on {{asylee.family.intake_bus.number}} at {{asylee.family.intake_bus.arrival_time}}</h6>
-    <p class="card-text">Issue: {{med.description}}</p>
-    <p class="card-text">Notes: {{med.notes}}</p>
+    <p class="card-text">Issue: {{medical.description}}</p>
+    <p class="card-text">Notes: {{medical.notes}}</p>
     <br><br>
 
 {% endblock %}

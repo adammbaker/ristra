@@ -5,9 +5,32 @@
 {% block title %}Ristra Refuge{% endblock %}
 
 {% block content %}
+    <br>
     <!-- <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script> -->
     <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
     This is <em>Ristra</em> for <strong>Albuquerque</strong>.
+
+    {% if user.is_authenticated %}
+    <div class="list-group">
+      {% if user.organizations %}
+        <li class="list-group-item"><h3>Organizations to which you are affiliated</h3></li>
+      {% else %}
+        <li class="list-group-item"><h3>You are not affiliated with any organizations. TK</h3></li>
+      {% endif %}
+      {% for org in user.organizations %}
+      <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ org.name }}</h5>
+          <!-- <small></small> -->
+        </div>
+        <p class="mb-1">{{ org.notes }}</p>
+        <small>{{ org.location }}</small>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <br>
+
     <!-- Success Alert -->
     <div class="alert alert-success alert-dismissible fade show">
         <strong>Success!</strong> Your message has been sent successfully.
@@ -28,11 +51,6 @@
         <strong>Info!</strong> Please read the comments carefully.
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
-
-    <h1>Campaigns</h1>
-    {% for campaign in user.campaigns.all %}
-    &nbsp;{{campaign.campaign.short_url}} - {{campaign.organization.name}} - {{campaign.campaign.date_expired}}<br>
-    {% endfor %}
 
     {% if user.is_authenticated %}
         <h6>User is authenticated</h6>

@@ -63,9 +63,39 @@ class User(AbstractUser):
             id__in=[x.organization.id for x in self.campaigns.all() if x.campaign.date_expired > timezone.now()]
         )
 
-    def locations(self):
-        'Return a QuerySet of Locations for a given in-scope Organization'
-        return None
+    def locations(self, org):
+        'Return a QuerySet of Locations the user has access to for given org'
+        return Location.objects.filter(
+            id__in=[str(x.id) for x in org.locations.all()]
+        )
+
+    def intakebuses(self, loc):
+        'Return a QuerySet of IntakeBuses the user has access to for given loc'
+        return IntakeBus.objects.filter(
+            id__in=[str(x.id) for x in loc.intakebuses.all()]
+        )
+
+    def families(self, ib):
+        'Return a QuerySet of Families the user has access to for given ib'
+        return Family.objects.filter(
+            id__in=[str(x.id) for x in ib.families.all()]
+        )
+
+    def travelplans(self, fam):
+        'Return the TravelPlan the user has access to for given fam'
+        return fam.travelplan
+
+    def sponsor(self, fam):
+        'Return the Sponsor the user has access to for given fam'
+        return fam.sponsor
+
+    def asylees(self, fam):
+        'Return a QuerySet of Asylees the user has access to for given fam'
+        return fam.asylees.all()
+
+    def medicals(self, asylee):
+        'Return a QuerySet of Medicals the user has access to for given asylee'
+        return asylee.medical.all()
 
     def __str__(self):
         return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
@@ -150,7 +180,7 @@ class Organization(models.Model):
     def breadcrumbs(self, bc=''):
         model = self.name
         if bc != '':
-            return """<li class="breadcrumb-item"><a href="/organization/%(id)s">%(model)s</a></li>""" % {
+            return """<li class="breadcrumb-item"><a href="/organization/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc
         if bc == '':
@@ -164,9 +194,6 @@ class Organization(models.Model):
             bc.append('</ol>')
             bc.append('</nav>')
         return mark_safe(''.join(bc))
-
-    def test(self, msg=''):
-        return 'Org' + msg
 
     def to_card(self):
         gc = GenericCard()
@@ -259,7 +286,7 @@ class Location(models.Model):
         parent = self.organization
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -310,11 +337,15 @@ class IntakeBus(models.Model):
             'st_abbr': self.state.upper()
         }
 
+    @property
+    def destination(self):
+        return self.location_set.first().organization_set.first().location
+
     def breadcrumbs(self, bc=''):
         parent = self.location
         model = self.number
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -377,7 +408,7 @@ class Family(models.Model):
         parent = self.intakebus
         model = self.family_name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -421,7 +452,7 @@ class Asylee(models.Model):
         parent = self.family
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -466,7 +497,7 @@ class Sponsor(models.Model):
         parent = self.family
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -506,7 +537,7 @@ class TravelPlan(models.Model):
         parent = self.family
         model = 'Travel Plan'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model
             } + bc)
         if bc == '':
@@ -538,7 +569,7 @@ class Medical(models.Model):
         parent = self.asylee
         model = 'Medical'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':

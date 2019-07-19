@@ -5,16 +5,16 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{fam.family_name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">From {{fam.country_of_origin}}</h6>
+    <h1>{{family.family_name}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">From {{family.country_of_origin}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Language(s) spoken:
-        {% for language in fam.languages.all %}
+        {% for language in family.languages.all %}
             {{language}}
         {% endfor %}
     </h6>
-    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{fam.intake_bus}} at {{fam.intake_bus.arrival_time}}</h6>
-    <p class="card-text">Heading to {{fam.destination}}</p>
-    <p class="card-text">{{fam.notes}}</p>
+    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{family.intake_bus}} at {{family.intake_bus.arrival_time}}</h6>
+    <p class="card-text">Heading to {{family.destination}}</p>
+    <p class="card-text">{{family.notes}}</p>
     <br><br>
 
 <!-- Family members -->
@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for unit in fam.asylees.all %}
+          {% for unit in family.asylees.all %}
             <tr>
               <td class="align-middle">{{ unit.name }}</td>
               <td class="align-middle">{{ unit.sex }}</td>
@@ -48,7 +48,7 @@
           {% endfor %}
           <tr>
               <td colspan="10">
-                  <a href="{% url 'asylee:add' fam.id %}" class="btn btn-primary">Add New Asylee&nbsp;
+                  <a href="{% url 'asylee:add' family.id %}" class="btn btn-primary">Add New Asylee&nbsp;
                   <span class="badge badge-light">+</span></a>
               </td>
           </tr>
@@ -74,13 +74,13 @@
       </tr>
     </thead>
     <tbody>
-      {% if fam.sponsor %}
+      {% if family.sponsor %}
         <tr>
-          <td class="align-middle">{{ fam.sponsor.name }}</td>
-          <td class="align-middle">{{ fam.sponsor.phone_number }}</td>
-          <td class="align-middle">{{ fam.sponsor.location }}</td>
+          <td class="align-middle">{{ family.sponsor.name }}</td>
+          <td class="align-middle">{{ family.sponsor.phone_number }}</td>
+          <td class="align-middle">{{ family.sponsor.location }}</td>
           <td class="text-right">
-            <a href="{% url 'sponsor:detail' fam.sponsor_id %}" class="card_link">See more</a>
+            <a href="{% url 'sponsor:detail' family.sponsor.id %}" class="card_link">See more</a>
           </td>
         </tr>
       {% else %}
@@ -89,7 +89,7 @@
         </tr>
         <tr>
             <td colspan="10">
-                <a href="{% url 'sponsor:add' fam.id %}" class="btn btn-primary">Add New Sponsor&nbsp;
+                <a href="{% url 'sponsor:add' family.id %}" class="btn btn-primary">Add New Sponsor&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>
@@ -118,15 +118,15 @@
       </tr>
     </thead>
     <tbody>
-      {% if fam.travel_plan %}
+      {% if family.travel_plan %}
         <tr>
-          <td class="align-middle">{{ fam.travel_plan.confirmation }}</td>
-          <td class="align-middle">{{ fam.travel_plan.destination }}</td>
-          <td class="align-middle">{{ fam.travel_plan.travel_date }}</td>
-          <td class="align-middle">{{ fam.travel_plan.city_van_date }}</td>
-          <td class="align-middle">{{ fam.travel_plan.mode_of_travel }}</td>
+          <td class="align-middle">{{ family.travel_plan.confirmation }}</td>
+          <td class="align-middle">{{ family.travel_plan.destination }}</td>
+          <td class="align-middle">{{ family.travel_plan.travel_date }}</td>
+          <td class="align-middle">{{ family.travel_plan.city_van_date }}</td>
+          <td class="align-middle">{{ family.travel_plan.mode_of_travel }}</td>
           <td class="text-right">
-            <a href="{% url 'travelplan:detail' fam.travel_plan.id %}" class="card_link">See more</a>
+            <a href="{% url 'travelplan:detail' family.travel_plan.id %}" class="card_link">See more</a>
           </td>
         </tr>
       {% else %}
@@ -135,7 +135,7 @@
         </tr>
         <tr>
             <td colspan="10">
-                <a href="{% url 'travelplan:add' fam.id %}" class="btn btn-primary">Add New Travel Plan&nbsp;
+                <a href="{% url 'travelplan:add' family.id %}" class="btn btn-primary">Add New Travel Plan&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>

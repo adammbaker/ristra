@@ -2,18 +2,17 @@
 
 {% block content %}
 
-<h1>{{loc.name}}</h1>
-<h6 class="card-subtitle mb-2 text-muted">{{loc.organization.location}}</h6>
-<p class="card-text">{{loc.intakebuses.count}} {% if loc.intakebuses.count == 1 %}bus{% else %}buses{% endif %} associated with this location
-<p class="card-text">{{loc.notes}}</p>
+<h1>{{location.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">{{location.organization.location}}</h6>
+<p class="card-text">{{location.intakebuses.count}} {% if location.intakebuses.count == 1 %}bus{% else %}buses{% endif %} associated with this location
+<p class="card-text">{{location.notes}}</p>
 <br><br>
 {{active_view}}
   <div class="card">
     <table class="table mb-0">
       <thead>
         <tr>
-          <th>Bus Number</th>
-          <th>Destination</th>
+          <th>Bus No.</th>
           <th>Arrival Time</th>
           <th>From</th>
           <th>Families</th>
@@ -21,10 +20,9 @@
         </tr>
       </thead>
       <tbody>
-        {% for unit in loc.intakebuses.all %}
+        {% for unit in location.intakebuses.all %}
           <tr>
             <td class="align-middle">{{ unit.number }}</td>
-            <td class="align-middle">{{ unit.destination }}</td>
             <td class="align-middle">{{ unit.arrival_time }}</td>
             <td class="align-middle">{{ unit.origin_location }}</td>
             <td class="align-middle">{{ unit.families.count }}</td>
@@ -40,7 +38,7 @@
         {% if user.is_point_of_contact or user.is_team_lead %}
         <tr>
             <td colspan="10">
-                <a href="{% url 'intakebus:add' loc.id %}" class="btn btn-primary">Add New Intake Bus&nbsp;
+                <a href="{% url 'intakebus:add' location.id %}" class="btn btn-primary">Add New Intake Bus&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>

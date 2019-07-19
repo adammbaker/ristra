@@ -2,15 +2,6 @@
 
 {% block content %}
 
-<h1>{{org.name}}</h1>
-<h6 class="card-subtitle mb-2 text-muted">{{org.location}}</h6>
-{% if org.is_valid != True %}
-<span class="badge badge-pill badge-sm badge-danger">awaiting validation</span>
-{% endif %}
-<p class="card-text">{{org.notes}}</p>
-<a href="{{org.url}}" class="card-link">{{org.url}}</a>
-<br><br>
-
   <div class="card">
     <table class="table mb-0">
       <thead>
@@ -22,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for unit in org.locations.all %}
+        {% for unit in location_list %}
           <tr>
             <td class="align-middle">{{ unit.name }}</td>
             <td class="align-middle">{{ unit.organization.location }}</td>
@@ -39,7 +30,7 @@
         {% if user.is_point_of_contact or user.is_team_lead %}
         <tr>
             <td colspan="10">
-                <a href="{% url 'location:add' org.id %}" class="btn btn-primary">Add New Location&nbsp;
+                <a href="{% url 'location:add' unit.organization.id %}" class="btn btn-primary">Add New Location&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>

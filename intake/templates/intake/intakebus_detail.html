@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ib.number}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">Arrived at {{ib.destination.organization.location}} on {{ib.arrival_time}}</h6>
-    <p class="card-text">{{ib.notes}}</p>
+    <h1>{{intakebus.number}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">Arrived at {{intakebus.destination.organization.location}} on {{intakebus.arrival_time}}</h6>
+    <p class="card-text">{{intakebus.notes}}</p>
     <br><br>
 
     <div class="card">
@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for unit in ib.families.all %}
+          {% for unit in intakebus.families.all %}
             <tr>
               <td class="align-middle">{{ unit.family_name }}</td>
               <td class="align-middle">{{ unit.destination }}</td>
@@ -38,7 +38,7 @@
           {% if user.is_point_of_contact or user.is_team_lead %}
           <tr>
               <td colspan="10">
-                  <a href="{% url 'family:add' ib.id %}" class="btn btn-primary">Add New Family&nbsp;
+                  <a href="{% url 'family:add' intakebus.id %}" class="btn btn-primary">Add New Family&nbsp;
                   <span class="badge badge-light">+</span></a>
               </td>
           </tr>

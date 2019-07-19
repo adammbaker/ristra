@@ -102,6 +102,9 @@ class HomePageView(TemplateView):
 @login_required
 def landing_page(request):
     'Determine the appropriate landing page for the user'
+    print('UIA', request.user.is_authenticated)
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
     resp = []
     resp.append('There are %d locations.' % Locations.objects.count())
     resp.append('There are %d buses.' % IntakeBuses.objects.count())
