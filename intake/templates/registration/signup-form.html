@@ -8,11 +8,11 @@
 {% block content %}
 <div class="row">
     <div class="col-md-8 col-sm-10 col-12">
-        <h2>Sign up as a {{ user_type }}</h2>
+        <h2>Sign up as a {{user_type|title}}</h2>
         <form role="form" class="form-horizontal" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="horizontal" %}
-            {% buttons submit=model reset='Cancel' layout='horizontal' %}{% endbuttons %}
+            {% buttons submit='Sign Up' reset='Cancel' layout='horizontal' %}{% endbuttons %}
         </form>
     </div>
 </div>

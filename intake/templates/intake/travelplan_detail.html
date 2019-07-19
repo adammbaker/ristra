@@ -1,0 +1,22 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    Travel Plan Detailed View
+{% endblock %}
+
+{% block content %}
+
+    <h1>For {{tp.family.family_name}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">Arranged by {{tp.arranged_by.name}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Family is heading to {{tp.family.destination}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Travel plan is set for  {{tp.destination}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Traveling by {{tp.travel_mode|title}}</h6>
+    <p class="card-text">Confirmation #: {{tp.confirmation}}</p>
+    <p class="card-text">Time of travel: {{tp.travel_date}}</p>
+    <p class="card-text">Time of city van departure: {{tp.city_van_date}}</p>
+    <p class="card-text">Travel food is {% if tp.travel_food_prepared == False %}<strong>not</strong> {% endif %} prepared</p>
+    <p class="card-text">Family will be home approx {{tp.eta}}</p>
+    <p class="card-text">Notes: {{tp.notes}}</p>
+    <br><br>
+
+{% endblock %}

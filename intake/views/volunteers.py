@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.shortcuts import redirect
 from django.views.generic import CreateView
 from intake.forms.signup_forms import VolunteerSignUpForm
 from intake.models import User
@@ -6,7 +7,7 @@ from intake.models import User
 class VolunteerSignUpView(CreateView):
     model = User
     form_class = VolunteerSignUpForm
-    template_name = 'registration/signup_form.html'
+    template_name = 'registration/signup-form.html'
 
     def get_context_data(self, **kwargs):
         kwargs['user_type'] = 'volunteer'

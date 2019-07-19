@@ -6,40 +6,66 @@
 {% load bootstrap4 %}
 
 {% block bootstrap4_content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Ristra Refuge</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item{% if active_view == 'home' %} active{% endif %}">
+        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item{% if active_view == 'home' %} active{% endif %}">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <!-- <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      {% if user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'request queue' %}">Request Queue</a>
+      </li>
+      {% endif %}
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="#">{{user.username}}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+      </li>
+      {% endif %}
+    </ul>
+    <!-- <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form> -->
+  </div>
+</nav>
+{% include 'intake/breadcrumbs.html' %}
+
     <div class="container">
-        <title>{% block title %}Ristra Refuge{% endblock %}</title>
-
-        <p>
-            <div class="container">
-                <div class="row">
-                    <div class="col-6">
-                        <h1>Ristra Refuge</h1>
-                    </div>
-                    <div class="col-6 text-right">
-                        {% if user.is_authenticated %}
-                            <p class="pt-3">Logged in as <strong>{{ user.username }}</strong> <a href="{% url 'logout' %}">Log out</a>.</p>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
-                            <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
-                        {% endif %}
-                    </div>
-                </div>
-
-            <div class="row">
-            <div class="col col-sm-1"><a href="{% url 'home' %}">home</a></div>
-            {% if user.is_authenticated %}
-                <div class="col col-sm-auto"><a href="{% url 'families' %}">family</a></div>
-
-                <div class="col col-sm-2 ml-auto"><a href="{% url 'user overview' %}">
-                    {{user.username}}
-                </a></div>
-
-                <div class="col col-auto"><a href="{% url 'logout' %}">logout</a></div>
-            {% endif %}
-            </div>
-            </div>
-        </p>
-
         {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 
         {% block content %}(no content){% endblock %}

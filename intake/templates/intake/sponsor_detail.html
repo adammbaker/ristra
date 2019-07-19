@@ -1,0 +1,16 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    Sponsor Detailed View
+{% endblock %}
+
+{% block content %}
+
+    <h1>{{Sponsor.name}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">For {{sponsor.family.family_name}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Lives in {{sponsor.location}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Family is headed to {{sponsor.family.destination}}</h6>
+    <p class="card-text">{{sponsor.notes}}</p>
+    <br><br>
+
+{% endblock %}

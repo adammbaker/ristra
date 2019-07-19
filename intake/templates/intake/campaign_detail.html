@@ -1,0 +1,22 @@
+{% extends 'intake/base.html' %}
+
+{% load qr_code %}
+
+{% block content %}
+
+<h1>{{camp.campaign.short_url}}</h1>
+<h1>For {{camp.organization.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">{{camp.organization.location}}</h6>
+{% if camp.organization.is_valid != True %}
+<span class="badge badge-pill badge-sm badge-danger">awaiting validation</span>
+{% endif %}
+<p class="card-text">{{camp.organization.notes}}</p>
+<a href="{{org.url}}" class="card-link">{{camp.organization.url}}</a>
+<br><br>
+
+<a href="{{camp.url}}" title="Affiliate yourself with this campaign!">
+{% qr_from_text camp.url size="t" image_format="png" error_correction="L" %}
+</a>
+<p class="card-text">{{camp.url}}</p>
+
+{% endblock %}

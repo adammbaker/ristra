@@ -1,0 +1,41 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}
+    Request Queue
+{% endblock %}
+
+{% block content %}
+{% if rqs %}
+    <div class="card-group">
+    <div class="card bg-light mb-3">
+    <div class="card-header">EVENTS REQUIRING YOUR APPROVAL</div>
+        <div class="card-group">
+            {% for rq in rqs %}
+                <div class="card">
+                <div class="card-body text-center">
+                    <div class="col col-sm">
+                        <a href="{% url 'organization:approve' queue_id=rq.id %}">
+                        <button class="btn btn-success">Approve</button>
+                        </a>
+                    </div>
+                    <br><br>
+                    <div class="col col-sm">
+                        <a href="{% url 'organization:decline' queue_id=rq.id %}">
+                        <button class="btn btn-danger">Decline</button>
+                        </a>
+                    </div>
+                </div>
+                </div>
+                {{rq.organization.to_card|safe}}
+                {{rq.point_of_contact.to_card|safe}}
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+{% else %}
+<h2>Nothing to review</h2>
+{% endif %}
+
+
+
+{% endblock %}
