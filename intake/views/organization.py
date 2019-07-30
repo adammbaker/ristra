@@ -78,7 +78,7 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     model = Organization
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs['org_id'])
+        return self.model.objects.get(id=self.kwargs.get('org_id'))
 
 class OrganizationEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'
@@ -86,7 +86,7 @@ class OrganizationEditView(LoginRequiredMixin, UpdateView):
     template_name = 'intake/generic-form.html'
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs['org_id'])
+        return self.model.objects.get(id=self.kwargs.get('org_id'))
 
 
 
