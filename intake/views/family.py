@@ -39,7 +39,11 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
         fam_lodging = form.cleaned_data.get('lodging')
         fam_destination_city = form.cleaned_data.get('destination_city')
         fam_state = form.cleaned_data.get('state')
-        fam_languages = form.cleaned_data.get('languages')
+        if settings.DATABASE_REGIME == 'sqlite':
+            fam_languages = ','.join(form.cleaned_data.get('languages'))
+        elif settings.DATABASE_REGIME == 'postgresql':
+            fam_languages = form.cleaned_data.get('languages')
+        print('FL', fam_languages, type(fam_languages), len(fam_languages))
         fam_days_traveling = form.cleaned_data.get('days_traveling')
         fam_days_detained = form.cleaned_data.get('days_detained')
         fam_country_of_origin = form.cleaned_data.get('country_of_origin')

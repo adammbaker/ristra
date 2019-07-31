@@ -23,16 +23,20 @@ class User(AbstractUser):
     name = models.CharField(verbose_name='Your name', max_length=300)
     email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
-    # languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
-    languages = ArrayField(
-        models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='english'),
-        null=True
-    )
-    # capacities = models.ManyToManyField('Capacity', verbose_name='Your capacities')
-    capacities = ArrayField(
-        models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other'),
-        null=True
-    )
+    if settings.DATABASE_REGIME == 'sqlite':
+        languages = models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='english')
+    elif settings.DATABASE_REGIME == 'postgresql':
+        languages = ArrayField(
+            models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='english'),
+            null=True
+        )
+    if settings.DATABASE_REGIME == 'sqlite':
+        capacities = models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other')
+    elif settings.DATABASE_REGIME == 'postgresql':
+        capacities = ArrayField(
+            models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other'),
+            null=True
+        )
     campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
 
@@ -287,10 +291,12 @@ class IntakeBus(models.Model):
 class Family(models.Model):
     id = HashidAutoField(primary_key=True)
     family_name = models.CharField(max_length=300, verbose_name='Shared family name', unique=True)
-    # languages = models.ManyToManyField('Language', verbose_name='Languages spoken')
-    languages = ArrayField(
-        models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
-    )
+    if settings.DATABASE_REGIME == 'sqlite':
+        languages = models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
+    elif settings.DATABASE_REGIME == 'postgresql':
+        languages = ArrayField(
+            models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
+        )
     intake_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     asylees = models.ManyToManyField('Asylee', verbose_name='Asylees')
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
