@@ -21,8 +21,12 @@ class CampaignListView(LoginRequiredMixin, ListView):
     model = Campaign
     paginate_by = 0
 
+    def get_context_data(self, **kwargs):
+        kwargs['active_view'] = self.model.__name__
+        return super().get_context_data(**kwargs)
+
     def get_queryset(self):
-        return self.request.user.organizations()
+        return self.request.user.campaigns.all()
 
 @method_decorator([login_required, poc_required], name='dispatch')
 class CampaignCreateView(LoginRequiredMixin, CreateView):
@@ -67,7 +71,7 @@ class CampaignDetailView(LoginRequiredMixin, DetailView):
     model = Campaign
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs['org_id'])
+        return self.model.objects.get(id=self.kwargs['camp_id'])
 
 class CampaignEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'
@@ -75,7 +79,7 @@ class CampaignEditView(LoginRequiredMixin, UpdateView):
     template_name = 'intake/generic-form.html'
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs['org_id'])
+        return self.model.objects.get(id=self.kwargs['camp_id'])
 
 
 

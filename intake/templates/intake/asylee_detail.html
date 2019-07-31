@@ -7,7 +7,7 @@
 {% block content %}
 
     <h1>{{asylee.name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">From {{asylee.family.country_of_origin}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">From {{asylee.family.country_of_origin|title}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">
         {% if asylee.family.languages.count == 1 %}
             Language
@@ -15,13 +15,13 @@
             Languages
         {% endif %}
         spoken:
-        {% for language in asylee.family.languages.all %}
-            {{language}}
+        {% for language in asylee.family.languages %}
+            {{language|title}}
         {% endfor %}
     </h6>
-    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{asylee.family.intake_bus.number}} at {{asylee.family.intake_bus.arrival_time}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{asylee.family.intakebus.number}} at {{asylee.family.intakebus.arrival_time}}</h6>
     <p class="card-text">Heading to {{asylee.family.destination}}</p>
-    <p class="card-text">{{asylee.notes}}</p>
+    <p class="card-text">Notes: {{asylee.notes}}</p>
     <br><br>
 
     <div class="card">

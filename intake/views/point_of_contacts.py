@@ -24,4 +24,4 @@ class PointOfContactSignUpView(CreateView):
         user.capacities = form.cleaned_data.get('capacities')
         user.save()
         login(self.request, user)
-        return redirect('organization:add')
+        return redirect('organization:add', user_id = self.request.user.id)

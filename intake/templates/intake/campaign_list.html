@@ -1,21 +1,18 @@
 {% extends 'intake/base.html' %}
 
+{% block title %} - Campaigns{% endblock %}
+
 {% block content %}
 
-<h1>Campaigns for {{org.name}}</h1>
-<h6 class="card-subtitle mb-2 text-muted">{{org.location}}</h6>
-{% if org.is_valid != True %}
-<span class="badge badge-pill badge-sm badge-danger">awaiting validation</span>
-{% endif %}
-<p class="card-text">{{org.notes}}</p>
-<a href="{{org.url}}" class="card-link">{{org.url}}</a>
+<h1>Campaigns for {{user.name}}</h1>
+<p class="card-text">{{user.notes}}</p>
+<a href="mailto:{{user.email}}" class="card-link">{{user.email}}</a>
 <br><br>
 
   <div class="card">
     <table class="table mb-0">
       <thead>
         <tr>
-          <th>Short URL</th>
           <th>Organization</th>
           <th>Expires</th>
           <th></th>
@@ -24,7 +21,6 @@
       <tbody>
         {% for unit in object_list %}
           <tr>
-            <td class="align-middle">ristrarefuge.com/s/{{ unit.campaign.short_url }}</td>
             <td class="align-middle">{{ unit.organization.name }}</td>
             <td class="align-middle">{{ unit.campaign.date_expired }}</td>
             <td class="text-right">
@@ -36,16 +32,57 @@
             <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
           </tr>
         {% endfor %}
-        {% if user.is_point_of_contact %}
+        <!-- {% if user.is_point_of_contact %}
         <tr>
             <td colspan="10">
-                <a href="{% url 'campaign:add' %}" class="btn btn-primary">Add New Campaign&nbsp;
+                <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>
-        {% endif %}
+        {% endif %} -->
       </tbody>
       {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
     </table>
   </div>
+
+<br><br>
+
+{% if user.is_point_of_contact %}
+<h1>Campaigns for {{user.pointofcontact.organization.name}}</h1>
+<div class="card">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>Short URL</th>
+        <th>Expires</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for unit in user.pointofcontact.organization.campaign_set.all %}
+        <tr>
+          <td class="align-middle">{{ unit.campaign.short_url }}</td>
+          <td class="align-middle">{{ unit.campaign.date_expired }}</td>
+          <td class="text-right">
+            <a href="{% url 'campaign:detail' unit.id %}" class="card_link">See more</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
+        </tr>
+      {% endfor %}
+      {% if user.is_point_of_contact %}
+      <tr>
+          <td colspan="10">
+              <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;
+              <span class="badge badge-light">+</span></a>
+          </td>
+      </tr>
+      {% endif %}
+    </tbody>
+    {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+  </table>
+</div>
+{% endif %}
 {% endblock %}
