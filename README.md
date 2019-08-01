@@ -15,4 +15,5 @@ Join our Trello: https://trello.com/b/2WbNbMPk/ristra
 1. Run `python manage.py makemigrations intake`.
 1. Set the commenting back to how it previously was and run `python manage.py makemigrations intake` again.
 1. Run `python manage.py migrate`.
+1. Run `python manage.py bootstrap` to initialize necessary tables.
 1. Run `python manage.py createsuperuser` and enter your own credentials.

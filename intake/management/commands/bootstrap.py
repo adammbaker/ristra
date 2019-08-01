@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+from intake.models import Capacity, Language
 
-from intake.models import Capacity, LodgingType
-
-from datetime import datetime
 
 class Command(BaseCommand):
     help = '''
@@ -13,33 +12,67 @@ class Command(BaseCommand):
     #     parser.add_argument('action', nargs='+', type=str)
 
     def handle(self, *args, **options):
-        start = datetime.today()
-        # self.initialize_capacities()
+        start = timezone.now()
+        self.initialize_capacities()
+        self.initialize_languages()
         # self.initialize_lodging_types()
-        # self.initialize_languages()
         # self.initialize_states()
-        done = datetime.today()
+        done = timezone.now()
 
-    # def initialize_capacities(self):
-    #     self.stdout.write(self.style.WARNING('Initializing model Capacities'))
-    #     volunteer_capacities = (
-    #         ('Activities'),
-    #         ('Change of Address'),
-    #         ('Clothes'),
-    #         ('Departure Bags'),
-    #         ('Food'),
-    #         ('Intake'),
-    #         ('Medical'),
-    #         ('Travel'),
-    #         ('Transport'),
-    #         ('Volunteer Coordinator'),
-    #         ('Other'),
-    #     )
-    #     for cap in volunteer_capacities:
-    #         cap, cap_c = Capacity.objects.get_or_create(name=cap)
-    #         if cap_c:
-    #             self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(vtype)s to model Capacities' % {'vtype': cap}))
-    #
+    def initialize_capacities(self):
+        self.stdout.write(self.style.WARNING('Initializing model Capacities'))
+        volunteer_capacities = (
+            ('Activities'),
+            ('Change of Address'),
+            ('Clothes'),
+            ('Departure Bags'),
+            ('Food'),
+            ('Intake'),
+            ('Medical'),
+            ('Travel'),
+            ('Transport'),
+            ('Volunteer Coordinator'),
+            ('Other'),
+        )
+        for cap in volunteer_capacities:
+            cap, cap_c = Capacity.objects.get_or_create(name=cap)
+            if cap_c:
+                self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(vtype)s to model Capacities' % {'vtype': cap}))
+
+    def initialize_languages(self):
+        self.stdout.write(self.style.WARNING('Initializing model Languages'))
+        languages = (
+            ('English'),
+            ('Spanish'),
+            ('Portuguese'),
+            ('French'),
+            # ("Maya - Achi"),
+            # ("Maya - Awakatek"),
+            # ("Maya - Ch\'orti\'"),
+            # ("Maya - Chuj"),
+            # ("Maya - Itza\'"),
+            # ("Maya - Ixil"),
+            # ("Maya - Jakaltek"),
+            # ("Maya - K\'iche\'"),
+            # ("Maya - Kaqchiquel"),
+            # ("Maya - Mam"),
+            # ("Maya - Mopan"),
+            # ("Maya - Poqomam"),
+            # ("Maya - Poqomchi\'"),
+            # ("Maya - Q\'anjob\'al"),
+            # ("Maya - Q\'eqchi\'"),
+            # ("Maya - Sakapultek"),
+            # ("Maya - Sipakapense"),
+            # ("Maya - Tektitek"),
+            # ("Maya - Tz\'utujil"),
+            # ("Maya - Upsantek"),
+            # ('Other')
+        )
+        for lang in languages:
+            lang, lang_c = Language.objects.get_or_create(language=lang)
+            if lang_c:
+                self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(lang)s to model Languages' % {'lang': lang}))
+
     # def initialize_lodging_types(self):
     #     self.stdout.write(self.style.WARNING('Initializing model LodgingTypes'))
     #     lodging_types = (
@@ -52,40 +85,6 @@ class Command(BaseCommand):
     #         lt, lt_c = LodgingType.objects.get_or_create(lodging_type=lt)
     #         if lt_c:
     #             self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(ltype)s to model LodgingTypes' % {'ltype': lt}))
-
-    # def initialize_languages(self):
-    #     self.stdout.write(self.style.WARNING('Initializing model Languages'))
-    #     languages = (
-    #         ('English'),
-    #         ('Spanish'),
-    #         ('Portuguese'),
-    #         ('French'),
-    #         ("Maya - Achi"),
-    #         ("Maya - Awakatek"),
-    #         ("Maya - Ch\'orti\'"),
-    #         ("Maya - Chuj"),
-    #         ("Maya - Itza\'"),
-    #         ("Maya - Ixil"),
-    #         ("Maya - Jakaltek"),
-    #         ("Maya - K\'iche\'"),
-    #         ("Maya - Kaqchiquel"),
-    #         ("Maya - Mam"),
-    #         ("Maya - Mopan"),
-    #         ("Maya - Poqomam"),
-    #         ("Maya - Poqomchi\'"),
-    #         ("Maya - Q\'anjob\'al"),
-    #         ("Maya - Q\'eqchi\'"),
-    #         ("Maya - Sakapultek"),
-    #         ("Maya - Sipakapense"),
-    #         ("Maya - Tektitek"),
-    #         ("Maya - Tz\'utujil"),
-    #         ("Maya - Upsantek"),
-    #         ('Other')
-    #     )
-    #     for lang in languages:
-    #         lang, lang_c = Language.objects.get_or_create(language=lang)
-    #         if lang_c:
-    #             self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(lang)s to model Languages' % {'lang': lang}))
 
     # def initialize_states(self):
     #     states = (
