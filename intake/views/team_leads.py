@@ -24,7 +24,7 @@ class TeamLeadSignUpView(CreateView):
         #     user.languages = ','.join(form.cleaned_data.get('languages'))
         # elif settings.DATABASE_REGIME == 'postgresql':
         #     user.languages = form.cleaned_data.get('languages')
-        user.languages = form.cleaned_data.get('languages')
+        user.languages.set(form.cleaned_data.get('languages'))
         user.capacities = form.cleaned_data.get('capacities')
         user.save()
         login(self.request, user)
