@@ -71,11 +71,11 @@ class SignUpView(CreateView):
         user.name = form.cleaned_data.get('name')
         user.email = form.cleaned_data.get('email')
         user.phone_number = form.cleaned_data.get('phone_number')
-        if settings.DATABASE_REGIME == 'sqlite':
-            user.languages = ','.join(form.cleaned_data.get('languages'))
-        elif settings.DATABASE_REGIME == 'postgresql':
-            user.languages = form.cleaned_data.get('languages')
-        # user.languages = form.cleaned_data.get('languages')
+        # if settings.DATABASE_REGIME == 'sqlite':
+        #     user.languages = ','.join(form.cleaned_data.get('languages'))
+        # elif settings.DATABASE_REGIME == 'postgresql':
+        #     user.languages = form.cleaned_data.get('languages')
+        user.languages = form.cleaned_data.get('languages')
         user.capacities = form.cleaned_data.get('capacities')
         user.save()
         raw_password = form.cleaned_data.get('password1')
