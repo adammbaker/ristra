@@ -21,8 +21,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     u'localhost',
     u'192.168.0.2',
-    gethostname(),
-    gethostbyname(gethostname()),
+    u'adammbaker-ristra.glitch.me',
 ]
 
 
