@@ -55,11 +55,11 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
             lodging = fam_lodging,
             destination_city = fam_destination_city,
             state = fam_state,
-            languages = fam_languages,
             days_traveling = fam_days_traveling,
             days_detained = fam_days_detained,
             country_of_origin = fam_country_of_origin,
         )
+        fam.languages.set(fam_languages)
         fam.intake_by = fam_intake_by
         fam.notes = fam_notes
         ib.families.add(fam)
