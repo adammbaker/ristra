@@ -76,7 +76,7 @@ class SignUpView(CreateView):
         # elif settings.DATABASE_REGIME == 'postgresql':
         #     user.languages = form.cleaned_data.get('languages')
         user.languages.set(form.cleaned_data.get('languages'))
-        user.capacities = form.cleaned_data.get('capacities')
+        user.capacities.set(form.cleaned_data.get('capacities'))
         user.save()
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=user.username, password=raw_password)
