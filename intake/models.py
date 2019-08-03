@@ -107,8 +107,8 @@ class User(AbstractUser):
         return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
             'name': self.name,
             'username': self.username,
-            'capacities': ', '.join(self.capacities.all()) if self.capacities.exists() else '',
-            'languages': ', '.join(self.languages.all()) if self.languages.exists() else ''
+            'capacities': ', '.join(map(str, self.capacities.all())),
+            'languages': ', '.join(map(str, self.languages.all()))
         }
 
 class Campaign(models.Model):
