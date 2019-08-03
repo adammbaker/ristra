@@ -52,7 +52,6 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
         ib = get_object_or_404(IntakeBus, id=self.kwargs.get('ib_id'))
         fam, fam_c = Family.objects.get_or_create(
             family_name = fam_family_name,
-            intake_by = fam_intake_by,
             lodging = fam_lodging,
             destination_city = fam_destination_city,
             state = fam_state,
@@ -60,14 +59,12 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
             days_traveling = fam_days_traveling,
             days_detained = fam_days_detained,
             country_of_origin = fam_country_of_origin,
-            notes = fam_notes
         )
+        fam.intake_by = fam_intake_by
+        fam.notes = fam_notes
         ib.families.add(fam)
         ib.save()
-        print('------',fam)
-        print(fam.languages)
         fam.save()
-        print('IB', ib, ib.id)
         # return to parent detail
         return redirect('intakebus:detail', ib_id = ib.id)
 
