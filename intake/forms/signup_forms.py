@@ -2,17 +2,27 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from intake.choices import CAPACITY_CHOICES, LANGUAGE_CHOICES
-from intake.models import Lead, Organization, PointOfContact, User
+from intake.models import Capacity, Language, Lead, Organization, PointOfContact, User
 
 class TeamLeadSignUpForm(UserCreationForm):
-    languages = forms.MultipleChoiceField(
+    # languages = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=LANGUAGE_CHOICES,
+    #     required=True
+    # )
+    # capacities = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=CAPACITY_CHOICES,
+    #     required=True
+    # )
+    languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        choices=LANGUAGE_CHOICES,
+        queryset = Language.objects.all(),
         required=True
     )
-    capacities = forms.MultipleChoiceField(
+    capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        choices=CAPACITY_CHOICES,
+        queryset = Capacity.objects.all(),
         required=True
     )
     specialty = forms.ChoiceField(
@@ -43,14 +53,24 @@ class TeamLeadSignUpForm(UserCreationForm):
         return user
 
 class PointOfContactSignUpForm(UserCreationForm):
-    languages = forms.MultipleChoiceField(
+    # languages = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=LANGUAGE_CHOICES,
+    #     required=True
+    # )
+    # capacities = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=CAPACITY_CHOICES,
+    #     required=True
+    # )
+    languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        choices=LANGUAGE_CHOICES,
+        queryset = Language.objects.all(),
         required=True
     )
-    capacities = forms.MultipleChoiceField(
+    capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        choices=CAPACITY_CHOICES,
+        queryset = Capacity.objects.all(),
         required=True
     )
 
@@ -69,14 +89,24 @@ class PointOfContactSignUpForm(UserCreationForm):
         return user
 
 class VolunteerSignUpForm(UserCreationForm):
-    languages = forms.MultipleChoiceField(
+    # languages = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=LANGUAGE_CHOICES,
+    #     required=True
+    # )
+    # capacities = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=CAPACITY_CHOICES,
+    #     required=True
+    # )
+    languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        choices=LANGUAGE_CHOICES,
+        queryset = Language.objects.all(),
         required=True
     )
-    capacities = forms.MultipleChoiceField(
+    capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
-        choices=CAPACITY_CHOICES,
+        queryset = Capacity.objects.all(),
         required=True
     )
     phone_number = forms.CharField(
