@@ -60,7 +60,7 @@ class User(AbstractUser):
         gc.body.subtitle = self.username if self.username else None
         gc.body.text = self.notes if self.notes else None
         gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
-        gc.footer.badge_groups = (('primary', self.languages), ('secondary', self.capacities))
+        gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
         return str(gc)
 
     def organizations(self):
@@ -107,8 +107,8 @@ class User(AbstractUser):
         return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
             'name': self.name,
             'username': self.username,
-            'capacities': ', '.join(self.capacities) if self.capacities else '',
-            'languages': ', '.join(self.languages) if self.languages else ''
+            'capacities': ', '.join(self.capacities.all()) if self.capacities.exists() else '',
+            'languages': ', '.join(self.languages.all()) if self.languages.exists() else ''
         }
 
 class Campaign(models.Model):
