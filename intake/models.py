@@ -20,8 +20,14 @@ from socket import gethostbyname, gethostname
 class Capacity(models.Model):
     name = models.CharField(max_length=100, verbose_name='Capacity')
 
+    def __str__(self):
+        return '%(name)s' % {'name': self.name}
+
 class Language(models.Model):
     language = models.CharField(max_length=100, verbose_name='Language Spoken')
+
+    def __str__(self):
+        return '%(lang)s' % {'lang': self.language}
 
 class User(AbstractUser):
     is_team_lead = models.BooleanField(default=False)
