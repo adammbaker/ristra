@@ -9,6 +9,7 @@ class AsyleeForm(forms.ModelForm):
         required=False
     )
     date_of_birth = forms.DateField(
+        help_text="MM/DD/YYYY",
         widget=DatePickerInput(
             options={"format": "YYYY-MM-DD HH:mm"}
         )
