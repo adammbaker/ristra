@@ -1,6 +1,6 @@
 from django import forms
 from intake.choices import LANGUAGE_CHOICES
-from intake.models import Family
+from intake.models import Family, Language
 
 # Create your forms here.
 class FamilyForm(forms.ModelForm):
