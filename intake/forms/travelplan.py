@@ -6,22 +6,22 @@ from bootstrap_datepicker_plus import DateTimePickerInput
 # Create your forms here.
 class TravelPlanForm(forms.ModelForm):
     travel_date = forms.DateTimeField(
-        help_text="Format YYYY-MM-DD HH:MM",
+        help_text="Format MM/DD/YYYY HH:MM",
         widget=DateTimePickerInput(
-            options={"format": "YYYY-MM-DD HH:mm"}
+            options={"format": "MM/DD/YYYY HH:mm"}
         ),
     )
     city_van_date = forms.DateTimeField(
-        help_text="Format YYYY-MM-DD HH:MM",
+        help_text="Format MM/DD/YYYY HH:MM",
         widget=DateTimePickerInput(
-            options={"format": "YYYY-MM-DD HH:mm"}
+            options={"format": "MM/DD/YYYY HH:mm"}
         ),
     )
     eta = forms.DateTimeField(
-        help_text="Format YYYY-MM-DD HH:MM",
+        help_text="Format MM/DD/YYYY HH:MM",
         label='Estimated Time of Arrival',
         widget=DateTimePickerInput(
-            options={"format": "YYYY-MM-DD HH:mm"}
+            options={"format": "MM/DD/YYYY HH:mm"}
         ),
     )
 
