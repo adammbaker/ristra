@@ -78,52 +78,52 @@ Capacities are the specializations of the individual Volunteers that they choose
 ### Activities
 Volunteers who choose Activities as a capacity are willing to help in areas that will keep Asylees, specifically children, active and engaged.
 
-Spanish level desired: minimal
+*Spanish level desired: minimal*
 
 ### Change of Address
 Volunteers who choose Change of Address as a capacity will be involved with changing the address or updating contact information as necessary.
 
-Spanish level desired: minimal
+*Spanish level desired: minimal*
 
 ### Clothes
 Volunteers who choose Clothes as a capacity are willing to help in the clothing needs of the organization, sorting and separating donations and making them available to Asylees.
 
-Spanish level desired: mimimal
+*Spanish level desired: mimimal*
 
 ### Departure Bags
 Volunteers who choose Departure Bags as a capacity are willing to help prepare meals and various other packets to aid the Family in their travels to their destination.
 
-Spanish level desired: minimal
+*Spanish level desired: minimal*
 
 ### Food
 Volunteers who choose Food as a capacity are willing to contact local restaurants to see if they wish to provide food, to collect any donated food items, cook foods that need to be cooked, and help in general in the kitchen at the Location. Oftentimes these Families have been traveling for a long time without access to adequate food or water, even in government detention.
 
-Spanish level desired: minimal
+*Spanish level desired: minimal*
 
 ### Intake
 Volunteers who choose Intake as a capacity are willing to be personal guides to Families as they are processed from the Intake Bus to their housing at the Location and to connecting them to transportation options to get them to their destination.
 
-Spanish level desired: moderate
+*Spanish level desired: moderate*
 
 ### Medical
 Volunteers who choose Medical as a capacity are willing to help treat medical issues to the best of their ability and document the treatment in Ristra.
 
-Spanish level desired: minimal
+*Spanish level desired: minimal*
 
 ### Travel
-Volunteers who choose Travel as a capacity are willing to help contact the Family's Sponsor and communicate to the Sponsor the transportation details. These volunteers will document as thoroughly as possible the necessary information for a Travel Plan.
+Volunteers who choose Travel as a capacity are willing to help contact the Family's Sponsor and communicate to the Sponsor the transportation details. These volunteers will document as thoroughly as possible the necessary information for a Travel Plan.**
 
-Spanish level desired: high
+*Spanish level desired: high*
 
 ### Transport
 Volunteers who choose Transport as a capacity are willing to connect Families to local and long-distance transportation as well as be a personal driver for them. In Albuquerque we have access to a city-provided transportation bus which with a certain frequency can take Families from the Location to a bus station or to the airport.
 
-Spanish level desired: moderate
+*Spanish level desired: moderate*
 
 ### Volunteer Coordinator
 Volunteers who choose Volunteer Coordinator as a capacity are willing to coordinate volunteers to better accommodate refugee assistance.
 
-Spanish level desired: minimal
+*Spanish level desired: minimal*
 
 ### Other
 This is a miscellaneous category for Volunteers who are undecided in their personal capacities or wish to take a position that isn't currently described.
