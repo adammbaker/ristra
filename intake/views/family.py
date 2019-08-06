@@ -22,6 +22,10 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
     form_class = FamilyForm
     template_name = 'intake/generic-form.html'
 
+    # def get_form_kwargs(self):
+    #     kwargs = {'vol_avail' : IntakeBus.objects.get(id=self.kwargs.get('ib_id')).location_set.first().organization_set.first().campaign_set.first().user_set.all() , }
+    #     return kwargs
+
     def get_context_data(self, **kwargs):
         kwargs['button_text'] = 'Add %(model)s' % {
             'model': self.model.__name__
@@ -31,20 +35,18 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
             'model': self.model.__name__,
             'target': self.parent.__name__
         }
+        # kwargs['vol_avail'] = IntakeBus.objects.get(id=self.kwargs.get('ib_id')).location_set.first().organization_set.first().campaign_set.first().user_set.all()
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
+        print('SUCCESSING')
         fam_family_name = form.cleaned_data.get('family_name')
-        fam_intake_by = form.cleaned_data.get('intake_by')
+        # fam_intake_by = form.cleaned_data.get('intake_by')
+        fam_intake_by = self.request.user
         fam_lodging = form.cleaned_data.get('lodging')
         fam_destination_city = form.cleaned_data.get('destination_city')
         fam_state = form.cleaned_data.get('state')
-        # if settings.DATABASE_REGIME == 'sqlite':
-        #     fam_languages = ','.join(form.cleaned_data.get('languages'))
-        # elif settings.DATABASE_REGIME == 'postgresql':
-        #     fam_languages = form.cleaned_data.get('languages')
         fam_languages = form.cleaned_data.get('languages')
-        print('FL', fam_languages, type(fam_languages), len(fam_languages))
         fam_days_traveling = form.cleaned_data.get('days_traveling')
         fam_days_detained = form.cleaned_data.get('days_detained')
         fam_country_of_origin = form.cleaned_data.get('country_of_origin')
@@ -65,6 +67,7 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
         ib.families.add(fam)
         ib.save()
         fam.save()
+        print('SUCESS')
         # return to parent detail
         return redirect('intakebus:detail', ib_id = ib.id)
 

@@ -36,21 +36,7 @@ class User(AbstractUser):
     email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
-    # if settings.DATABASE_REGIME == 'sqlite':
-    #     languages = models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='english')
-    # elif settings.DATABASE_REGIME == 'postgresql':
-    #     languages = ArrayField(
-    #         models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='english'),
-    #         null=True
-    #     )
     capacities = models.ManyToManyField('Capacity', verbose_name='Capacities')
-    # if settings.DATABASE_REGIME == 'sqlite':
-    #     capacities = models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other')
-    # elif settings.DATABASE_REGIME == 'postgresql':
-    #     capacities = ArrayField(
-    #         models.CharField(verbose_name="Capacities", max_length=100, choices=CAPACITY_CHOICES, default='other'),
-    #         null=True
-    #     )
     campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
 
@@ -211,7 +197,6 @@ class RequestQueue(models.Model):
 
 class Location(models.Model):
     id = HashidAutoField(primary_key=True)
-    # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
     intakebuses = models.ManyToManyField('IntakeBus', verbose_name='Intake Buses')
     lodging_type = models.CharField(verbose_name="Type of lodging provided", max_length=100, choices=LODGING_CHOICES, default='other')
     name = models.CharField(verbose_name="Name of the staging location", max_length=300)
@@ -306,12 +291,6 @@ class Family(models.Model):
     id = HashidAutoField(primary_key=True)
     family_name = models.CharField(max_length=300, verbose_name='Shared family name', unique=True)
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
-    # if settings.DATABASE_REGIME == 'sqlite':
-    #     languages = models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
-    # elif settings.DATABASE_REGIME == 'postgresql':
-    #     languages = ArrayField(
-    #         models.CharField(verbose_name="Languages spoken", max_length=100, choices=LANGUAGE_CHOICES, default='spanish')
-    #     )
     intake_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     asylees = models.ManyToManyField('Asylee', verbose_name='Asylees')
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
@@ -362,7 +341,6 @@ class Family(models.Model):
 class Asylee(models.Model):
     id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Asylee's name")
-    # family = models.ForeignKey('Family', on_delete=models.SET_NULL, null=True)
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")

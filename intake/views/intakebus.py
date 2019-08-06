@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.intakebus import IntakeBusForm
@@ -23,6 +24,11 @@ class IntakeBusCreateView(LoginRequiredMixin, CreateView):
     parent = Location
     form_class = IntakeBusForm
     template_name = 'intake/generic-form.html'
+
+    def get_initial(self, *args, **kwargs):
+        initial = super(self.__class__, self).get_initial(**kwargs)
+        initial['arrival_time'] = timezone.now()
+        return initial
 
     def get_context_data(self, **kwargs):
         kwargs['button_text'] = 'Add %(model)s' % {

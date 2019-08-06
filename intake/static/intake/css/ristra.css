@@ -1,0 +1,40 @@
+body {
+    background-color: #F5D7A1;
+}
+
+.btn-volunteer {
+  color: #fff;
+  background-color: #91afb6;
+  border-color: #91afb6;
+}
+
+.btn-volunteer:hover,
+.btn-volunteer:active {
+  color: #fff;
+  background-color: #608993;
+  border-color: #608993;
+}
+
+.btn-team-lead {
+  color: #fff;
+  background-color: #8980a5;
+  border-color: #8980a5;
+}
+
+.btn-site-coordinator {
+  color: #fff;
+  background-color: #BA6375;
+  border-color: #BA6375;
+}
+
+.btn-team-lead:hover,
+.btn-team-lead:active {
+  color: #fff;
+  background-color: #66598B;
+  border-color: #66598B;
+}
+
+.no-decoration a {
+    color: inherit;
+    text-decoration: underline;
+}
