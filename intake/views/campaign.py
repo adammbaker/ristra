@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.decorators import poc_required
 from intake.forms.campaign import CampaignForm
-from intake.models import Campaign, Organization, PointOfContact, User
+from intake.models import Campaign, Organization, SiteCoordinator, User
 from shortener import shortener
 from shortener.models import UrlMap
 
@@ -57,7 +57,7 @@ class CampaignCreateView(LoginRequiredMixin, CreateView):
         campaign.date_expired = exp_date
         campaign.save()
         org = Organization.objects.get(
-            id=PointOfContact.objects.get(
+            id=SiteCoordinator.objects.get(
                 user__username=self.request.user.username
             ).organization.id
         )
@@ -113,7 +113,7 @@ class CampaignEditView(LoginRequiredMixin, UpdateView):
 #         campaign.date_expired = exp_date
 #         campaign.save()
 #         org = Organization.objects.get(
-#             id=PointOfContact.objects.get(
+#             id=SiteCoordinator.objects.get(
 #                 user__username=self.request.user.username
 #             ).organization.id
 #         )

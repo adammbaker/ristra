@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import asylee, campaign, family, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, tokens, views
+from intake.views import asylee, campaign, family, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),

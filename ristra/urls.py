@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from intake.views import point_of_contacts, signup, team_leads, volunteers
+from intake.views import signup, site_coordinator, team_leads, volunteers
 
 urlpatterns = [
     path('', include('intake.urls')),
@@ -26,6 +26,6 @@ urlpatterns = [
     path('accounts/signup/', signup.SignUpView.as_view(), name='signup'),
     path('accounts/signup/volunteer/', volunteers.VolunteerSignUpView.as_view(), name='volunteer_signup'),
     path('accounts/signup/teamlead/', team_leads.TeamLeadSignUpView.as_view(), name='team_lead_signup'),
-    path('accounts/signup/pointofcontact/', point_of_contacts.PointOfContactSignUpView.as_view(), name='point_of_contact_signup'),
+    path('accounts/signup/sitecoordinator/', site_coordinator.SiteCoordinatorSignUpView.as_view(), name='site_coordinator_signup'),
     path('', include('intake.urls')),
 ]

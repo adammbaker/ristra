@@ -7,7 +7,7 @@ class SignUpView(TemplateView):
 
 def home(request):
     if request.user.is_authenticated:
-        if request.user.is_point_of_contact:
+        if request.user.is_site_coordinator:
             # return redirect('point_of_contact:home')
             return redirect('home')
         else:

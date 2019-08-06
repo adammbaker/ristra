@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.decorators import poc_required
 from intake.forms.organization import OrganizationForm
-from intake.models import Organization, PointOfContact, RequestQueue, User
+from intake.models import Organization, SiteCoordinator, RequestQueue, User
 
 # Create your views here.
 class OrganizationListView(LoginRequiredMixin, ListView):
@@ -39,7 +39,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         print('POC ID', self.request.user.id)
-        poc = PointOfContact.objects.get(user_id=self.request.user.id)
+        sc = SiteCoordinator.objects.get(user_id=self.request.user.id)
         org_name = form.cleaned_data.get('name')
         org_city = form.cleaned_data.get('city')
         org_state = form.cleaned_data.get('state')
@@ -53,19 +53,19 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             url = org_url,
             notes = org_notes,
         )
-        print('Setting up org', org.id, 'with poc as', poc)
-        poc.organization = Organization.objects.get(id=org.id)
-        poc.save()
+        print('Setting up org', org.id, 'with sc as', sc)
+        sc.organization = Organization.objects.get(id=org.id)
+        sc.save()
         rq, rq_c = RequestQueue.objects.get_or_create(
-            point_of_contact = poc,
+            site_coordinator = sc,
             organization = org,
         )
         #TK email site admin
         subject_line = 'Organization Creation Request'
         body = []
         body.append('%(name)s (%(username)s) would like to set up an organization.' % {
-            'name': poc.user.name,
-            'username': poc.user.username
+            'name': sc.user.name,
+            'username': sc.user.username
         })
         body.append('%(org_name)s' % {'org_name': org.name})
         body.append('%(org_loc)s' % {'org_loc': org.location})
@@ -103,7 +103,7 @@ class OrganizationEditView(LoginRequiredMixin, UpdateView):
 #
 #     def form_valid(self, form):
 #         print('POC ID', self.request.user.id)
-#         poc = PointOfContact.objects.get(user_id=self.request.user.id)
+#         poc = SiteCoordinator.objects.get(user_id=self.request.user.id)
 #         org_name = form.cleaned_data.get('name')
 #         org_city = form.cleaned_data.get('city')
 #         org_state = form.cleaned_data.get('state')

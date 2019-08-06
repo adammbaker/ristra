@@ -8,7 +8,7 @@
 {% block content %}
 <div class="row">
     <div class="col-md-8 col-sm-10 col-12">
-        <h2>Validate {{user.pointofcontact.organization.name}} as an Organization</h2>
+        <h2>Validate {{user.sitecoordinator.organization.name}} as an Organization</h2>
         <h5>You will soon receive an email with a 6-digit token</h5>
         <form role="form" class="form-horizontal" method="post">
             {% csrf_token %}

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from intake.choices import CAPACITY_CHOICES, LANGUAGE_CHOICES
-from intake.models import Capacity, Language, Lead, Organization, PointOfContact, User
+from intake.models import Capacity, Language, Lead, Organization, SiteCoordinator, User
 
 class TeamLeadSignUpForm(UserCreationForm):
     # languages = forms.MultipleChoiceField(
@@ -52,7 +52,7 @@ class TeamLeadSignUpForm(UserCreationForm):
         lead.save()
         return user
 
-class PointOfContactSignUpForm(UserCreationForm):
+class SiteCoordinatorSignUpForm(UserCreationForm):
     # languages = forms.MultipleChoiceField(
     #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
     #     choices=LANGUAGE_CHOICES,
@@ -81,10 +81,10 @@ class PointOfContactSignUpForm(UserCreationForm):
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
-        # do not set is_point_of_contact to True until Org is validated
-        user.is_point_of_contact = True
+        # do not set is_site_coordinator to True until Org is validated
+        user.is_site_coordinator = True
         user.save()
-        poc = PointOfContact.objects.create(user=user)
+        poc = SiteCoordinator.objects.create(user=user)
         # poc.specialty = self.cleaned_data.get('specialty')
         return user
 

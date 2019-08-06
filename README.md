@@ -30,14 +30,14 @@ Most users will be volunteers. These accounts are the basic accounts that let vo
 ### Team Leads
 Team Leads will be able to do everything a Volunteer can do while also being able to add staging locations and intake buses to (TK) Ristra for a given campaign.
 
-### Points of contact
-Points of Contact are the heads of organizations and can do anything a Team Lead can do including creating an organization. Points of Contact are also known as Site Coordinators.
+### Site Coordinator
+Site Coordinators are the heads of organizations and can do anything a Team Lead can do including creating an organization.
 
 ## Campaigns
 As another method to mitigate data extraction, the concept of a campaign is utilized. Basically, a campaign restricts the information a user has access by tying their account temporarily to an organization. A campaign is a time-based authorization token that limits a user's view to families (and the children of families) for refugees who arrived on a bus a couple of days before the campaign's start date.
 
 ### Starting a campaign
-Points of Contact are the only user type to be able to start a campaign. A POC can create an unlimited number of campaigns of varying lengths to help limit the information a user has access to.
+Site Coordinators are the only user type to be able to start a campaign. A Site Coordinator can create an unlimited number of campaigns of varying lengths to help limit the information a user has access to.
 
 Each campaign has a shortened link (à la bit.ly) and a QR code (which links to that shortened link). The short link allows for computer users to manually enter the shortened link and the QR code is intended for use by mobile users. When viewing an individual campaign, this page can be printed and placed in areas around the staging location for convenient user on-boarding.
 
@@ -47,7 +47,7 @@ These shortened links have limited duration as well, so printouts will need to b
 ### Organization
 The organization is the foundation of Ristra's logic. Initially intended for the use by one individual organization, Ristra has been further developed to be used by multiple organizations working in assisting refugees recently released from ICE's detention.
 
-Currently a Point of Contact can only be in charge of a single organization. This may change as needed in the future. Only POCs can edit the information of an individual organization.
+Currently a Site Coordinator can only be in charge of a single organization. This may change as needed in the future. Only Site Coordinators can edit the information of an individual organization.
 
 ### Location
 Under each organization, there are locations that the organization uses to receive and process refugees. Locations can be anything but are most commonly motels, dormitories, or churches.

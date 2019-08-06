@@ -32,7 +32,7 @@
             <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
           </tr>
         {% endfor %}
-        <!-- {% if user.is_point_of_contact %}
+        <!-- {% if user.is_site_coordinator %}
         <tr>
             <td colspan="10">
                 <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;
@@ -47,8 +47,8 @@
 
 <br><br>
 
-{% if user.is_point_of_contact %}
-<h1>Campaigns for {{user.pointofcontact.organization.name}}</h1>
+{% if user.is_site_coordinator %}
+<h1>Campaigns for {{user.sitecoordinator.organization.name}}</h1>
 <div class="card">
   <table class="table mb-0">
     <thead>
@@ -59,7 +59,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for unit in user.pointofcontact.organization.campaign_set.all %}
+      {% for unit in user.sitecoordinator.organization.campaign_set.all %}
         <tr>
           <td class="align-middle">{{ unit.campaign.short_url }}</td>
           <td class="align-middle">{{ unit.campaign.date_expired }}</td>
@@ -72,7 +72,7 @@
           <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
         </tr>
       {% endfor %}
-      {% if user.is_point_of_contact %}
+      {% if user.is_site_coordinator %}
       <tr>
           <td colspan="10">
               <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;

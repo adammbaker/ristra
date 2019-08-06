@@ -27,7 +27,7 @@
             <td class="bg-light text-center font-italic" colspan="10">No locations found matching your request</td>
           </tr>
         {% endfor %}
-        {% if user.is_point_of_contact or user.is_team_lead %}
+        {% if user.is_site_coordinator or user.is_team_lead %}
         <tr>
             <td colspan="10">
                 <a href="{% url 'location:add' unit.organization.id %}" class="btn btn-primary">Add New Location&nbsp;

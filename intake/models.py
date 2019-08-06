@@ -31,7 +31,7 @@ class Language(models.Model):
 
 class User(AbstractUser):
     is_team_lead = models.BooleanField(default=False)
-    is_point_of_contact = models.BooleanField(default=False)
+    is_site_coordinator = models.BooleanField(default=False)
     name = models.CharField(verbose_name='Your name', max_length=300)
     email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
@@ -140,7 +140,7 @@ class Lead(models.Model):
     def __str__(self):
         return self.user.username
 
-class PointOfContact(models.Model):
+class SiteCoordinator(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
 
@@ -148,7 +148,7 @@ class PointOfContact(models.Model):
         return self.user.to_card()
 
     def __str__(self):
-        return '%(name)s [POC]' % {'name': self.user.name}
+        return '%(name)s [SC]' % {'name': self.user.name}
 
 class Organization(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -206,7 +206,7 @@ class Organization(models.Model):
         }
 
 class RequestQueue(models.Model):
-    point_of_contact = models.OneToOneField('PointOfContact', on_delete=models.CASCADE, null=True)
+    site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
     organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
 
 class Location(models.Model):
