@@ -128,7 +128,8 @@ class Lead(models.Model):
 
 class SiteCoordinator(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
 
     def to_card(self):
         return self.user.to_card()
@@ -192,7 +193,8 @@ class Organization(models.Model):
         }
 
 class RequestQueue(models.Model):
-    site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
+    # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
+    site_coordinator = models.ForeignKey('SiteCoordinator', on_delete=models.CASCADE, null=True)
     organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
 
 class Location(models.Model):
