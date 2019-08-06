@@ -458,6 +458,13 @@ class TravelPlan(models.Model):
             bc.append('</nav>')
         return mark_safe(''.join(bc))
 
+    def __str__(self):
+        return 'Travel Plan for %(fam_name)s: %(travel_company)s Conf #%(conf)s' % {
+            'fam_name': self.family.name,
+            'travel_company': self.travel_mode,
+            'conf': self.confirmation,
+        }
+
 class Medical(models.Model):
     id = HashidAutoField(primary_key=True)
     provider = models.ForeignKey('User', on_delete=models.CASCADE)
