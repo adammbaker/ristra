@@ -140,7 +140,7 @@ def qr_code(request):
     'Generate and display a QR code'
     template = loader.get_template('intake/qr.html')
     context = {
-        'qr_url': 'http://192.168.0.2:8000/index/',
+        'qr_url': 'https://ristra.glitch.me/index/',
     }
     return HttpResponse(template.render(context, request))
 
