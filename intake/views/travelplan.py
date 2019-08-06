@@ -35,7 +35,8 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        tp_arranged_by = form.cleaned_data.get('arranged_by')
+        # tp_arranged_by = form.cleaned_data.get('arranged_by')
+        tp_arranged_by = self.request.user
         tp_confirmation = form.cleaned_data.get('confirmation')
         tp_destination_city = form.cleaned_data.get('destination_city')
         tp_destination_state = form.cleaned_data.get('destination_state')

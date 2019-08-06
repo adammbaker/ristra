@@ -27,4 +27,4 @@ class TravelPlanForm(forms.ModelForm):
 
     class Meta:
         model = TravelPlan
-        fields = ['arranged_by','travel_mode','confirmation','destination_city','destination_state','travel_date','eta','city_van_date','travel_food_prepared','notes',]
+        fields = ['travel_mode','confirmation','destination_city','destination_state','travel_date','eta','city_van_date','travel_food_prepared','notes',]
