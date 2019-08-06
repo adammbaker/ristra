@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from intake.decorators import poc_required
+from intake.decorators import sc_required
 from intake.forms.location import LocationForm
 from intake.models import Location, Organization
 
@@ -16,7 +16,7 @@ class LocationListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.locations()
 
-@method_decorator([login_required, poc_required], name='dispatch')
+@method_decorator([login_required, sc_required], name='dispatch')
 class LocationCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = Location

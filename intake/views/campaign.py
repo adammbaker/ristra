@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from intake.decorators import poc_required
+from intake.decorators import sc_required
 from intake.forms.campaign import CampaignForm
 from intake.models import Campaign, Organization, SiteCoordinator, User
 from shortener import shortener
@@ -28,7 +28,7 @@ class CampaignListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.campaigns.all()
 
-@method_decorator([login_required, poc_required], name='dispatch')
+@method_decorator([login_required, sc_required], name='dispatch')
 class CampaignCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = Campaign
@@ -85,7 +85,7 @@ class CampaignEditView(LoginRequiredMixin, UpdateView):
 
 
 
-# @method_decorator([login_required, poc_required], name='dispatch')
+# @method_decorator([login_required, sc_required], name='dispatch')
 # class CampaignCreationView(LoginRequiredMixin, CreateView):
 #     model = Campaign
 #     form_class = CampaignForm

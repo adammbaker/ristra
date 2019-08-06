@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from intake.decorators import poc_required
+from intake.decorators import sc_required
 from intake.forms.organization import OrganizationForm
 from intake.models import Organization, SiteCoordinator, RequestQueue, User
 
@@ -18,7 +18,7 @@ class OrganizationListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.organizations()
 
-@method_decorator([login_required, poc_required], name='dispatch')
+@method_decorator([login_required, sc_required], name='dispatch')
 class OrganizationCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = Organization
@@ -91,7 +91,7 @@ class OrganizationEditView(LoginRequiredMixin, UpdateView):
 
 
 
-# @method_decorator([login_required, poc_required], name='dispatch')
+# @method_decorator([login_required, sc_required], name='dispatch')
 # class OrganizationCreationView(LoginRequiredMixin, CreateView):
 #     model = Organization
 #     form_class = OrganizationForm
