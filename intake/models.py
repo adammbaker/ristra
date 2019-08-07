@@ -104,16 +104,15 @@ class Campaign(models.Model):
 
     @property
     def url(self):
-        return 'http://%(base_url)s/s/%(short_url)s' % {
+        return '%(base_url)s/s/%(short_url)s' % {
             'base_url': settings.BASE_URL,
             'short_url': self.campaign.short_url
         }
 
     @property
     def affiliate_url(self):
-        return '%(base_url)s%(url_modifier)s%(aff_url)s' % {
-            'base_url': gethostbyname(gethostname()),
-            'url_modifier': ':8000',
+        return '%(base_url)s%(aff_url)s' % {
+            'base_url': settings.BASE_URL,
             'aff_url': self.campaign.full_url + '?campaign=' + str(self.id)
         }
 
