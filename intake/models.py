@@ -387,6 +387,10 @@ class Sponsor(models.Model):
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
+    def family(self):
+        return self.family_set.first()
+
+    @property
     def location(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.city,
@@ -431,6 +435,10 @@ class TravelPlan(models.Model):
     eta = models.DateTimeField(verbose_name="Estimated time of arrival", null=True)
     travel_mode = models.CharField(verbose_name="Mode of travel", max_length=100, choices=TRAVEL_MODE_CHOICES, default='other')
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def family(self):
+        return self.family_set.first()
 
     @property
     def destination(self):
