@@ -18,6 +18,10 @@
 <a href="{{campaign.url}}" title="Affiliate yourself with this campaign!">
 {% qr_from_text campaign.url size="t" image_format="png" error_correction="L" %}
 </a>
-<p class="card-text">{{campaign.url}}</p>
+<p class="card-text">
+    <a href="{{campaign.url}}" title="Affiliate yourself with this campaign!">
+    {{campaign.url}}
+    </a>
+</p>
 
 {% endblock %}
