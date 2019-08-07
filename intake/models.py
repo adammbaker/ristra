@@ -104,7 +104,7 @@ class Campaign(models.Model):
 
     @property
     def url(self):
-        return 'http://%(base_url)s%(url_modifier)ss/%(short_url)s' % {
+        return 'http://%(base_url)s%(url_modifier)s/s/%(short_url)s' % {
             'base_url': gethostbyname(gethostname()),
             'url_modifier': settings.URL_POSTFIX,
             'short_url': self.campaign.short_url
