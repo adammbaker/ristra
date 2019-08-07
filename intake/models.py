@@ -111,7 +111,7 @@ class Campaign(models.Model):
 
     @property
     def affiliate_url(self):
-        return 'http://%(base_url)s%(url_modifier)s%(aff_url)s' % {
+        return '%(base_url)s%(url_modifier)s%(aff_url)s' % {
             'base_url': gethostbyname(gethostname()),
             'url_modifier': ':8000',
             'aff_url': self.campaign.full_url + '?campaign=' + str(self.id)
