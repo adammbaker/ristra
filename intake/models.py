@@ -376,6 +376,13 @@ class Asylee(models.Model):
             bc.append('</nav>')
         return mark_safe(''.join(bc))
 
+    def __str__(self):
+        return '%(name)s [%(fam_name)s] Age %(age)d' % {
+            'name': self.name,
+            'fam_name': self.family.family_name,
+            'age': self.age,
+        }
+
 class Sponsor(models.Model):
     id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Sponsor's name", unique=True)

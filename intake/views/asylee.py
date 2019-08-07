@@ -62,7 +62,7 @@ class AsyleeDetailView(LoginRequiredMixin, DetailView):
     model = Asylee
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs['asy_id'])
+        return self.model.objects.get(id=self.kwargs.get('asy_id'))
 
 class AsyleeEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'
@@ -70,7 +70,7 @@ class AsyleeEditView(LoginRequiredMixin, UpdateView):
     template_name = 'intake/generic-form.html'
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs['asy_id'])
+        return self.model.objects.get(id=self.kwargs.get('asy_id'))
 
 
 
