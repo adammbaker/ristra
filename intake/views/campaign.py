@@ -36,6 +36,14 @@ class CampaignCreateView(LoginRequiredMixin, CreateView):
     form_class = CampaignForm
     template_name = 'intake/generic-form.html'
 
+    def get_initial(self):
+        # Get the initial dictionary from the superclass method
+        initial = super(self.__class__, self).get_initial()
+        # Copy the dictionary so we don't accidentally change a mutable dict
+        initial = initial.copy()
+        initial['organization'] = self.request.user.sitecoordinator.organization.all()
+        return initial
+
     def get_context_data(self, **kwargs):
         kwargs['button_text'] = 'Add %(model)s' % {
             'model': self.model.__name__
@@ -56,13 +64,14 @@ class CampaignCreateView(LoginRequiredMixin, CreateView):
         print('Exp date', exp_date, type(exp_date))
         campaign.date_expired = exp_date
         campaign.save()
-        org = Organization.objects.get(
-            id=SiteCoordinator.objects.get(
-                user__username=self.request.user.username
-            ).organization.id
-        )
+        # org = Organization.objects.get(
+        #     id=SiteCoordinator.objects.get(
+        #         user__username=self.request.user.username
+        #     ).organization.id
+        # )
         camp.campaign = campaign
-        camp.organization = org
+        # camp.organization = org
+        camp.organization = form.cleaned_data.get('organization')
         camp.save()
         return redirect('campaign:detail', camp_id = camp.id)
 

@@ -38,7 +38,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        print('POC ID', self.request.user.id)
+        print('SC ID', self.request.user.id)
         sc = SiteCoordinator.objects.get(user_id=self.request.user.id)
         org_name = form.cleaned_data.get('name')
         org_city = form.cleaned_data.get('city')
@@ -54,7 +54,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             notes = org_notes,
         )
         print('Setting up org', org.id, 'with sc as', sc)
-        sc.organization = Organization.objects.get(id=org.id)
+        sc.organization.add(Organization.objects.get(id=org.id))
         sc.save()
         rq, rq_c = RequestQueue.objects.get_or_create(
             site_coordinator = sc,

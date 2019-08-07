@@ -14,4 +14,4 @@ class CampaignForm(forms.ModelForm):
 
     class Meta:
         model = Campaign
-        fields = ['expiration_date',]
+        fields = ['organization','expiration_date',]

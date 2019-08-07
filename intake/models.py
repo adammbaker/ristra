@@ -129,7 +129,7 @@ class Lead(models.Model):
 class SiteCoordinator(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
-    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
+    organization = models.ManyToManyField('Organization', null=True)
 
     def to_card(self):
         return self.user.to_card()
