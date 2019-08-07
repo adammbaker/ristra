@@ -10,6 +10,7 @@
 {% if campaign.organization.is_valid != True %}
 <span class="badge badge-pill badge-sm badge-danger">awaiting validation</span>
 {% endif %}
+<p class="card-text">Valid until {{campaign.campaign.date_expired}}</p>
 <p class="card-text">{{campaign.organization.notes}}</p>
 <a href="{{org.url}}" class="card-link">{{campaign.organization.url}}</a>
 <br><br>
