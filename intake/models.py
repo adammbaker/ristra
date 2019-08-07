@@ -387,10 +387,6 @@ class Sponsor(models.Model):
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
-    def family(self):
-        return self.family_set.first()
-
-    @property
     def location(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.city,
@@ -437,10 +433,6 @@ class TravelPlan(models.Model):
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
-    def family(self):
-        return self.family_set.first()
-
-    @property
     def destination(self):
         return '%(city)s, %(st_abbr)s' % {
             'city': self.destination_city,
@@ -468,7 +460,7 @@ class TravelPlan(models.Model):
 
     def __str__(self):
         return 'Travel Plan for %(fam_name)s: %(travel_company)s Conf #%(conf)s' % {
-            'fam_name': self.family.family_name,
+            'fam_name': str(self.family),
             'travel_company': self.travel_mode,
             'conf': self.confirmation,
         }
