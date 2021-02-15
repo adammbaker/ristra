@@ -6,7 +6,7 @@
 
 {% block content %}
     <h1>{{family.family_name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">From {{family.country_of_origin}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">From {{family.country_of_origin|title}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Language(s) spoken:
         {% for language in family.languages.all %}
             {{language}}
@@ -124,7 +124,7 @@
           <td class="align-middle">{{ family.travel_plan.destination }}</td>
           <td class="align-middle">{{ family.travel_plan.travel_date }}</td>
           <td class="align-middle">{{ family.travel_plan.city_van_date }}</td>
-          <td class="align-middle">{{ family.travel_plan.mode_of_travel }}</td>
+          <td class="align-middle">{{ family.travel_plan.travel_mode|title }}</td>
           <td class="text-right">
             <a href="{% url 'travelplan:detail' family.travel_plan.id %}" class="card_link">See more</a>
           </td>

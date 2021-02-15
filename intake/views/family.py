@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+# from intake.decorators import is_affiliated
 from intake.forms.family import FamilyForm
 from intake.models import Family, IntakeBus
 
@@ -71,6 +72,7 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
         # return to parent detail
         return redirect('intakebus:detail', ib_id = ib.id)
 
+# @method_decorator([is_affiliated], name='dispatch')
 class FamilyDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
     model = Family

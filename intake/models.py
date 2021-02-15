@@ -104,15 +104,18 @@ class Campaign(models.Model):
 
     @property
     def url(self):
-        return '%(base_url)s/s/%(short_url)s' % {
-            'base_url': settings.BASE_URL,
+        return f'{settings.BASE_URL}/s/{self.campaign.short_url}'
+        return 'http://%(base_url)s%(url_modifier)ss/%(short_url)s' % {
+            'base_url': gethostbyname(gethostname()),
+            'url_modifier': ':8000/',
             'short_url': self.campaign.short_url
         }
 
     @property
     def affiliate_url(self):
-        return '%(base_url)s%(aff_url)s' % {
-            'base_url': settings.BASE_URL,
+        return 'http://%(base_url)s%(url_modifier)s%(aff_url)s' % {
+            'base_url': gethostbyname(gethostname()),
+            'url_modifier': ':8000',
             'aff_url': self.campaign.full_url + '?campaign=' + str(self.id)
         }
 
@@ -345,6 +348,8 @@ class Asylee(models.Model):
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
+    had_covid_disease = models.BooleanField(default=False)
+    had_covid_vaccine = models.BooleanField(default=False)
     tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
     legal_done = models.BooleanField(verbose_name="Legal paperwork done?", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
@@ -375,13 +380,6 @@ class Asylee(models.Model):
             bc.append('</ol>')
             bc.append('</nav>')
         return mark_safe(''.join(bc))
-
-    def __str__(self):
-        return '%(name)s [%(fam_name)s] Age %(age)d' % {
-            'name': self.name,
-            'fam_name': self.family.family_name,
-            'age': self.age,
-        }
 
 class Sponsor(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -467,7 +465,7 @@ class TravelPlan(models.Model):
 
     def __str__(self):
         return 'Travel Plan for %(fam_name)s: %(travel_company)s Conf #%(conf)s' % {
-            'fam_name': str(self.family),
+            'fam_name': self.family.name,
             'travel_company': self.travel_mode,
             'conf': self.confirmation,
         }
@@ -502,3 +500,25 @@ class Medical(models.Model):
             bc.append('</ol>')
             bc.append('</nav>')
         return mark_safe(''.join(bc))
+
+class Message(models.Model):
+    MESSAGE_TYPES = [
+        ('primary', 'Primary'),
+        ('secondary', 'Secondary'),
+        ('success', 'Success'),
+        ('danger', 'Danger'),
+        ('warning', 'Warning'),
+        ('info', 'Info'),
+        ('light', 'Light'),
+        ('dark', 'Dark'),
+    ]
+    text = models.CharField(max_length=1000)
+    dismissible = models.BooleanField(default=True)
+    message_type = models.CharField(verbose_name="Message", max_length=100, choices=MESSAGE_TYPES)
+
+    class Meta:
+        verbose_name = 'Message'
+        verbose_name_plural = 'Messages'
+
+    def __str__(self):
+        return '%s' % (self.text[:100])

@@ -1,0 +1,16 @@
+{% if messages %}
+<br>
+<!-- Comment - the message at the top -->
+    {% for message in messages %}
+    <div class="alert alert-{{message.type}} {% if message.dismissible %}alert-dismissible {% endif %}fade show" role="alert">
+        {{message.text|safe}}
+
+        {% if message.dismissible %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+{% endif %}

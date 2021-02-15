@@ -10,20 +10,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+import os
 from socket import gethostname, gethostbyname
+
+import environ
+
+env = environ.Env()
+env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
     u'localhost',
-    u'192.168.0.2',
-    u'ristra.glitch.me',
+    u'ristrarefuge.org',
+    u'www.ristrarefuge.org',
 ]
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Application definition
 
@@ -50,6 +61,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': env("DATABASE_HOST"),
+        'PORT': env("DATABASE_PORT"),
+        }
+}
 
 ROOT_URLCONF = 'ristra.urls'
 
@@ -104,10 +126,15 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+# Base url to serve static files
 STATIC_URL = '/static/'
+# Path where static files are stored
+STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/ristrarefuge.org/static/')
+
+# Base url to serve media files
+MEDIA_URL = '/media/'
+# Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
@@ -115,7 +142,31 @@ LOGOUT_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'intake.User'
 
-try:
-    from ristra.local_settings import *
-except Exception as e:
-    print('(!) Unable to load local settings', e)
+BOOTSTRAP4 = {
+    'include_jquery': True,
+}
+
+DATABASE_REGIME = 'postgresql'
+BASE_URL = 'http://localhost:8000'
+BASE_URL = 'https://www.ristrarefuge.org'
+# BASE_URL = 'http://www.ristrarefuge.org:8000'
+
+SHORTENER_ENABLED = True
+SHORTENER_MAX_URLS = -1
+SHORTENER_MAX_CONCURRENT = 100 # To prevent spamming
+SHORTENER_LIFESPAN = 604800
+SHORTENER_MAX_USES = -1
+SHORTENER_ENABLE_TEST_PATH = True
+
+# Email info
+DEFAULT_HOST = 'http://www.ristrarefuge.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_FROM = 'Ristra Refuge <ristrarefuge@gmail.com>'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ristrarefuge@gmail.com'
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
+SECRET_SALT = b'\x8b\x85R\xd9\xc8\xa3\xc4rs2F\xc5\\\x035*'
+HASHID_FIELD_SALT = env("HASHID_FIELD_SALT")
