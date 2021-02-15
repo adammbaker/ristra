@@ -15,7 +15,7 @@
             Languages
         {% endif %}
         spoken:
-        {% for language in asylee.family.languages %}
+        {% for language in asylee.family.languages.all %}
             {{language|title}}
         {% endfor %}
     </h6>

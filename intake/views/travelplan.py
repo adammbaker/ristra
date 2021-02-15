@@ -60,7 +60,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
             notes = tp_notes,
         )
         print('FAM',fam.id, fam.family_name)
-        print('TPP', tp, tp.id, tp_c)
+        # print('TPP', tp, tp.id, tp_c)
         fam.travel_plan = tp
         fam.save()
         # return to parent detail

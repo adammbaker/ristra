@@ -42,6 +42,7 @@ class CampaignCreateView(LoginRequiredMixin, CreateView):
         # Copy the dictionary so we don't accidentally change a mutable dict
         initial = initial.copy()
         initial['organization'] = self.request.user.sitecoordinator.organization.all()
+        initial['expiration_date'] = timezone.now() + timedelta(7)
         return initial
 
     def get_context_data(self, **kwargs):

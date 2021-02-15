@@ -104,6 +104,7 @@ class Campaign(models.Model):
 
     @property
     def url(self):
+        return f'{settings.BASE_URL}/s/{self.campaign.short_url}'
         return 'http://%(base_url)s%(url_modifier)ss/%(short_url)s' % {
             'base_url': gethostbyname(gethostname()),
             'url_modifier': ':8000/',
@@ -497,3 +498,25 @@ class Medical(models.Model):
             bc.append('</ol>')
             bc.append('</nav>')
         return mark_safe(''.join(bc))
+
+class Message(models.Model):
+    MESSAGE_TYPES = [
+        ('primary', 'Primary'),
+        ('secondary', 'Secondary'),
+        ('success', 'Success'),
+        ('danger', 'Danger'),
+        ('warning', 'Warning'),
+        ('info', 'Info'),
+        ('light', 'Light'),
+        ('dark', 'Dark'),
+    ]
+    text = models.CharField(max_length=1000)
+    dismissible = models.BooleanField(default=True)
+    message_type = models.CharField(verbose_name="Message", max_length=100, choices=MESSAGE_TYPES)
+
+    class Meta:
+        verbose_name = 'Message'
+        verbose_name_plural = 'Messages'
+
+    def __str__(self):
+        return '%s' % (self.text[:100])
