@@ -13,7 +13,7 @@ class SponsorListView(LoginRequiredMixin, ListView):
     paginate_by = 0
 
     def get_queryset(self):
-        return HeadOfHousehold.objects.get(id=self.kwargs.get('fam_id')).sponsor
+        return HeadOfHousehold.objects.get(id=self.kwargs.get('hoh_id')).sponsor
 
 class SponsorCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
@@ -41,7 +41,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         sponsor_state = form.cleaned_data.get('state')
         sponsor_relation = form.cleaned_data.get('relation')
         sponsor_notes = form.cleaned_data.get('notes')
-        fam = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('fam_id'))
+        hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
         sponsor, sponsor_c = Sponsor.objects.get_or_create(
             name = sponsor_name,
             phone_number = sponsor_phone_number,
@@ -51,11 +51,11 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
             relation = sponsor_relation,
             notes = sponsor_notes,
         )
-        fam.sponsor = sponsor
-        fam.save()
+        hoh.sponsor = sponsor
+        hoh.save()
         # return to parent detail
-        print('Sending to faimly detail for', fam.id)
-        return redirect('family:detail', fam_id = fam.id)
+        print('Sending to faimly detail for', hoh.id)
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
 
 class SponsorDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

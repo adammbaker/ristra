@@ -41,7 +41,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee_tsa_done = form.cleaned_data.get('tsa_done')
         asylee_legal_done = form.cleaned_data.get('legal_done')
         asylee_notes = form.cleaned_data.get('notes')
-        fam = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('fam_id'))
+        hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
         asylee, asylee_c = Asylee.objects.get_or_create(
             name = asylee_name,
             sex = asylee_sex,
@@ -51,11 +51,11 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             legal_done = asylee_legal_done,
             notes = asylee_notes,
         )
-        fam.asylees.add(asylee)
-        fam.save()
+        hoh.asylees.add(asylee)
+        hoh.save()
         # return to parent detail
-        print('Sending to faimly detail for', fam.id)
-        return redirect('family:detail', fam_id = fam.id)
+        print('Sending to faimly detail for', hoh.id)
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
 
 class AsyleeDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

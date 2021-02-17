@@ -6,16 +6,16 @@
 
 {% block content %}
 
-    <h1>For {{travelplan.family.family_name}}</h1>
+    <h1>For {{travelplan.headofhousehold.name}}</h1>
     <h6 class="card-subtitle mb-2 text-muted">Arranged by {{travelplan.arranged_by.name}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Family is heading to {{travelplan.family.destination}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Household is heading to {{travelplan.headofhousehold.destination}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Travel plan is set for  {{travelplan.destination}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Traveling by {{travelplan.travel_mode|title}}</h6>
     <p class="card-text">Confirmation #: {{travelplan.confirmation}}</p>
     <p class="card-text">Time of travel: {{travelplan.travel_date}}</p>
     <p class="card-text">Time of city van departure: {{travelplan.city_van_date}}</p>
     <p class="card-text">Travel food is {% if travelplan.travel_food_prepared == False %}<strong>not</strong> {% endif %} prepared</p>
-    <p class="card-text">Family will be home approx {{travelplan.eta}}</p>
+    <p class="card-text">Household will be home approx {{travelplan.eta}}</p>
     <p class="card-text">Notes: {{travelplan.notes}}</p>
     <br><br>
 

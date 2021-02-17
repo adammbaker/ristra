@@ -67,23 +67,23 @@ class User(AbstractUser):
             id__in=[str(x.id) for x in loc.intakebuses.all()]
         )
 
-    def families(self, ib):
-        'Return a QuerySet of Families the user has access to for given ib'
+    def headsofhousehold(self, ib):
+        'Return a QuerySet of HeadOfHouseholds the user has access to for given ib'
         return HeadOfHousehold.objects.filter(
-            id__in=[str(x.id) for x in ib.families.all()]
+            id__in=[str(x.id) for x in ib.headofhousehold.all()]
         )
 
-    def travelplans(self, fam):
-        'Return the TravelPlan the user has access to for given fam'
-        return fam.travelplan
+    def travelplans(self, hoh):
+        'Return the TravelPlan the user has access to for given hoh'
+        return hoh.travelplan
 
-    def sponsor(self, fam):
-        'Return the Sponsor the user has access to for given fam'
-        return fam.sponsor
+    def sponsor(self, hoh):
+        'Return the Sponsor the user has access to for given hoh'
+        return hoh.sponsor
 
-    def asylees(self, fam):
-        'Return a QuerySet of Asylees the user has access to for given fam'
-        return fam.asylees.all()
+    def asylees(self, hoh):
+        'Return a QuerySet of Asylees the user has access to for given hoh'
+        return hoh.asylees.all()
 
     def medicals(self, asylee):
         'Return a QuerySet of Medicals the user has access to for given asylee'
@@ -364,7 +364,7 @@ class HeadOfHousehold(Asylee):
         parent = self.intakebus
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/headofhousehold/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -389,7 +389,7 @@ class Sponsor(models.Model):
     address = models.CharField(verbose_name="Sponsor's address", max_length=300, null=True)
     city = models.CharField(verbose_name="Sponsor's city", max_length=300, null=True)
     state = models.CharField(verbose_name="Sponsor's state", max_length=100, choices=STATE_CHOICES, default='other')
-    relation = models.CharField(max_length=300, verbose_name="Relation to family", null=True)
+    relation = models.CharField(max_length=300, verbose_name="Relation to head of household", null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
@@ -407,7 +407,7 @@ class Sponsor(models.Model):
         }
 
     def breadcrumbs(self, bc=''):
-        parent = self.family
+        parent = self.headofhousehold
         model = self.name
         if bc != '':
             return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s/detail">%(model)s</a></li>""" % {
@@ -446,7 +446,7 @@ class TravelPlan(models.Model):
         }
 
     def breadcrumbs(self, bc=''):
-        parent = self.family
+        parent = self.headofhousehold
         model = 'Travel Plan'
         if bc != '':
             return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s/detail">%(model)s</a></li>""" % {
@@ -465,8 +465,8 @@ class TravelPlan(models.Model):
         return mark_safe(''.join(bc))
 
     def __str__(self):
-        return 'Travel Plan for %(fam_name)s: %(travel_company)s Conf #%(conf)s' % {
-            'fam_name': self.family.name,
+        return 'Travel Plan for %(hoh_name)s: %(travel_company)s Conf #%(conf)s' % {
+            'hoh_name': self.headofhousehold.name,
             'travel_company': self.travel_mode,
             'conf': self.confirmation,
         }

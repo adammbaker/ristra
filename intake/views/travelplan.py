@@ -46,7 +46,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         tp_eta = form.cleaned_data.get('eta')
         tp_travel_mode = form.cleaned_data.get('travel_mode')
         tp_notes = form.cleaned_data.get('notes')
-        fam = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('fam_id'))
+        hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
         tp, tp_c = TravelPlan.objects.get_or_create(
             arranged_by = tp_arranged_by,
             confirmation = tp_confirmation,
@@ -59,13 +59,13 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
             travel_mode = tp_travel_mode,
             notes = tp_notes,
         )
-        print('FAM',fam.id, fam.family_name)
+        print('HOH',hoh.id, hoh.name)
         # print('TPP', tp, tp.id, tp_c)
-        fam.travel_plan = tp
-        fam.save()
+        hoh.travel_plan = tp
+        hoh.save()
         # return to parent detail
-        print('Sending to faimly detail for', fam.id)
-        return redirect('family:detail', fam_id = fam.id)
+        print('Sending to faimly detail for', hoh.id)
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
 
 
 class TravelPlanDetailView(LoginRequiredMixin, DetailView):
