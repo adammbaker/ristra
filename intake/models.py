@@ -69,7 +69,7 @@ class User(AbstractUser):
 
     def families(self, ib):
         'Return a QuerySet of Families the user has access to for given ib'
-        return Family.objects.filter(
+        return HeadOfHousehold.objects.filter(
             id__in=[str(x.id) for x in ib.families.all()]
         )
 
@@ -238,7 +238,7 @@ class Location(models.Model):
 
 class IntakeBus(models.Model):
     id = HashidAutoField(primary_key=True)
-    families = models.ManyToManyField('Family', verbose_name='Families')
+    headsofhousehold = models.ManyToManyField('HeadOfHousehold', verbose_name='Heads of Households')
     origin = models.CharField(max_length=300, verbose_name='City of origin of the bus')
     state = models.CharField(verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES, default='other')
     arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now)
@@ -290,21 +290,64 @@ class IntakeBus(models.Model):
             'state': self.state
         }
 
-class Family(models.Model):
+class Asylee(models.Model):
     id = HashidAutoField(primary_key=True)
-    family_name = models.CharField(max_length=300, verbose_name='Shared family name', unique=True)
+    name = models.CharField(max_length=300, verbose_name="Asylee's name")
+    medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
+    sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
+    date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
+    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
+    had_covid_disease = models.BooleanField(default=False)
+    had_covid_vaccine = models.BooleanField(default=False)
+    tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
+    legal_done = models.BooleanField(verbose_name="Legal paperwork done?", default=True)
+    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+
+    @property
+    def headofhousehold(self):
+        return self.headofhousehold_set.first()
+
+    @property
+    def age(self):
+        return (timezone.now().date() - self.date_of_birth).days//365
+
+    def breadcrumbs(self, bc=''):
+        parent = self.headofhousehold
+        model = self.name
+        if bc != '':
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
+                'model': model, 'id': self.id
+            } + bc)
+        if bc == '':
+            bc = []
+            bc.append('<nav aria-label="breadcrumb">')
+            bc.append('<ol class="breadcrumb">')
+            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
+            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+                'model': model
+            }))
+            bc.append('</ol>')
+            bc.append('</nav>')
+        return mark_safe(''.join(bc))
+    
+    def __str__(self):
+        return f'{self.name}'
+    
+    class Meta:
+        ordering = ['date_of_birth']
+
+class HeadOfHousehold(Asylee):
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
     intake_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees')
+    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='Dependents', default=None)
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
-    lodging = models.CharField(verbose_name="Lodging", max_length=300, null=True)
+    lodging = models.CharField(verbose_name="Room assignment", max_length=300, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=300, null=True)
     state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
     days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
     days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
     country_of_origin = models.CharField(verbose_name="Country of origin", max_length=100, choices=COUNTRY_CHOICES, default='guatemala')
-    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
     def intakebus(self):
@@ -319,7 +362,7 @@ class Family(models.Model):
 
     def breadcrumbs(self, bc=''):
         parent = self.intakebus
-        model = self.family_name
+        model = self.name
         if bc != '':
             return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/family/%(id)s/detail">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
@@ -337,49 +380,7 @@ class Family(models.Model):
         return mark_safe(''.join(bc))
 
     def __str__(self):
-        return '%(name)s' % {
-            'name': self.family_name
-        }
-
-class Asylee(models.Model):
-    id = HashidAutoField(primary_key=True)
-    name = models.CharField(max_length=300, verbose_name="Asylee's name")
-    medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
-    sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
-    date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
-    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
-    had_covid_disease = models.BooleanField(default=False)
-    had_covid_vaccine = models.BooleanField(default=False)
-    tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
-    legal_done = models.BooleanField(verbose_name="Legal paperwork done?", default=True)
-    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
-
-    @property
-    def family(self):
-        return self.family_set.first()
-
-    @property
-    def age(self):
-        return (timezone.now().date() - self.date_of_birth).days//365
-
-    def breadcrumbs(self, bc=''):
-        parent = self.family
-        model = self.name
-        if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
-                'model': model, 'id': self.id
-            } + bc)
-        if bc == '':
-            bc = []
-            bc.append('<nav aria-label="breadcrumb">')
-            bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
-            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
-                'model': model
-            }))
-            bc.append('</ol>')
-            bc.append('</nav>')
-        return mark_safe(''.join(bc))
+        return f'{self.name}, Head of Household'
 
 class Sponsor(models.Model):
     id = HashidAutoField(primary_key=True)

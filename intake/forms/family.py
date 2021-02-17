@@ -1,9 +1,20 @@
 from django import forms
 from intake.choices import LANGUAGE_CHOICES
-from intake.models import Family, IntakeBus, Language
+from intake.models import HeadOfHousehold, IntakeBus, Language
+
+from bootstrap_datepicker_plus import DatePickerInput
 
 # Create your forms here.
 class FamilyForm(forms.ModelForm):
+    phone_number = forms.CharField(
+        required=False
+    )
+    date_of_birth = forms.DateField(
+        help_text="MM/DD/YYYY",
+        widget=DatePickerInput(
+            options={"format": "YYYY-MM-DD HH:mm"}
+        )
+    )
     languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
         queryset = Language.objects.all(),
@@ -17,5 +28,5 @@ class FamilyForm(forms.ModelForm):
     #     self.fields['intake_by'].queryset = vol_avails
 
     class Meta:
-        model = Family
-        fields = ['family_name','languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','notes',]
+        model = HeadOfHousehold
+        fields = ['name','sex','date_of_birth','phone_number','tsa_done','legal_done','languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','notes',]

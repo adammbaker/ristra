@@ -6,7 +6,7 @@
 
 {% block content %}
     <h1>{{intakebus.number}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">Arrived at {{intakebus.destination.organization.location}} on {{intakebus.arrival_time}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Arrived at {{intakebus.location}} on {{intakebus.arrival_time}}</h6>
     <p class="card-text">{{intakebus.notes}}</p>
     <br><br>
 
@@ -16,14 +16,14 @@
           <tr>
             <th>Family Name</th>
             <th>Destination</th>
-            <th>Asylees</th>
+            <th>Household</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {% for unit in intakebus.families.all %}
+          {% for unit in intakebus.headsofhousehold.all %}
             <tr>
-              <td class="align-middle">{{ unit.family_name }}</td>
+              <td class="align-middle">{{ unit.headofhousehold.name }}</td>
               <td class="align-middle">{{ unit.destination }}</td>
               <td class="align-middle">{{ unit.asylees.count }}</td>
               <td class="text-right">
@@ -32,7 +32,7 @@
             </tr>
           {% empty %}
             <tr>
-              <td class="bg-light text-center font-italic" colspan="10">No families found matching your request</td>
+              <td class="bg-light text-center font-italic" colspan="10">No heads of household found matching your request</td>
             </tr>
           {% endfor %}
           <tr>

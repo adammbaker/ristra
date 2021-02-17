@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.asylee import AsyleeForm
-from intake.models import Asylee, Family
+from intake.models import Asylee, HeadOfHousehold
 
 # Create your views here.
 class AsyleeListView(LoginRequiredMixin, ListView):
@@ -18,7 +18,7 @@ class AsyleeListView(LoginRequiredMixin, ListView):
 class AsyleeCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = Asylee
-    parent = Family
+    parent = HeadOfHousehold
     form_class = AsyleeForm
     template_name = 'intake/generic-form.html'
 
@@ -41,7 +41,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee_tsa_done = form.cleaned_data.get('tsa_done')
         asylee_legal_done = form.cleaned_data.get('legal_done')
         asylee_notes = form.cleaned_data.get('notes')
-        fam = get_object_or_404(Family, id=self.kwargs.get('fam_id'))
+        fam = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('fam_id'))
         asylee, asylee_c = Asylee.objects.get_or_create(
             name = asylee_name,
             sex = asylee_sex,

@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.sponsor import SponsorForm
-from intake.models import Family, Sponsor
+from intake.models import HeadOfHousehold, Sponsor
 
 # Create your views here.
 class SponsorListView(LoginRequiredMixin, ListView):
@@ -13,12 +13,12 @@ class SponsorListView(LoginRequiredMixin, ListView):
     paginate_by = 0
 
     def get_queryset(self):
-        return Family.objects.get(id=self.kwargs.get('fam_id')).sponsor
+        return HeadOfHousehold.objects.get(id=self.kwargs.get('fam_id')).sponsor
 
 class SponsorCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = Sponsor
-    parent = Family
+    parent = HeadOfHousehold
     form_class = SponsorForm
     template_name = 'intake/generic-form.html'
 
@@ -41,7 +41,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         sponsor_state = form.cleaned_data.get('state')
         sponsor_relation = form.cleaned_data.get('relation')
         sponsor_notes = form.cleaned_data.get('notes')
-        fam = get_object_or_404(Family, id=self.kwargs.get('fam_id'))
+        fam = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('fam_id'))
         sponsor, sponsor_c = Sponsor.objects.get_or_create(
             name = sponsor_name,
             phone_number = sponsor_phone_number,
@@ -51,7 +51,6 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
             relation = sponsor_relation,
             notes = sponsor_notes,
         )
-        print('FAM',fam.id, fam.family_name)
         fam.sponsor = sponsor
         fam.save()
         # return to parent detail
