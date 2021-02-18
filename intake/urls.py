@@ -8,7 +8,7 @@ urlpatterns = [
     path('requestqueue', requestqueue.request_queue, name='request queue'),
     # path('token/<int:poc_id>/', tokens.token_generate, name='org token generate'),
     # path('organization', organization.OrganizationCreationView.as_view(), name='families'),
-    path('signup/', signup.NewSignUpView.as_view(), name='signup'),
+    path('signup/', accounts.SignUpView.as_view(), name='signup'),
     path('activate/<uidb64>/<token>/', signup.ActivateAccount.as_view(), name='activate'),
 
     path('organization/', include(([
@@ -110,7 +110,7 @@ urlpatterns = [
 
     path('accounts/', include(([
         # path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),
-        path('ppassword_change', accounts.change_password, name='change_password'),
+        path('password_change', accounts.change_password, name='change_password'),
     #     path('taken/', point_of_contact.TakenQuizListView.as_view(), name='taken_quiz_list'),
     #     path('quiz/<int:pk>/', point_of_contact.take_quiz, name='take_quiz'),
     ], 'accounts'), namespace='accounts')),

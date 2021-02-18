@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.views.generic import CreateView
-from intake.forms.signup_forms import SignUpForm
+from intake.forms.signup import SignUpForm
 from intake.models import User
 
 class VolunteerSignUpView(CreateView):

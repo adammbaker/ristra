@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
-from intake.forms.signup_forms import SignUpForm
+from intake.forms.signup import SignUpForm
 
 
 class SignUpView(TemplateView):
@@ -20,7 +20,7 @@ def home(request):
 
 from django.urls import reverse_lazy
 from django.views.generic import View, UpdateView
-from intake.forms.signup_forms import ProfileForm   #, SignUpForm
+from intake.forms.signup import ProfileForm   #, SignUpForm
 from django.contrib.auth.models import User
 
 from django.contrib import messages
