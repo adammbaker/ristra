@@ -19,7 +19,7 @@ from intake.models import *
 
     Volunteer landing page
         - must be able to make a new account
-        - signed in has buttons for adding new family/asylees, new travel, new sponsor
+        - signed in has buttons for adding new heads of household/asylees, new travel, new sponsor
         - travel view
             - able to quickly jot information down,
             - able to confirm/check confirmation numbers,
@@ -28,7 +28,7 @@ from intake.models import *
     Asylees prepared for departure
         - base and sort this view off of their travel mode, travel time, and city van time,
         - lists by departure time minus 4 hrs for the airport and 3 hrs for the bus, 2 hrs for the train so that transport can be arranged and departure bags prepared,
-        - printable forms per family for traveling,
+        - printable forms per household for traveling,
 
     Administrative views:
         - current number of asylees and volunteers on site (with ratio)
@@ -112,9 +112,9 @@ def landing_page(request):
     resp = []
     resp.append('There are %d locations.' % Locations.objects.count())
     resp.append('There are %d buses.' % IntakeBuses.objects.count())
-    resp.append('There are %d families.' % Families.objects.count())
+    resp.append('There are %d houesholds.' % HeadOfHousehold.objects.count())
     return HttpResponse('<p>'.join(resp))
-    if not Families.objects.exists():
+    if not HeadOfHousehold.objects.exists():
         return HttpResponseRedirect(reverse('intake buses landing page'))
     if not IntakeBuses.objects.exists():
         return HttpResponseRedirect(reverse('location landing page'))

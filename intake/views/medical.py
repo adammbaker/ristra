@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.medical import MedicalForm
-from intake.models import Asylee, Family, Medical
+from intake.models import Asylee, HeadOfHousehold, Medical
 
 # Create your views here.
 class MedicalListView(LoginRequiredMixin, ListView):
@@ -41,7 +41,6 @@ class MedicalCreateView(LoginRequiredMixin, CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        print('tEST')
         med_provider = form.cleaned_data.get('provider')
         med_description = form.cleaned_data.get('description')
         med_notes = form.cleaned_data.get('notes')

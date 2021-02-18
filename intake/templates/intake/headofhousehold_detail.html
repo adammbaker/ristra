@@ -1,26 +1,26 @@
 {% extends 'intake/base.html' %}
 
 {% block title %}
-    Family Detailed View
+    Household Detailed View
 {% endblock %}
 
 {% block content %}
-    <h1>{{family.family_name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">From {{family.country_of_origin|title}}</h6>
+    <h1>Household of {{headofhousehold.name}}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">From {{headofhousehold.country_of_origin|title}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Language(s) spoken:
-        {% for language in family.languages.all %}
+        {% for language in headofhousehold.languages.all %}
             {{language}}
         {% endfor %}
     </h6>
-    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{family.intakebus.number}} at {{family.intakebus.arrival_time}}</h6>
-    <p class="card-text">Heading to {{family.destination}}</p>
-    <p class="card-text">{{family.notes}}</p>
+    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{headofhousehold.intakebus.number}} at {{headofhousehold.intakebus.arrival_time}}</h6>
+    <p class="card-text">Heading to {{headofhousehold.destination}}</p>
+    <p class="card-text">{{headofhousehold.notes}}</p>
     <br><br>
 
-<!-- Family members -->
+<!-- Household members -->
     <div class="card">
         <div class="card-header text-center">
-            MEMBERS OF THE FAMILY
+            MEMBERS OF THE HOUSEHOLD
         </div>
       <table class="table mb-0">
         <thead>
@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for unit in family.asylees.all %}
+          {% for unit in headofhousehold.asylees.all %}
             <tr>
               <td class="align-middle">{{ unit.name }}</td>
               <td class="align-middle">{{ unit.sex }}</td>
@@ -48,7 +48,7 @@
           {% endfor %}
           <tr>
               <td colspan="10">
-                  <a href="{% url 'asylee:add' family.id %}" class="btn btn-primary">Add New Asylee&nbsp;
+                  <a href="{% url 'asylee:add' headofhousehold.id %}" class="btn btn-primary">Add New Asylee&nbsp;
                   <span class="badge badge-light">+</span></a>
               </td>
           </tr>
@@ -74,13 +74,13 @@
       </tr>
     </thead>
     <tbody>
-      {% if family.sponsor %}
+      {% if headofhousehold.sponsor %}
         <tr>
-          <td class="align-middle">{{ family.sponsor.name }}</td>
-          <td class="align-middle">{{ family.sponsor.phone_number }}</td>
-          <td class="align-middle">{{ family.sponsor.location }}</td>
+          <td class="align-middle">{{ headofhousehold.sponsor.name }}</td>
+          <td class="align-middle">{{ headofhousehold.sponsor.phone_number }}</td>
+          <td class="align-middle">{{ headofhousehold.sponsor.location }}</td>
           <td class="text-right">
-            <a href="{% url 'sponsor:detail' family.sponsor.id %}" class="card_link">See more</a>
+            <a href="{% url 'sponsor:detail' headofhousehold.sponsor.id %}" class="card_link">See more</a>
           </td>
         </tr>
       {% else %}
@@ -89,7 +89,7 @@
         </tr>
         <tr>
             <td colspan="10">
-                <a href="{% url 'sponsor:add' family.id %}" class="btn btn-primary">Add New Sponsor&nbsp;
+                <a href="{% url 'sponsor:add' headofhousehold.id %}" class="btn btn-primary">Add New Sponsor&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>
@@ -118,15 +118,15 @@
       </tr>
     </thead>
     <tbody>
-      {% if family.travel_plan %}
+      {% if headofhousehold.travel_plan %}
         <tr>
-          <td class="align-middle">{{ family.travel_plan.confirmation }}</td>
-          <td class="align-middle">{{ family.travel_plan.destination }}</td>
-          <td class="align-middle">{{ family.travel_plan.travel_date }}</td>
-          <td class="align-middle">{{ family.travel_plan.city_van_date }}</td>
-          <td class="align-middle">{{ family.travel_plan.travel_mode|title }}</td>
+          <td class="align-middle">{{ headofhousehold.travel_plan.confirmation }}</td>
+          <td class="align-middle">{{ headofhousehold.travel_plan.destination }}</td>
+          <td class="align-middle">{{ headofhousehold.travel_plan.travel_date }}</td>
+          <td class="align-middle">{{ headofhousehold.travel_plan.city_van_date }}</td>
+          <td class="align-middle">{{ headofhousehold.travel_plan.travel_mode|title }}</td>
           <td class="text-right">
-            <a href="{% url 'travelplan:detail' family.travel_plan.id %}" class="card_link">See more</a>
+            <a href="{% url 'travelplan:detail' headofhousehold.travel_plan.id %}" class="card_link">See more</a>
           </td>
         </tr>
       {% else %}
@@ -135,7 +135,7 @@
         </tr>
         <tr>
             <td colspan="10">
-                <a href="{% url 'travelplan:add' family.id %}" class="btn btn-primary">Add New Travel Plan&nbsp;
+                <a href="{% url 'travelplan:add' headofhousehold.id %}" class="btn btn-primary">Add New Travel Plan&nbsp;
                 <span class="badge badge-light">+</span></a>
             </td>
         </tr>

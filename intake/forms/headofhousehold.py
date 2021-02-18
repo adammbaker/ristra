@@ -5,7 +5,7 @@ from intake.models import HeadOfHousehold, IntakeBus, Language
 from bootstrap_datepicker_plus import DatePickerInput
 
 # Create your forms here.
-class FamilyForm(forms.ModelForm):
+class HeadOfHouseholdForm(forms.ModelForm):
     phone_number = forms.CharField(
         required=False
     )

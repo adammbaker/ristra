@@ -7,9 +7,9 @@
 {% block content %}
 
     <h1>{{Sponsor.name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">For {{sponsor.family.family_name}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">For {{sponsor.headofhousehold.name}}</h6>
     <h6 class="card-subtitle mb-2 text-muted">Lives in {{sponsor.location}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Family is headed to {{sponsor.family.destination}}</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Household is headed to {{sponsor.headofhousehold.destination}}</h6>
     <p class="card-text">Phone #: {{sponsor.phone_number}}</p>
     <p class="card-text">Address: {{sponsor.address}}, {{sponsor.location}}</p>
     <p class="card-text">Notes: {{sponsor.notes}}</p>

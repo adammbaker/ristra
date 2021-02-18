@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.sponsor import SponsorForm
 from intake.forms.travelplan import TravelPlanForm
-from intake.models import Family, TravelPlan
+from intake.models import HeadOfHousehold, TravelPlan
 
 # Create your views here.
 class TravelPlanListView(LoginRequiredMixin, ListView):
@@ -14,12 +14,12 @@ class TravelPlanListView(LoginRequiredMixin, ListView):
     paginate_by = 0
 
     def get_queryset(self):
-        return Family.objects.get(id=self.kwargs.get('id')).travelplan
+        return HeadOfHousehold.objects.get(id=self.kwargs.get('id')).travelplan
 
 class TravelPlanCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = TravelPlan
-    parent = Family
+    parent = HeadOfHousehold
     form_class = TravelPlanForm
     template_name = 'intake/generic-form.html'
 
@@ -46,7 +46,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         tp_eta = form.cleaned_data.get('eta')
         tp_travel_mode = form.cleaned_data.get('travel_mode')
         tp_notes = form.cleaned_data.get('notes')
-        fam = get_object_or_404(Family, id=self.kwargs.get('fam_id'))
+        hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
         tp, tp_c = TravelPlan.objects.get_or_create(
             arranged_by = tp_arranged_by,
             confirmation = tp_confirmation,
@@ -59,13 +59,13 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
             travel_mode = tp_travel_mode,
             notes = tp_notes,
         )
-        print('FAM',fam.id, fam.family_name)
+        print('HOH',hoh.id, hoh.name)
         # print('TPP', tp, tp.id, tp_c)
-        fam.travel_plan = tp
-        fam.save()
+        hoh.travel_plan = tp
+        hoh.save()
         # return to parent detail
-        print('Sending to faimly detail for', fam.id)
-        return redirect('family:detail', fam_id = fam.id)
+        print('Sending to faimly detail for', hoh.id)
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
 
 
 class TravelPlanDetailView(LoginRequiredMixin, DetailView):
