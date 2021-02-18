@@ -29,8 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     u'localhost',
-    u'ristrarefuge.org',
-    u'www.ristrarefuge.org',
+    u'dev.ristrarefuge.org',
 ]
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -129,7 +128,7 @@ USE_TZ = True
 # Base url to serve static files
 STATIC_URL = '/static/'
 # Path where static files are stored
-STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/ristrarefuge.org/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/dev.ristrarefuge.org/static/')
 
 # Base url to serve media files
 MEDIA_URL = '/media/'
@@ -140,7 +139,7 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-AUTH_USER_MODEL = 'intake.User'
+# AUTH_USER_MODEL = 'intake.User'
 
 BOOTSTRAP4 = {
     'include_jquery': True,
@@ -148,8 +147,8 @@ BOOTSTRAP4 = {
 
 DATABASE_REGIME = 'postgresql'
 BASE_URL = 'http://localhost:8000'
-BASE_URL = 'https://www.ristrarefuge.org'
-# BASE_URL = 'http://www.ristrarefuge.org:8000'
+BASE_URL = 'https://dev.ristrarefuge.org'
+# BASE_URL = 'http://dev.ristrarefuge.org:8000'
 
 SHORTENER_ENABLED = True
 SHORTENER_MAX_URLS = -1
@@ -159,9 +158,9 @@ SHORTENER_MAX_USES = -1
 SHORTENER_ENABLE_TEST_PATH = True
 
 # Email info
-DEFAULT_HOST = 'http://www.ristrarefuge.com'
+DEFAULT_HOST = 'http://dev.ristrarefuge.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_FROM = 'Ristra Refuge <ristrarefuge@gmail.com>'
+EMAIL_FROM = 'Ristra Refuge Dev <ristrarefuge@gmail.com>'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST = 'smtp.gmail.com'

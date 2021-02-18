@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, views
+from intake.views import asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, signup, sponsor, travelplan, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
@@ -8,6 +8,8 @@ urlpatterns = [
     path('requestqueue', requestqueue.request_queue, name='request queue'),
     # path('token/<int:poc_id>/', tokens.token_generate, name='org token generate'),
     # path('organization', organization.OrganizationCreationView.as_view(), name='families'),
+    path('signup/', signup.NewSignUpView.as_view(), name='signup'),
+    path('activate/<uidb64>/<token>/', signup.ActivateAccount.as_view(), name='activate'),
 
     path('organization/', include(([
         path('list/<user_id>/', organization.OrganizationListView.as_view(), name='list'),

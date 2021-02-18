@@ -1,13 +1,13 @@
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.views.generic import CreateView
-from intake.forms.signup_forms import SiteCoordinatorSignUpForm
+from intake.forms.signup_forms import SignUpForm
 from intake.models import User
 
 # Create your views here.
 class SiteCoordinatorSignUpView(CreateView):
     model = User
-    form_class = SiteCoordinatorSignUpForm
+    form_class = SignUpForm
     template_name = 'registration/signup-form.html'
 
     def get_context_data(self, **kwargs):
