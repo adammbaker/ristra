@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import user_passes_test
 def sc_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url='login'):
     'Ensures that a Site Coordinator is logged in'
     actual_decorator = user_passes_test(
-        lambda u: u.is_active and u.is_site_coordinator,
+        lambda u: u.is_active and u.profile.role == 'site_coordinator',
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )
@@ -16,7 +16,7 @@ def sc_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_ur
 def team_lead_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url='login'):
     'Ensures that a Team Lead is logged in'
     actual_decorator = user_passes_test(
-        lambda u: u.is_active and u.is_team_lead,
+        lambda u: u.is_active and u.profile.role == 'team_lead',
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )

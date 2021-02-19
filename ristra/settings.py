@@ -25,12 +25,20 @@ env.read_env()
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
+# DEBUG key is also being used to see if this is a development setting
 
-ALLOWED_HOSTS = [
-    u'localhost',
-    u'dev.ristrarefuge.org',
-]
+if DEBUG:
+    ALLOWED_HOSTS = [
+        u'localhost',
+        u'dev.ristrarefuge.org',
+    ]
+else:
+    ALLOWED_HOSTS = [
+        u'localhost',
+        u'ristrarefuge.org',
+        u'www.ristrarefuge.org',
+    ]
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -128,7 +136,10 @@ USE_TZ = True
 # Base url to serve static files
 STATIC_URL = '/static/'
 # Path where static files are stored
-STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/dev.ristrarefuge.org/static/')
+if DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/dev.ristrarefuge.org/static/')
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/ristrarefuge.org/static/')
 
 # Base url to serve media files
 MEDIA_URL = '/media/'
@@ -139,16 +150,19 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-# AUTH_USER_MODEL = 'intake.User'
-
 BOOTSTRAP4 = {
     'include_jquery': True,
 }
 
 DATABASE_REGIME = 'postgresql'
-BASE_URL = 'http://localhost:8000'
-BASE_URL = 'https://dev.ristrarefuge.org'
-# BASE_URL = 'http://dev.ristrarefuge.org:8000'
+if DEBUG:
+    BASE_URL = 'http://localhost:8000'
+    BASE_URL = 'https://dev.ristrarefuge.org'
+    # BASE_URL = 'http://dev.ristrarefuge.org:8000'
+else:
+    BASE_URL = 'http://localhost:8000'
+    BASE_URL = 'https://www.ristrarefuge.org'
+    # BASE_URL = 'http://www.ristrarefuge.org:8000'
 
 SHORTENER_ENABLED = True
 SHORTENER_MAX_URLS = -1
@@ -158,7 +172,10 @@ SHORTENER_MAX_USES = -1
 SHORTENER_ENABLE_TEST_PATH = True
 
 # Email info
-DEFAULT_HOST = 'http://dev.ristrarefuge.com'
+if DEBUG:
+    DEFAULT_HOST = 'http://dev.ristrarefuge.com'
+else:
+    DEFAULT_HOST = 'http://www.ristrarefuge.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_FROM = 'Ristra Refuge Dev <ristrarefuge@gmail.com>'
 EMAIL_USE_TLS = True

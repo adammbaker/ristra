@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import accounts, asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, signup, sponsor, travelplan, views
+from intake.views import accounts, asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, signup, sponsor, travelplan, users, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
@@ -108,12 +108,14 @@ urlpatterns = [
         path('affiliate/<camp_id>/', campaign.affiliate, name='affiliate'),
     ], 'intake'), namespace='campaign')),
 
-    path('accounts/', include(([
-        # path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),
-        path('password_change', accounts.change_password, name='change_password'),
+    path('user/', include(([
+    #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),
+        path('request_permission/', users.request_permission_to_create_organization, name='request permission'),
+        path('approve/<int:queue_id>/', users.approve_organization_creation, name='approve'),
+        path('decline/<int:queue_id>/', users.approve_organization_creation, name='decline'),
     #     path('taken/', point_of_contact.TakenQuizListView.as_view(), name='taken_quiz_list'),
     #     path('quiz/<int:pk>/', point_of_contact.take_quiz, name='take_quiz'),
-    ], 'accounts'), namespace='accounts')),
+    ], 'intake'), namespace='user')),
 
     # path('poc/', include(([
     #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),

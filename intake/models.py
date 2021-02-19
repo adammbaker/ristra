@@ -99,8 +99,8 @@ class Language(models.Model):
     
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_team_lead = models.BooleanField(default=False)
-    is_site_coordinator = models.BooleanField(default=False)
+    # is_team_lead = models.BooleanField(default=False)
+    # is_site_coordinator = models.BooleanField(default=False)
     role = models.CharField(max_length=50, default='volunteer')
     email_confirmed = models.BooleanField(default=False)
     name = models.CharField(verbose_name='Your name', max_length=300)
@@ -108,8 +108,21 @@ class Profile(models.Model):
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
     capacities = models.ManyToManyField('Capacity', verbose_name='Capacities')
-    campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
+    focus = models.ForeignKey('Capacity', on_delete=models.SET_NULL, null=True, verbose_name='Current Focus', related_name='current_focus')
+    affiliation = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True, verbose_name='Affiliated Organization')
+    can_create_organization = models.BooleanField(default=False, verbose_name='Able to create organizations')
+    organizations_created = models.ManyToManyField('Organization', verbose_name='Organizations created', related_name='organizations_created')
+    # campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
+
+    def to_card(self):
+        gc = GenericCard()
+        gc.body.title = self.name if self.name else None
+        gc.body.subtitle = self.user.username if self.user.username else None
+        gc.body.text = self.notes if self.notes else None
+        gc.body.card_link = ('mailto:' + self.user.email, self.user.email) if self.user.email else None
+        gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
+        return str(gc)
 
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
@@ -219,8 +232,8 @@ class Organization(models.Model):
 
 class RequestQueue(models.Model):
     # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
-    site_coordinator = models.ForeignKey('SiteCoordinator', on_delete=models.CASCADE, null=True)
-    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    site_coordinator = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
 
 class Location(models.Model):
     id = HashidAutoField(primary_key=True)

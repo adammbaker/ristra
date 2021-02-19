@@ -11,21 +11,39 @@
     <div class="card-header">EVENTS REQUIRING YOUR APPROVAL</div>
         <div class="card-group">
             {% for rq in rqs %}
-                <div class="card">
-                <div class="card-body text-center">
-                    <div class="col col-sm">
-                        <a href="{% url 'organization:approve' queue_id=rq.id %}">
-                        <button class="btn btn-success">Approve</button>
-                        </a>
+                {% if rq.organization %}
+                    <div class="card">
+                    <div class="card-body text-center">
+                        <div class="col col-sm">
+                            <a href="{% url 'organization:approve' queue_id=rq.id %}">
+                            <button class="btn btn-success">Approve</button>
+                            </a>
+                        </div>
+                        <br><br>
+                        <div class="col col-sm">
+                            <a href="{% url 'organization:decline' queue_id=rq.id %}">
+                            <button class="btn btn-danger">Decline</button>
+                            </a>
+                        </div>
                     </div>
-                    <br><br>
-                    <div class="col col-sm">
-                        <a href="{% url 'organization:decline' queue_id=rq.id %}">
-                        <button class="btn btn-danger">Decline</button>
-                        </a>
                     </div>
-                </div>
-                </div>
+                {% else %}
+                    <div class="card">
+                    <div class="card-body text-center">
+                        <div class="col col-sm">
+                            <a href="{% url 'user:approve' queue_id=rq.id %}">
+                            <button class="btn btn-success">Approve</button>
+                            </a>
+                        </div>
+                        <br><br>
+                        <div class="col col-sm">
+                            <a href="{% url 'user:decline' queue_id=rq.id %}">
+                            <button class="btn btn-danger">Decline</button>
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+                {% endif %}
                 {{rq.organization.to_card|safe}}
                 {{rq.site_coordinator.to_card|safe}}
             {% endfor %}

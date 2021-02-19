@@ -12,10 +12,22 @@
 
     {% if user.is_authenticated %}
     <div class="list-group">
-      {% if user.organizations %}
+      {% if user.profile.affiliation %}
         <li class="list-group-item"><h3>Organizations to which you are affiliated</h3></li>
+        
+        <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ org.name }}</h5>
+            <!-- <small></small> -->
+          </div>
+          <p class="mb-1">{{ org.notes }}</p>
+          <small>{{ org.location }}</small>
+        </a>
+
       {% else %}
-        <li class="list-group-item"><h3>You are not affiliated with any organizations. TK</h3></li>
+        
+        {% include 'intake/organization_list.html' %}
+        
       {% endif %}
       {% for org in user.organizations %}
       <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
@@ -54,6 +66,7 @@
 
     {% if user.is_authenticated %}
         <h6>User is authenticated</h6>
+        <h6>|{{user.profile.role}}|</h6>
         {% if sesh == True %}
             <h6>Session is set</h6>
         {% endif %}<!--endif django.session['user'] is set-->
