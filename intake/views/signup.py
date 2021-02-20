@@ -133,8 +133,8 @@ class ActivateAccount(View):
             user.profile.email_confirmed = True
             user.save()
             login(request, user)
-            messages.success(request, ('Your account have been confirmed.'))
-            return redirect('home')
+            messages.success(request, ('Your account has been confirmed.'))
+            return redirect('user:update profile')
         else:
             messages.warning(request, ('The confirmation link was invalid, possibly because it has already been used.'))
             return redirect('home')

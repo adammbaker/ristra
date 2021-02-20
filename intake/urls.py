@@ -113,6 +113,7 @@ urlpatterns = [
         path('request_permission/', users.request_permission_to_create_organization, name='request permission'),
         path('approve/<int:queue_id>/', users.approve_organization_creation, name='approve'),
         path('decline/<int:queue_id>/', users.approve_organization_creation, name='decline'),
+        path('update_profile/', accounts.ProfileFormView.as_view(), name='update profile'),
     #     path('taken/', point_of_contact.TakenQuizListView.as_view(), name='taken_quiz_list'),
     #     path('quiz/<int:pk>/', point_of_contact.take_quiz, name='take_quiz'),
     ], 'intake'), namespace='user')),

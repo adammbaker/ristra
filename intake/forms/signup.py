@@ -148,6 +148,33 @@ class SignUpForm(UserCreationForm):
             # 'first_name',
             # 'last_name',
 
+class UserForm(UserCreationForm):
+    # first_name = forms.CharField(
+    #     max_length=30,
+    #     required=False,
+    #     help_text='Optional'
+    # )
+    # last_name = forms.CharField(
+    #     max_length=30,
+    #     required=False,
+    #     help_text='Optional'
+    # )
+    email = forms.EmailField(
+        max_length=254,
+        help_text='Enter a valid email address'
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'password1',
+            'password2',
+        )
+            # 'first_name',
+            # 'last_name',
+
 class ProfileForm(forms.ModelForm):
     ROLE_CHOICES=[
         ('volunteer', 'Volunteer'),
@@ -180,4 +207,43 @@ class ProfileForm(forms.ModelForm):
             'capacities',
             'phone_number',
             'role',
+        )
+
+class NewSignUpForm(UserCreationForm):
+    ROLE_CHOICES=[
+        ('volunteer', 'Volunteer'),
+        ('team_lead','Team Lead'),
+        ('site_coordinator','Site Coordinator'),
+    ]
+    name = forms.CharField(max_length=200)
+    languages = forms.ModelMultipleChoiceField(
+        help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+        queryset = Language.objects.all(),
+        required=True
+    )
+    capacities = forms.ModelMultipleChoiceField(
+        help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+        queryset = Capacity.objects.all(),
+        required=True
+    )
+    phone_number = forms.CharField(
+        help_text='Your phone number will be kept private and used only if necessary to contact you.'
+    )
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.RadioSelect
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'name',
+            'languages',
+            'capacities',
+            'phone_number',
+            'role',
+            'password1',
+            'password2',
         )
