@@ -103,12 +103,11 @@ class Profile(models.Model):
     # is_site_coordinator = models.BooleanField(default=False)
     role = models.CharField(max_length=50, default='volunteer')
     email_confirmed = models.BooleanField(default=False)
-    name = models.CharField(verbose_name='Your name', max_length=300)
-    email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
+    # name = models.CharField(verbose_name='Your name', max_length=300)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
     capacities = models.ManyToManyField('Capacity', verbose_name='Capacities')
-    focus = models.ForeignKey('Capacity', on_delete=models.SET_NULL, null=True, verbose_name='Current Focus', related_name='current_focus')
+    # focus = models.ForeignKey('Capacity', on_delete=models.SET_NULL, null=True, verbose_name='Current Focus', related_name='current_focus')
     affiliation = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True, verbose_name='Affiliated Organization')
     can_create_organization = models.BooleanField(default=False, verbose_name='Able to create organizations')
     organizations_created = models.ManyToManyField('Organization', verbose_name='Organizations created', related_name='organizations_created')
@@ -117,20 +116,38 @@ class Profile(models.Model):
 
     def to_card(self):
         gc = GenericCard()
-        gc.body.title = self.name if self.name else None
+        gc.body.title = self.user.get_full_name() if self.user.get_full_name() else None
         gc.body.subtitle = self.user.username if self.user.username else None
         gc.body.text = self.notes if self.notes else None
         gc.body.card_link = ('mailto:' + self.user.email, self.user.email) if self.user.email else None
         gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
         return str(gc)
+    
+    @property
+    def name(self):
+        return self.user.get_full_name()
+    
+    def __str__(self):
+        return f'{self.name}'
 
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
+        print('TRIP UP')
+        print(instance)
         Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    print('TRIP SA')
+    print(type(instance))
+    print(type(instance.profile))
+    print('S', type(sender))
+    # print(instance.profile.name)
+    print(instance.profile.role)
+    print(instance.profile.languages.all())
+    print(instance.profile.capacities.all())
+    print(instance.profile.phone_number)
     instance.profile.save()
 
 class Campaign(models.Model):

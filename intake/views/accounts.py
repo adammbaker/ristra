@@ -13,7 +13,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.views.generic import CreateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.base import TemplateView
-from intake.forms.signup import NewSignUpForm, ProfileForm, SignUpForm, UserForm
+from intake.forms.signup import ProfileForm, SignUpForm
+# from intake.forms.signup import NewSignUpForm, ProfileForm, SignUpForm, UserForm
 from intake.models import Profile, User
 from intake.tokens import account_activation_token
 
@@ -34,7 +35,7 @@ def change_password(request):
         'form': form
     })
 
-class SignUpView(View):
+class SignUpView(CreateView):
     form_class = SignUpForm
     profile_form_class = ProfileForm
     template_name = 'intake/signup.html'
@@ -42,6 +43,7 @@ class SignUpView(View):
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         profile_form = self.profile_form_class()
+        # return render(request, self.template_name, {'form': form})
         return render(request, self.template_name, {'form': form, 'profile_form': profile_form})
 
     def post(self, request, *args, **kwargs):
@@ -52,6 +54,14 @@ class SignUpView(View):
             user = form.save(commit=False)
             user.is_active = False # Deactivate account till it is confirmed
             user.save()
+
+            profile = Profile.objects.get(user=user)
+            # profile.name = form.cleaned_data.get('name')
+            profile.languages.set(form.cleaned_data.get('languages'))
+            profile.capacities.set(form.cleaned_data.get('capacities'))
+            profile.role = form.cleaned_data.get('role')
+            profile.phone_number = form.cleaned_data.get('phone_number')
+            profile.save()
 
             current_site = get_current_site(request)
             subject = 'Activate Your Ristra account'
@@ -101,33 +111,33 @@ def update_profile(request):
 #     success_url = reverse_lazy('login')
 #     template_name = 'intake/signup.html'
 
-class ProfileUpdateView(LoginRequiredMixin, TemplateView):
-    user_form = UserForm
-    profile_form = ProfileForm
-    template_name = 'intake/signup.html'
+# class ProfileUpdateView(LoginRequiredMixin, TemplateView):
+#     user_form = UserForm
+#     profile_form = ProfileForm
+#     template_name = 'intake/signup.html'
 
-    def post(self, request):
-        post_data = request.POST
+#     def post(self, request):
+#         post_data = request.POST
 
-        user_form = UserForm(post_data, instance=request.user)
-        profile_form = ProfileForm(post_data, instance=request.user.profile)
+#         user_form = UserForm(post_data, instance=request.user)
+#         profile_form = ProfileForm(post_data, instance=request.user.profile)
 
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Your profile was successfully updated!')
-            return HttpResponseRedirect(reverse_lazy('home'))
-            #TK
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, 'Your profile was successfully updated!')
+#             return HttpResponseRedirect(reverse_lazy('home'))
+#             #TK
 
-        context = self.get_context_data(
-            user_form=user_form,
-            profile_form=profile_form
-        )
+#         context = self.get_context_data(
+#             user_form=user_form,
+#             profile_form=profile_form
+#         )
 
-        return self.render_to_response(context)     
+#         return self.render_to_response(context)     
 
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return self.post(request, *args, **kwargs)
 
 def update_user_profile(request):
     if request.method == 'POST':
@@ -193,7 +203,7 @@ class ProfileFormView(FormView):
         initial = super(self.__class__, self).get_initial()
         # Copy the dictionary so we don't accidentally change a mutable dict
         initial = initial.copy()
-        initial['name'] = self.request.user.profile.name
+        # initial['name'] = self.request.user.profile.name
         initial['phone_number'] = self.request.user.profile.phone_number
         initial['languages'] = self.request.user.profile.languages.all()
         initial['capacities'] = self.request.user.profile.capacities.all()
@@ -201,7 +211,7 @@ class ProfileFormView(FormView):
         return initial
 
     def form_valid(self, form):
-        up_name = form.cleaned_data.get('name')
+        # up_name = form.cleaned_data.get('name')
         up_phone_number = form.cleaned_data.get('phone_number')
         up_languages = form.cleaned_data.get('languages')
         up_capacities = form.cleaned_data.get('capacities')
@@ -209,7 +219,7 @@ class ProfileFormView(FormView):
         print('L',type(up_languages))
         print('C',type(up_capacities))
         user = User.objects.get(id = self.request.user.id)
-        user.profile.name = up_name
+        # user.profile.name = up_name
         user.profile.phone_number = up_phone_number
         user.profile.languages.set(up_languages)
         user.profile.capacities.set(up_capacities)
@@ -224,3 +234,16 @@ class ProfileFormView(FormView):
 
 #     def get_object(self, **kwargs):
 #         return self.model.objects.get(id=self.kwargs['loc_id'])
+
+# def register(request):
+#     if request.method == 'POST':
+#         f = CustomUserCreationForm(request.POST)
+#         if f.is_valid():
+#             f.save()
+#             messages.success(request, 'Account created successfully')
+#             return redirect('register')
+
+#     else:
+#         f = CustomUserCreationForm()
+
+#     return render(request, 'cadmin/register.html', {'form': f})

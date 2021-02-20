@@ -26,10 +26,11 @@
 
       {% else %}
         
-        {% include 'intake/organization_list.html' %}
+        {% include 'intake/organization_list.html' with organization_list=organizations %}
         
       {% endif %}
-      {% for org in user.organizations %}
+      <br>
+      {% for org in organizations %}
       <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">{{ org.name }}</h5>

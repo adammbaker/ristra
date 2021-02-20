@@ -17,7 +17,7 @@
           <td class="align-middle">{{ unit.location }}</td>
           <td class="align-middle">{{ unit.locations.count }}
           <td class="text-right">
-            <a href="{% url 'organization:detail' unit.id %}" class="card_link">See more</a>
+            <a href="{% url 'organization:add' user.id %}" class="card_link">Affiliate</a>
           </td>
         </tr>
       {% empty %}

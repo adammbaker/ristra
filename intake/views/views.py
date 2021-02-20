@@ -93,6 +93,7 @@ class HomePageView(TemplateView):
             if self.request.session['message'][0] == 'primary':
                 messages.success(self.request, self.request.session['message'][1])
             del self.request.session['message']
+        context['organizations'] = Organization.objects.all()
         context['active_view'] = 'home'
         # messages.info(self.request, "hello http://example.com")
         return context

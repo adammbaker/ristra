@@ -7,7 +7,7 @@
 <form role="signup_form" class="form-horizontal" method="post">
     {% csrf_token %}
     {% bootstrap_form form layout="horizontal" %}
-    {% bootstrap_form profile_form layout="horizontal" %}
+    <!-- {% bootstrap_form profile_form layout="horizontal" %} -->
     {% buttons submit='Sign Up' reset='Reset' layout='horizontal' %}{% endbuttons %}
 </form>
 {% endblock content %}
