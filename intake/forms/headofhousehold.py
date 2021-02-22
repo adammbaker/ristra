@@ -21,6 +21,10 @@ class HeadOfHouseholdForm(forms.ModelForm):
         required=True,
         label='Languages spoken'
     )
+    is_currently_sick = forms.BooleanField(
+        # help_text='Is sick now'
+        required=False
+    )
 
     # def __init__(self, *args, **kwargs):
     #     vol_avails = kwargs.pop('vol_avail')
@@ -29,4 +33,23 @@ class HeadOfHouseholdForm(forms.ModelForm):
 
     class Meta:
         model = HeadOfHousehold
-        fields = ['name','sex','date_of_birth','phone_number','tsa_done','legal_done','languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','notes',]
+        fields = [
+            'name',
+            'sex',
+            'a_number',
+            'date_of_birth',
+            'phone_number',
+            'tsa_done',
+            'legal_done',
+            'languages',
+            'lodging',
+            'destination_city',
+            'state',
+            'days_traveling',
+            'days_detained',
+            'country_of_origin',
+            'had_covid_disease',
+            'had_covid_vaccine',
+            'is_currently_sick',
+            'notes',
+        ]

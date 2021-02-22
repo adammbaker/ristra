@@ -73,7 +73,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             country_of_origin = hoh_country_of_origin,
         )
         hoh.languages.set(hoh_languages)
-        hoh.intake_by = hoh_intake_by
+        hoh.intake_by = hoh_intake_by.profile
         hoh.notes = hoh_notes
         asy = Asylee.objects.get(
             name = hoh_name,
@@ -87,7 +87,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         hoh.save()
         print('SUCESS')
         # return to parent detail
-        return redirect('intakebus:detail', ib_id = ib.id)
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
 
 # @method_decorator([is_affiliated], name='dispatch')
 class HeadOfHouseholdDetailView(LoginRequiredMixin, DetailView):

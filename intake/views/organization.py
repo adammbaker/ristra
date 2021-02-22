@@ -59,11 +59,12 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         # sc.organization.add(Organization.objects.get(id=org.id))
         # sc.save()
         if sc.can_create_organization:
-            sc.organizations_created.add(Organization.objects.get(id=org.id))
+            sc.organizations_created.add(org)
+            sc.affiliation = org
             sc.can_create_organization = False
             sc.save()
         else:
-            return redirect('users:request permission')
+            return redirect('user:request permission')
         rq, rq_c = RequestQueue.objects.get_or_create(
             site_coordinator = sc,
             organization = org,
@@ -72,7 +73,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         subject_line = 'Organization Creation Request'
         body = []
         body.append('%(name)s (%(username)s) would like to set up an organization.' % {
-            'name': sc.user.name,
+            'name': sc.user.profile.name,
             'username': sc.user.username
         })
         body.append('%(org_name)s' % {'org_name': org.name})
@@ -86,7 +87,8 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     model = Organization
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs.get('org_id'))
+        # return self.model.objects.get(id=self.kwargs.get('org_id'))
+        return get_object_or_404(self.model, id=self.kwargs.get('org_id'))
 
 class OrganizationEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'

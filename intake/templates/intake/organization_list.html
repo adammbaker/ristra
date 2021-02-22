@@ -7,7 +7,6 @@
           <tr>
             <th>Name</th>
             <th>Location</th>
-            <th>Staging Locations</th>
             <th></th>
           </tr>
         </thead>
@@ -15,9 +14,8 @@
         <tr>
           <td class="align-middle">{{ unit.name }}</td>
           <td class="align-middle">{{ unit.location }}</td>
-          <td class="align-middle">{{ unit.locations.count }}
           <td class="text-right">
-            <a href="{% url 'organization:add' user.id %}" class="card_link">Affiliate</a>
+            <a href="{% url 'user:affiliate' unit.id %}" class="card_link">Affiliate</a>
           </td>
         </tr>
       {% empty %}

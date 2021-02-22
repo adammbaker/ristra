@@ -186,7 +186,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
         user_id = self.request.user.id
         return self.model.objects.get(user__id=user_id)
 
-class ProfileFormView(FormView):
+class ProfileFormView(LoginRequiredMixin, FormView):
     template_name = 'intake/generic-form.html'
     form_class = ProfileForm
 
@@ -194,6 +194,7 @@ class ProfileFormView(FormView):
         return reverse('user:update profile')
 
     def get_context_data(self, **kwargs):
+        kwargs = super(ProfileFormView, self).get_form_kwargs()
         kwargs['button_text'] = 'Save Changes'
         kwargs['title'] = 'Edit profile'
         return super().get_context_data(**kwargs)

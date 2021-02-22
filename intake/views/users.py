@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
 from intake.decorators import site_admin_required
-from intake.models import RequestQueue
+from intake.models import Organization, RequestQueue
 
 # Create your views here.
 @login_required # TK SC perms required
@@ -36,3 +36,12 @@ def decline_organization_creation(request, queue_id):
     rq = RequestQueue.objects.get(id=queue_id)
     rq.delete()
     return redirect('request queue')
+
+@login_required
+def affiliate_user_to_organization(request, org_id):
+    'Affiliates a user to an organization'
+    org = Organization.objects.get(id=org_id)
+    user = request.user
+    user.profile.affiliation = org
+    user.save()
+    return redirect('home')

@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load static %}
 
-{% block title %}Ristra Refuge{% endblock %}
+{% block title %}Home :: {% endblock %}
 
 {% block content %}
     <br>
@@ -15,13 +15,13 @@
       {% if user.profile.affiliation %}
         <li class="list-group-item"><h3>Organizations to which you are affiliated</h3></li>
         
-        <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
+        <a href="{% url 'organization:detail' user.profile.affiliation.id %}" class="active list-group-item list-group-item-action">
           <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ org.name }}</h5>
+            <u><h5 class="mb-1">{{ user.profile.affiliation.name }}</h5></u>
             <!-- <small></small> -->
           </div>
-          <p class="mb-1">{{ org.notes }}</p>
-          <small>{{ org.location }}</small>
+          <p class="mb-1">{{ user.profile.affiliation.notes }}</p>
+          <small>{{ user.profile.affiliation.location }}</small>
         </a>
 
       {% else %}
@@ -30,16 +30,20 @@
         
       {% endif %}
       <br>
-      {% for org in organizations %}
-      <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ org.name }}</h5>
-          <!-- <small></small> -->
-        </div>
-        <p class="mb-1">{{ org.notes }}</p>
-        <small>{{ org.location }}</small>
-      </a>
-      {% endfor %}
+      {% if user.profile.affiliation %}
+        {% for org in organizations %}
+        <li class="list-group-item"><h4>Additional organizations you can affiliate yourself with</h4></li>
+        <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ org.name }}</h5>
+            <!-- <small></small> -->
+          </div>
+          <p class="mb-1">{{ org.notes }}</p>
+          <small>{{ org.location }}</small>
+        </a>
+        {% endfor %}
+      {% endif %}
+      
     </div>
     {% endif %}
     <br>

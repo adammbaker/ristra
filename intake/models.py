@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, User
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -346,26 +347,31 @@ class IntakeBus(models.Model):
 class Asylee(models.Model):
     id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Asylee's name")
+    a_number = models.CharField(max_length=20, default='A-', verbose_name='Alien number')
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
-    had_covid_disease = models.BooleanField(default=False)
-    had_covid_vaccine = models.BooleanField(default=False)
-    tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
-    legal_done = models.BooleanField(verbose_name="Legal paperwork done?", default=True)
+    had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease')
+    had_covid_vaccine = models.BooleanField(default=False, verbose_name='Has received the COVID vaccine')
+    covid_vaccine_shots = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine shots received", validators=[MinValueValidator(0),MaxValueValidator(2)])
+    vaccine_received = models.CharField(max_length=100, null=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
+    sick_covid = models.BooleanField(default=False, verbose_name="Is currently sick from COVID")
+    sick_other = models.BooleanField(default=False, verbose_name="Is currently sick but not from COVID")
+    tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
+    legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
-    def headofhousehold(self):
-        return self.headofhousehold_set.first()
+    def householdhead(self):
+        return self.head_of_household.first()
 
     @property
     def age(self):
         return (timezone.now().date() - self.date_of_birth).days//365
 
     def breadcrumbs(self, bc=''):
-        parent = self.headofhousehold
+        parent = self.householdhead
         model = self.name
         if bc != '':
             return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
@@ -392,7 +398,7 @@ class Asylee(models.Model):
 class HeadOfHousehold(Asylee):
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
     intake_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
-    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='Dependents', default=None)
+    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='head_of_household', default=None)
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
     lodging = models.CharField(verbose_name="Room assignment", max_length=300, null=True)

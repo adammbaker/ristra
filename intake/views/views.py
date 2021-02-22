@@ -94,6 +94,8 @@ class HomePageView(TemplateView):
                 messages.success(self.request, self.request.session['message'][1])
             del self.request.session['message']
         context['organizations'] = Organization.objects.all()
+        if self.request.user.is_authenticated and self.request.user.profile.affiliation:
+            context['organizations'] = Organization.objects.all().exclude(id=self.request.user.profile.affiliation.id)
         context['active_view'] = 'home'
         # messages.info(self.request, "hello http://example.com")
         return context

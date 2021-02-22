@@ -12,7 +12,7 @@ CAPACITY_CHOICES = [
     ('other', 'Other'),
 ]
 COUNTRY_CHOICES = [
-    ('Central America and Caribbean', (
+    ('The Americas', (
         ("guatemala", "Guatemala"),
         ("honduras", "Honduras"),
         ("elsalvador", "El Salvador"),
@@ -224,5 +224,12 @@ TRAVEL_MODE_CHOICES = [
             ('amtrak', 'Amtrak'),
         )
     ),
+    ('other', 'Other'),
+]
+COVID_VACCINE_CHOICES = [
+    ('pfizer', 'Pfizer'),
+    ('moderna', 'Moderna'),
+    ('j_and_j', 'Johnson & Johnson'),
+    ('astra_zeneca', 'AstraZeneca'),
     ('other', 'Other'),
 ]
