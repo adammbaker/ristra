@@ -3,7 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic.base import TemplateView
 # from intake.decorators import is_affiliated
+from intake.forms.asylee import AsyleeForm, AsyleeVaccineForm, AsyleeSickForm
 from intake.forms.headofhousehold import HeadOfHouseholdForm
 from intake.models import Asylee, HeadOfHousehold, IntakeBus
 
@@ -80,12 +82,15 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             sex = hoh_sex,
             date_of_birth = hoh_date_of_birth,
         )
-        print(f'Looking for Asylee: {asy}')
         hoh.asylees.add(asy)
         ib.headsofhousehold.add(hoh)
         ib.save()
         hoh.save()
-        print('SUCESS')
+        if form.cleaned_data.get('had_covid_vaccine') == True or form.cleaned_data.get('is_currently_sick') == True:
+            # return super().form_valid(form)
+            self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
+            self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
+            return redirect('headofhousehold:health follow up', hoh_id = hoh.id)
         # return to parent detail
         return redirect('headofhousehold:detail', hoh_id = hoh.id)
 
@@ -104,3 +109,46 @@ class HeadOfHouseholdEditView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, **kwargs):
         return self.model.objects.get(id=self.kwargs['hoh_id'])
+
+class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
+    vaccine_form_class = AsyleeVaccineForm
+    sick_form_class = AsyleeSickForm
+    template_name = 'intake/health-follow-up.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HeadOfHouseholdHealthFollowUpTemplateView, self).get_context_data(**kwargs)
+        context['asylee'] = self.kwargs.get('hoh_id')
+        context['vaccine_form_class'] = self.vaccine_form_class
+        context['sick_form_class'] = self.sick_form_class
+        return context
+
+    def get_success_url(self):
+        hoh_id = self.kwargs.get('hoh_id')
+        hoh_id = HeadOfHousehold.objects.get(id=hoh_id).householdhead
+        return redirect('headofhousehold:detail', hoh_id = hoh_id)
+
+    def form_valid(self, vaccine_form_class, sick_form_class):
+        hoh_id = self.kwargs.get('hoh_id')
+        hoh = HeadOfHousehold.objects.get(id=hoh_id)
+        hoh.covid_vaccine_shots = vaccine_form_class.cleaned_data.get('covid_vaccine_shots',0)
+        hoh.vaccine_received = vaccine_form_class.cleaned_data.get('vaccine_received')
+        hoh.sick_covid = sick_form_class.cleaned_data.get('sick_covid', False)
+        hoh.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
+        hoh.save()
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+
+    def post(self, request, *args, **kwargs):
+        vaccine_form = self.vaccine_form_class(request.POST)
+        sick_form = self.sick_form_class(request.POST)
+        hoh_id = self.kwargs.get('hoh_id')
+        hoh = HeadOfHousehold.objects.get(id=hoh_id)
+        if vaccine_form.is_valid():
+            hoh.covid_vaccine_shots = vaccine_form.cleaned_data.get('covid_vaccine_shots',0)
+            hoh.vaccine_received = vaccine_form.cleaned_data.get('vaccine_received')
+        if sick_form.is_valid():
+            hoh.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
+            hoh.sick_other = sick_form.cleaned_data.get('sick_other', False)
+        hoh.save()
+        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+        # return render(request, self.template_name, {'vaccine_form_class': vaccine_form_class, 'sick_form_class': sick_form_class})
+        # return render(request, self.template_name, {'form': form, 'profile_form': profile_form})

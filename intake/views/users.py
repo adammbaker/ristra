@@ -15,7 +15,7 @@ from intake.models import Organization, RequestQueue
 # Create your views here.
 @login_required # TK SC perms required
 def request_permission_to_create_organization(request):
-    rq = RequestQueue.objects.create(
+    rq, rq_c = RequestQueue.objects.get_or_create(
         site_coordinator = request.user.profile,
     )
     message = ('primary', 'Your request for permission to create an organization has been received and will be considered shortly.')

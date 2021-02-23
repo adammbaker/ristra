@@ -73,7 +73,7 @@ class SignUpView(CreateView):
             })
             user.email_user(subject, message)
 
-            messages.success(request, ('Please confirm your email address by clicking the link we sent.'))
+            messages.success(request, ('Please confirm your email address by visiting the link we sent.'))
 
             return redirect('login')
 
