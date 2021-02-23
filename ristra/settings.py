@@ -40,7 +40,7 @@ elif SOFTWARE_CYCLE == 'beta':
         u'localhost',
         u'dev.ristrarefuge.org',
     ]
-else:
+elif SOFTWARE_CYCLE == 'prod':
     ALLOWED_HOSTS = [
         u'localhost',
         u'ristrarefuge.org',
@@ -147,7 +147,7 @@ if SOFTWARE_CYCLE == 'dev':
     STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/dev.ristrarefuge.org/static/')
 elif SOFTWARE_CYCLE == 'beta':
     STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/beta.ristrarefuge.org/static/')
-else:
+elif SOFTWARE_CYCLE == 'prod':
     STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/ristrarefuge.org/static/')
 
 # Base url to serve media files
@@ -172,7 +172,7 @@ elif SOFTWARE_CYCLE == 'beta':
     BASE_URL = 'http://localhost:8000'
     BASE_URL = 'https://beta.ristrarefuge.org'
     # BASE_URL = 'http://dev.ristrarefuge.org:8000'
-else:
+elif SOFTWARE_CYCLE == 'prod':
     BASE_URL = 'http://localhost:8000'
     BASE_URL = 'https://www.ristrarefuge.org'
     # BASE_URL = 'http://www.ristrarefuge.org:8000'
@@ -189,7 +189,7 @@ if SOFTWARE_CYCLE == 'dev':
     DEFAULT_HOST = 'http://dev.ristrarefuge.com'
 elif SOFTWARE_CYCLE == 'beta':
     DEFAULT_HOST = 'http://beta.ristrarefuge.com'
-else:
+elif SOFTWARE_CYCLE == 'prod':
     DEFAULT_HOST = 'http://www.ristrarefuge.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_FROM = 'Ristra Refuge Dev <ristrarefuge@gmail.com>'
