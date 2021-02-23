@@ -28,7 +28,14 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 # DEBUG key is also being used to see if this is a development setting
 
-if DEBUG:
+SOFTWARE_CYCLE = env("SOFTWARE_CYCLE")
+
+if SOFTWARE_CYCLE == 'dev':
+    ALLOWED_HOSTS = [
+        u'localhost',
+        u'dev.ristrarefuge.org',
+    ]
+elif SOFTWARE_CYCLE == 'beta':
     ALLOWED_HOSTS = [
         u'localhost',
         u'dev.ristrarefuge.org',
@@ -136,8 +143,10 @@ USE_TZ = True
 # Base url to serve static files
 STATIC_URL = '/static/'
 # Path where static files are stored
-if DEBUG:
+if SOFTWARE_CYCLE == 'dev':
     STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/dev.ristrarefuge.org/static/')
+elif SOFTWARE_CYCLE == 'beta':
+    STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/beta.ristrarefuge.org/static/')
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, '/var/www/ristrarefuge.org/static/')
 
@@ -155,9 +164,13 @@ BOOTSTRAP4 = {
 }
 
 DATABASE_REGIME = 'postgresql'
-if DEBUG:
+if SOFTWARE_CYCLE == 'dev':
     BASE_URL = 'http://localhost:8000'
     BASE_URL = 'https://dev.ristrarefuge.org'
+    # BASE_URL = 'http://dev.ristrarefuge.org:8000'
+elif SOFTWARE_CYCLE == 'beta':
+    BASE_URL = 'http://localhost:8000'
+    BASE_URL = 'https://beta.ristrarefuge.org'
     # BASE_URL = 'http://dev.ristrarefuge.org:8000'
 else:
     BASE_URL = 'http://localhost:8000'
@@ -172,8 +185,10 @@ SHORTENER_MAX_USES = -1
 SHORTENER_ENABLE_TEST_PATH = True
 
 # Email info
-if DEBUG:
+if SOFTWARE_CYCLE == 'dev':
     DEFAULT_HOST = 'http://dev.ristrarefuge.com'
+elif SOFTWARE_CYCLE == 'beta':
+    DEFAULT_HOST = 'http://beta.ristrarefuge.com'
 else:
     DEFAULT_HOST = 'http://www.ristrarefuge.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
