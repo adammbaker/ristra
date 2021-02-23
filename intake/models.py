@@ -493,7 +493,7 @@ class TravelPlan(models.Model):
     travel_date = models.DateTimeField(verbose_name="Departure time of travel", null=True)
     city_van_date = models.DateTimeField(verbose_name="Departure time on City Van", null=True)
     travel_food_prepared = models.BooleanField(verbose_name="Is travel food prepared?", default=False)
-    eta = models.DateTimeField(verbose_name="Estimated time of arrival", null=True)
+    eta = models.DateTimeField(verbose_name="Estimated arrival", null=True)
     travel_mode = models.CharField(verbose_name="Mode of travel", max_length=100, choices=TRAVEL_MODE_CHOICES, default='other')
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
