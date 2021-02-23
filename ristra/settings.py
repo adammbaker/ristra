@@ -38,7 +38,7 @@ if SOFTWARE_CYCLE == 'dev':
 elif SOFTWARE_CYCLE == 'beta':
     ALLOWED_HOSTS = [
         u'localhost',
-        u'dev.ristrarefuge.org',
+        u'beta.ristrarefuge.org',
     ]
 elif SOFTWARE_CYCLE == 'prod':
     ALLOWED_HOSTS = [
