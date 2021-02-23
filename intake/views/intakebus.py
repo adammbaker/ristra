@@ -58,7 +58,7 @@ class IntakeBusCreateView(LoginRequiredMixin, CreateView):
         loc.intakebuses.add(ib)
         loc.save()
         # return to parent detail
-        return redirect('location:detail', loc_id = loc.id)
+        return redirect('intakebus:detail', ib_id = ib.id)
 
 class IntakeBusDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

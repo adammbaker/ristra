@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load static %}
 
-{% block title %}Ristra Refuge{% endblock %}
+{% block title %}Home :: Ristra Refuge{% endblock %}
 
 {% block content %}
     <br>
@@ -12,21 +12,38 @@
 
     {% if user.is_authenticated %}
     <div class="list-group">
-      {% if user.organizations %}
+      {% if user.profile.affiliation %}
         <li class="list-group-item"><h3>Organizations to which you are affiliated</h3></li>
+        
+        <a href="{% url 'organization:detail' user.profile.affiliation.id %}" class="active list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <u><h5 class="mb-1">{{ user.profile.affiliation.name }}</h5></u>
+            <!-- <small></small> -->
+          </div>
+          <p class="mb-1">{{ user.profile.affiliation.notes }}</p>
+          <small>{{ user.profile.affiliation.location }}</small>
+        </a>
+
       {% else %}
-        <li class="list-group-item"><h3>You are not affiliated with any organizations. TK</h3></li>
+        
+        {% include 'intake/organization_list.html' with organization_list=organizations %}
+        
       {% endif %}
-      {% for org in user.organizations %}
-      <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ org.name }}</h5>
-          <!-- <small></small> -->
-        </div>
-        <p class="mb-1">{{ org.notes }}</p>
-        <small>{{ org.location }}</small>
-      </a>
-      {% endfor %}
+      <br>
+      {% if user.profile.affiliation %}
+        {% for org in organizations %}
+        <li class="list-group-item"><h4>Additional organizations you can affiliate yourself with</h4></li>
+        <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ org.name }}</h5>
+            <!-- <small></small> -->
+          </div>
+          <p class="mb-1">{{ org.notes }}</p>
+          <small>{{ org.location }}</small>
+        </a>
+        {% endfor %}
+      {% endif %}
+      
     </div>
     {% endif %}
     <br>
@@ -54,6 +71,7 @@
 
     {% if user.is_authenticated %}
         <h6>User is authenticated</h6>
+        <h6>|{{user.profile.role}}|</h6>
         {% if sesh == True %}
             <h6>Session is set</h6>
         {% endif %}<!--endif django.session['user'] is set-->

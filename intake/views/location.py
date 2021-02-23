@@ -46,7 +46,7 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
         org.locations.add(loc)
         org.save()
         # return to parent detail
-        return redirect('organization:detail', org_id = loc.organization.id)
+        return redirect('location:detail', loc_id = loc.id)
 
 class LocationDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

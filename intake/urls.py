@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, sponsor, travelplan, views
+from intake.views import accounts, asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, signup, sponsor, travelplan, users, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
@@ -8,6 +8,8 @@ urlpatterns = [
     path('requestqueue', requestqueue.request_queue, name='request queue'),
     # path('token/<int:poc_id>/', tokens.token_generate, name='org token generate'),
     # path('organization', organization.OrganizationCreationView.as_view(), name='families'),
+    path('signup/', accounts.SignUpView.as_view(), name='signup'),
+    path('activate/<uidb64>/<token>/', signup.ActivateAccount.as_view(), name='activate'),
 
     path('organization/', include(([
         path('list/<user_id>/', organization.OrganizationListView.as_view(), name='list'),
@@ -56,6 +58,7 @@ urlpatterns = [
         path('add/<ib_id>', headofhousehold.HeadOfHouseholdCreateView.as_view(), name='add'),
         path('<hoh_id>/detail', headofhousehold.HeadOfHouseholdDetailView.as_view(), name='detail'),
         path('<hoh_id>/edit', headofhousehold.HeadOfHouseholdEditView.as_view(), name='edit'),
+        path('followup/health/<hoh_id>', headofhousehold.HeadOfHouseholdHealthFollowUpTemplateView.as_view(), name='health follow up'),
         # path('<hoh_id>/', headofhousehold.HeadOfHouseholdDetailView.as_view(), name='detail'),
         # path('add/<ib_id>/', headofhousehold.HeadOfHouseholdCreationView.as_view(), name='add'),
     ], 'intake'), namespace='headofhousehold')),
@@ -65,6 +68,8 @@ urlpatterns = [
         path('add/<hoh_id>', asylee.AsyleeCreateView.as_view(), name='add'),
         path('<asy_id>/detail', asylee.AsyleeDetailView.as_view(), name='detail'),
         path('<asy_id>/edit', asylee.AsyleeEditView.as_view(), name='edit'),
+        # path('followup/health /<asy_id>', asylee.AsyleeHealthFollowUpFormView.as_view(), name='health follow up'),
+        path('followup/health/<asy_id>', asylee.AsyleeHealthFollowUpTemplateView.as_view(), name='health follow up'),
         # path('<asylee_id>/', asylee.AsyleeDetailView.as_view(), name='detail'),
         # path('add/<hoh_id>/', asylee.AsyleeCreationView.as_view(), name='add'),
     ], 'intake'), namespace='asylee')),
@@ -105,6 +110,17 @@ urlpatterns = [
         # path('<camp_id>/', campaign.CampaignDetailView.as_view(), name='detail'),
         path('affiliate/<camp_id>/', campaign.affiliate, name='affiliate'),
     ], 'intake'), namespace='campaign')),
+
+    path('user/', include(([
+    #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),
+        path('request_permission/', users.request_permission_to_create_organization, name='request permission'),
+        path('approve/<int:queue_id>/', users.approve_organization_creation, name='approve'),
+        path('decline/<int:queue_id>/', users.approve_organization_creation, name='decline'),
+        path('affiliate/<org_id>/', users.affiliate_user_to_organization, name='affiliate'),
+        path('update_profile/', accounts.ProfileFormView.as_view(), name='update profile'),
+    #     path('taken/', point_of_contact.TakenQuizListView.as_view(), name='taken_quiz_list'),
+    #     path('quiz/<int:pk>/', point_of_contact.take_quiz, name='take_quiz'),
+    ], 'intake'), namespace='user')),
 
     # path('poc/', include(([
     #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),

@@ -2,10 +2,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
 
@@ -88,8 +89,15 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
+        if 'message' in self.request.session.keys():
+            if self.request.session['message'][0] == 'primary':
+                messages.success(self.request, self.request.session['message'][1])
+            del self.request.session['message']
+        context['organizations'] = Organization.objects.all()
+        if self.request.user.is_authenticated and self.request.user.profile.affiliation:
+            context['organizations'] = Organization.objects.all().exclude(id=self.request.user.profile.affiliation.id)
         context['active_view'] = 'home'
-        messages.info(self.request, "hello http://example.com")
+        # messages.info(self.request, "hello http://example.com")
         return context
 
 # def login(request):
@@ -110,13 +118,13 @@ def landing_page(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('home'))
     resp = []
-    resp.append('There are %d locations.' % Locations.objects.count())
-    resp.append('There are %d buses.' % IntakeBuses.objects.count())
+    resp.append('There are %d locations.' % Location.objects.count())
+    resp.append('There are %d buses.' % IntakeBus.objects.count())
     resp.append('There are %d houesholds.' % HeadOfHousehold.objects.count())
     return HttpResponse('<p>'.join(resp))
     if not HeadOfHousehold.objects.exists():
         return HttpResponseRedirect(reverse('intake buses landing page'))
-    if not IntakeBuses.objects.exists():
+    if not IntakeBus.objects.exists():
         return HttpResponseRedirect(reverse('location landing page'))
     if not Location.objects.exists():
         return HttpResponseRedirect(reverse('location add page'))

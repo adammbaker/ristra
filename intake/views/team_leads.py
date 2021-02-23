@@ -1,13 +1,13 @@
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.views.generic import CreateView
-from intake.forms.signup_forms import TeamLeadSignUpForm
+from intake.forms.signup import SignUpForm
 from intake.models import User
 
 # Create your views here.
 class TeamLeadSignUpView(CreateView):
     model = User
-    form_class = TeamLeadSignUpForm
+    form_class = SignUpForm
     template_name = 'registration/signup-form.html'
 
     def get_context_data(self, **kwargs):

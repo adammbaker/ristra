@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -39,7 +40,8 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         print('SC ID', self.request.user.id)
-        sc = SiteCoordinator.objects.get(user_id=self.request.user.id)
+        # sc = SiteCoordinator.objects.get(user_id=self.request.user.id)
+        sc = self.request.user.profile
         org_name = form.cleaned_data.get('name')
         org_city = form.cleaned_data.get('city')
         org_state = form.cleaned_data.get('state')
@@ -54,8 +56,15 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             notes = org_notes,
         )
         print('Setting up org', org.id, 'with sc as', sc)
-        sc.organization.add(Organization.objects.get(id=org.id))
-        sc.save()
+        # sc.organization.add(Organization.objects.get(id=org.id))
+        # sc.save()
+        if sc.can_create_organization:
+            sc.organizations_created.add(org)
+            sc.affiliation = org
+            sc.can_create_organization = False
+            sc.save()
+        else:
+            return redirect('user:request permission')
         rq, rq_c = RequestQueue.objects.get_or_create(
             site_coordinator = sc,
             organization = org,
@@ -64,12 +73,12 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         subject_line = 'Organization Creation Request'
         body = []
         body.append('%(name)s (%(username)s) would like to set up an organization.' % {
-            'name': sc.user.name,
+            'name': sc.user.profile.name,
             'username': sc.user.username
         })
         body.append('%(org_name)s' % {'org_name': org.name})
         body.append('%(org_loc)s' % {'org_loc': org.location})
-        body.append('\nPlease visit http://localhost:8000/requestqueue/')
+        body.append(f'\nPlease visit {get_current_site(self.request)}/requestqueue/')
         send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com'], fail_silently=False)
         return redirect('organization:detail', org_id = org.id)
 
@@ -78,7 +87,8 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     model = Organization
 
     def get_object(self, **kwargs):
-        return self.model.objects.get(id=self.kwargs.get('org_id'))
+        # return self.model.objects.get(id=self.kwargs.get('org_id'))
+        return get_object_or_404(self.model, id=self.kwargs.get('org_id'))
 
 class OrganizationEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'

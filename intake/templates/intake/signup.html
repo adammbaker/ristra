@@ -1,14 +1,13 @@
 {% extends 'intake/base.html' %}
 {% load bootstrap4 %}
 
-{% block title %}
-    Sign Up as {{user_type}}
-{% endblock %}
+{% block title %}Signup :: {% endblock title %}
 
-{% block content %}
+{% block content %} 
 <form role="signup_form" class="form-horizontal" method="post">
     {% csrf_token %}
     {% bootstrap_form form layout="horizontal" %}
+    <!-- {% bootstrap_form profile_form layout="horizontal" %} -->
     {% buttons submit='Sign Up' reset='Reset' layout='horizontal' %}{% endbuttons %}
 </form>
-{% endblock %}
+{% endblock content %}

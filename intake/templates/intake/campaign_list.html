@@ -32,7 +32,7 @@
             <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
           </tr>
         {% endfor %}
-        <!-- {% if user.is_site_coordinator %}
+        <!-- {% if user.profile.site_coordinator %}
         <tr>
             <td colspan="10">
                 <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;
@@ -47,7 +47,7 @@
 
 <br><br>
 
-{% if user.is_site_coordinator %}
+{% if user.profile.role == 'site_coordinator' %}
   {% for org in user.sitecoordinator.organization.all %}
     <h1>Campaigns for {{org.name}}</h1>
     <div class="card">
@@ -73,7 +73,7 @@
               <td class="bg-light text-center font-italic" colspan="10">No campaigns found matching your request</td>
             </tr>
           {% endfor %}
-          {% if user.is_site_coordinator %}
+          {% if user.profile.role == 'site_coordinator' %}
           <tr>
               <td colspan="10">
                   <a href="{% url 'campaign:add' user.id %}" class="btn btn-primary">Add New Campaign&nbsp;

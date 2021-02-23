@@ -5,7 +5,7 @@
 
 {% load bootstrap4 %}
 
-{% block title %}Ristra Refuge{% endblock %}
+{% block title %}Ristra Refuge{% endblock title %}
 
 {% block bootstrap4_content %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -45,7 +45,7 @@
       {% endif %}
       {% if user.is_authenticated %}
       <li class="nav-item">
-        <a class="nav-link" href="#">{{user.username}}</a>
+        <a class="nav-link" href="{% url 'user:update profile' %}">{{user.username}}</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'logout' %}">Logout</a>

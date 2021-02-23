@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -29,77 +30,130 @@ class Language(models.Model):
     def __str__(self):
         return '%(lang)s' % {'lang': self.language}
 
-class User(AbstractUser):
-    is_team_lead = models.BooleanField(default=False)
-    is_site_coordinator = models.BooleanField(default=False)
-    name = models.CharField(verbose_name='Your name', max_length=300)
-    email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
+# class User(AbstractUser):
+#     is_team_lead = models.BooleanField(default=False)
+#     is_site_coordinator = models.BooleanField(default=False)
+#     name = models.CharField(verbose_name='Your name', max_length=300)
+#     email = models.EmailField(verbose_name='Your email', max_length=300, null=True)
+#     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
+#     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
+#     capacities = models.ManyToManyField('Capacity', verbose_name='Capacities')
+#     campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
+#     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
+
+#     def to_card(self):
+#         gc = GenericCard()
+#         gc.body.title = self.name if self.name else None
+#         gc.body.subtitle = self.username if self.username else None
+#         gc.body.text = self.notes if self.notes else None
+#         gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
+#         gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
+#         return str(gc)
+
+#     def organizations(self):
+#         'Return a QuerySet of Organizations the user has access to'
+#         return Organization.objects.filter(
+#             id__in=[x.organization.id for x in self.campaigns.all() if x.campaign.date_expired > timezone.now()]
+#         )
+
+#     def locations(self, org):
+#         'Return a QuerySet of Locations the user has access to for given org'
+#         return Location.objects.filter(
+#             id__in=[str(x.id) for x in org.locations.all()]
+#         )
+
+#     def intakebuses(self, loc):
+#         'Return a QuerySet of IntakeBuses the user has access to for given loc'
+#         return IntakeBus.objects.filter(
+#             id__in=[str(x.id) for x in loc.intakebuses.all()]
+#         )
+
+#     def headsofhousehold(self, ib):
+#         'Return a QuerySet of HeadOfHouseholds the user has access to for given ib'
+#         return HeadOfHousehold.objects.filter(
+#             id__in=[str(x.id) for x in ib.headofhousehold.all()]
+#         )
+
+#     def travelplans(self, hoh):
+#         'Return the TravelPlan the user has access to for given hoh'
+#         return hoh.travelplan
+
+#     def sponsor(self, hoh):
+#         'Return the Sponsor the user has access to for given hoh'
+#         return hoh.sponsor
+
+#     def asylees(self, hoh):
+#         'Return a QuerySet of Asylees the user has access to for given hoh'
+#         return hoh.asylees.all()
+
+#     def medicals(self, asylee):
+#         'Return a QuerySet of Medicals the user has access to for given asylee'
+#         return asylee.medical.all()
+
+#     def __str__(self):
+#         return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
+#             'name': self.name,
+#             'username': self.username,
+#             'capacities': ', '.join(map(str, self.capacities.all())),
+#             'languages': ', '.join(map(str, self.languages.all()))
+#         }
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # is_team_lead = models.BooleanField(default=False)
+    # is_site_coordinator = models.BooleanField(default=False)
+    role = models.CharField(max_length=50, default='volunteer')
+    email_confirmed = models.BooleanField(default=False)
+    # name = models.CharField(verbose_name='Your name', max_length=300)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
     capacities = models.ManyToManyField('Capacity', verbose_name='Capacities')
-    campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
+    # focus = models.ForeignKey('Capacity', on_delete=models.SET_NULL, null=True, verbose_name='Current Focus', related_name='current_focus')
+    affiliation = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True, verbose_name='Affiliated Organization')
+    can_create_organization = models.BooleanField(default=False, verbose_name='Able to create organizations')
+    organizations_created = models.ManyToManyField('Organization', verbose_name='Organizations created', related_name='organizations_created')
+    # campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
 
     def to_card(self):
         gc = GenericCard()
-        gc.body.title = self.name if self.name else None
-        gc.body.subtitle = self.username if self.username else None
+        gc.body.title = self.user.get_full_name() if self.user.get_full_name() else None
+        gc.body.subtitle = self.user.username if self.user.username else None
         gc.body.text = self.notes if self.notes else None
-        gc.body.card_link = ('mailto:' + self.email, self.email) if self.email else None
+        gc.body.card_link = ('mailto:' + self.user.email, self.user.email) if self.user.email else None
         gc.footer.badge_groups = (('primary', self.languages.all()), ('secondary', self.capacities.all()))
         return str(gc)
-
-    def organizations(self):
-        'Return a QuerySet of Organizations the user has access to'
-        return Organization.objects.filter(
-            id__in=[x.organization.id for x in self.campaigns.all() if x.campaign.date_expired > timezone.now()]
-        )
-
-    def locations(self, org):
-        'Return a QuerySet of Locations the user has access to for given org'
-        return Location.objects.filter(
-            id__in=[str(x.id) for x in org.locations.all()]
-        )
-
-    def intakebuses(self, loc):
-        'Return a QuerySet of IntakeBuses the user has access to for given loc'
-        return IntakeBus.objects.filter(
-            id__in=[str(x.id) for x in loc.intakebuses.all()]
-        )
-
-    def headsofhousehold(self, ib):
-        'Return a QuerySet of HeadOfHouseholds the user has access to for given ib'
-        return HeadOfHousehold.objects.filter(
-            id__in=[str(x.id) for x in ib.headofhousehold.all()]
-        )
-
-    def travelplans(self, hoh):
-        'Return the TravelPlan the user has access to for given hoh'
-        return hoh.travelplan
-
-    def sponsor(self, hoh):
-        'Return the Sponsor the user has access to for given hoh'
-        return hoh.sponsor
-
-    def asylees(self, hoh):
-        'Return a QuerySet of Asylees the user has access to for given hoh'
-        return hoh.asylees.all()
-
-    def medicals(self, asylee):
-        'Return a QuerySet of Medicals the user has access to for given asylee'
-        return asylee.medical.all()
-
+    
+    @property
+    def name(self):
+        return self.user.get_full_name()
+    
     def __str__(self):
-        return '%(name)s (%(username)s)\nCapable of %(capacities)s\nSpeaks %(languages)s' % {
-            'name': self.name,
-            'username': self.username,
-            'capacities': ', '.join(map(str, self.capacities.all())),
-            'languages': ', '.join(map(str, self.languages.all()))
-        }
+        return f'{self.name}'
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        print('TRIP UP')
+        print(instance)
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    print('TRIP SA')
+    print(type(instance))
+    print(type(instance.profile))
+    print('S', type(sender))
+    # print(instance.profile.name)
+    print(instance.profile.role)
+    print(instance.profile.languages.all())
+    print(instance.profile.capacities.all())
+    print(instance.profile.phone_number)
+    instance.profile.save()
 
 class Campaign(models.Model):
     id = HashidAutoField(primary_key=True)
-    campaign = models.OneToOneField('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.SET_NULL, null=True)
+    # campaign = models.OneToOneField('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.SET_NULL, null=True)
     organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
 
     @property
@@ -120,7 +174,7 @@ class Campaign(models.Model):
         }
 
 class Lead(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
     specialty = models.CharField(verbose_name="Team lead area", max_length=100, choices=CAPACITY_CHOICES, default='other')
     organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
 
@@ -128,7 +182,7 @@ class Lead(models.Model):
         return self.user.username
 
 class SiteCoordinator(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
     # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
     organization = models.ManyToManyField('Organization', null=True)
 
@@ -195,8 +249,8 @@ class Organization(models.Model):
 
 class RequestQueue(models.Model):
     # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
-    site_coordinator = models.ForeignKey('SiteCoordinator', on_delete=models.CASCADE, null=True)
-    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    site_coordinator = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
 
 class Location(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -293,26 +347,31 @@ class IntakeBus(models.Model):
 class Asylee(models.Model):
     id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Asylee's name")
+    a_number = models.CharField(max_length=20, default='A-', verbose_name='Alien number')
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
-    had_covid_disease = models.BooleanField(default=False)
-    had_covid_vaccine = models.BooleanField(default=False)
-    tsa_done = models.BooleanField(verbose_name="TSA paperwork done?", default=True)
-    legal_done = models.BooleanField(verbose_name="Legal paperwork done?", default=True)
+    had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease')
+    had_covid_vaccine = models.BooleanField(default=False, verbose_name='Has received the COVID vaccine')
+    covid_vaccine_shots = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine shots received", validators=[MinValueValidator(0),MaxValueValidator(2)])
+    vaccine_received = models.CharField(max_length=100, null=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
+    sick_covid = models.BooleanField(default=False, verbose_name="Is currently sick from COVID")
+    sick_other = models.BooleanField(default=False, verbose_name="Is currently sick but not from COVID")
+    tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
+    legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
-    def headofhousehold(self):
-        return self.headofhousehold_set.first()
+    def householdhead(self):
+        return self.head_of_household.first()
 
     @property
     def age(self):
         return (timezone.now().date() - self.date_of_birth).days//365
 
     def breadcrumbs(self, bc=''):
-        parent = self.headofhousehold
+        parent = self.householdhead
         model = self.name
         if bc != '':
             return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
@@ -338,8 +397,8 @@ class Asylee(models.Model):
 
 class HeadOfHousehold(Asylee):
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
-    intake_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='Dependents', default=None)
+    intake_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
+    asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='head_of_household', default=None)
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
     lodging = models.CharField(verbose_name="Room assignment", max_length=300, null=True)
@@ -427,7 +486,7 @@ class Sponsor(models.Model):
 
 class TravelPlan(models.Model):
     id = HashidAutoField(primary_key=True)
-    arranged_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    arranged_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
     confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
     destination_state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
@@ -473,7 +532,7 @@ class TravelPlan(models.Model):
 
 class Medical(models.Model):
     id = HashidAutoField(primary_key=True)
-    provider = models.ForeignKey('User', on_delete=models.CASCADE)
+    provider = models.ForeignKey('Profile', on_delete=models.CASCADE)
     issue_time = models.DateTimeField(verbose_name="Time the issue arose", auto_now_add=True)
     resolution_time = models.DateTimeField(verbose_name="Time the issue was resolved", editable=True, null=True)
     description = models.TextField(verbose_name="Description of issue", null=True, blank=True)

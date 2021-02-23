@@ -2,6 +2,14 @@
 
 {% block content %}
 
+{% if organization.is_valid == False %}
+  <!-- Warning Alert -->
+  <div class="alert alert-warning alert-dismissible fade show">
+    <strong>Please wait</strong> while our site admin approves your organization.
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+{% endif %}
+
 <h1>{{organization.name}}</h1>
 <h6 class="card-subtitle mb-2 text-muted">{{organization.location}}</h6>
 {% if organization.is_valid != True %}
@@ -36,7 +44,7 @@
             <td class="bg-light text-center font-italic" colspan="10">No locations found matching your request</td>
           </tr>
         {% endfor %}
-        {% if user.is_site_coordinator or user.is_team_lead %}
+        {% if user.profile.role == 'site_coordinator' or user.profile.role == 'team_lead' %}
         <tr>
             <td colspan="10">
                 <a href="{% url 'location:add' organization.id %}" class="btn btn-primary">Add New Location&nbsp;
