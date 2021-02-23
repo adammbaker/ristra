@@ -8,12 +8,6 @@
 {% block title %}Follow Up Health Questionnaire{% endblock %}
 
 {% block content %}
-{{asylee}}
-{{asy_id}}<br>
-V{{request.session.had_covid_vaccine}}<br>
-CS{{request.session.is_currently_sick}}<br>
-{{asylee.had_covid_vaccine}}<br>
-{{is_sick_now}}
 <div class="row">
     <div class="col-md-8 col-sm-10 col-12">
         <h2>{{title}}</h2>
