@@ -495,7 +495,10 @@ class TravelPlan(models.Model):
     travel_food_prepared = models.BooleanField(verbose_name="Is travel food prepared?", default=False)
     eta = models.DateTimeField(verbose_name="Estimated arrival", null=True)
     travel_mode = models.CharField(verbose_name="Mode of travel", max_length=100, choices=TRAVEL_MODE_CHOICES, default='other')
+    layovers = models.CharField(max_length=300, verbose_name='Layover(s)', null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    # Airline only
+    flight_number = models.CharField(max_length=200, verbose_name='Flight #(s)', null=True)
 
     @property
     def destination(self):
@@ -503,6 +506,13 @@ class TravelPlan(models.Model):
             'city': self.destination_city,
             'st_abbr': self.destination_state.upper()
         }
+
+    @property
+    def travel_time(self):
+        if self.eta and self.travel_date:
+            return f'{self.eta - self.travel_date}'
+        else:
+            return 'No ETA entered'
 
     def breadcrumbs(self, bc=''):
         parent = self.headofhousehold

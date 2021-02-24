@@ -214,14 +214,20 @@ TRAVEL_MODE_CHOICES = [
             ('jetblue', 'Jet Blue (B6)'),
             ('southwest', 'Southwest (WN)'),
             ('united', 'United (UA)'),
+            ('airline_other', 'Other airline'),
         )
     ),
     ('Bus', (
             ('greyhound', 'Greyhound'),
+            ('bus_other', 'Other bus'),
         )
     ),
     ('Train', (
             ('amtrak', 'Amtrak'),
+        )
+    ),
+    ('Car', (
+            ('personal_car', 'Personal car'),
         )
     ),
     ('other', 'Other'),

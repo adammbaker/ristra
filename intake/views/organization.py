@@ -88,6 +88,8 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, **kwargs):
         # return self.model.objects.get(id=self.kwargs.get('org_id'))
+        return self.request.user.profile.affiliation
+        return get_object_or_404(self.request.user.profile.affiliation)
         return get_object_or_404(self.model, id=self.kwargs.get('org_id'))
 
 class OrganizationEditView(LoginRequiredMixin, UpdateView):

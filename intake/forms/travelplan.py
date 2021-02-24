@@ -28,3 +28,21 @@ class TravelPlanForm(forms.ModelForm):
     class Meta:
         model = TravelPlan
         fields = ['travel_mode','confirmation','destination_city','destination_state','travel_date','eta','city_van_date','travel_food_prepared','notes',]
+
+class AirlineTravelPlanForm(forms.ModelForm):
+    layovers = forms.CharField(
+        help_text='First leg destination',
+        required=True,
+    )
+    class Meta:
+        model = TravelPlan
+        fields = ['flight_number', 'layovers',]
+
+class BusTravelPlanForm(forms.ModelForm):
+    layovers = forms.CharField(
+        help_text='Cities to change',
+        required=True,
+    )
+    class Meta:
+        model = TravelPlan
+        fields = ['layovers',]
