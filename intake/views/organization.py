@@ -16,9 +16,6 @@ class OrganizationListView(LoginRequiredMixin, ListView):
     model = Organization
     paginate_by = 0
 
-    def get_queryset(self):
-        return self.request.user.organizations()
-
 @method_decorator([login_required, sc_required], name='dispatch')
 class OrganizationCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
@@ -93,14 +90,18 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
         return get_object_or_404(self.model, id=self.kwargs.get('org_id'))
 
 class OrganizationEditView(LoginRequiredMixin, UpdateView):
-    'Allows a privileged user to to edit the instance of an object'
+    'Allows a privileged user to edit the instance of an object'
     model = Organization
     template_name = 'intake/generic-form.html'
 
     def get_object(self, **kwargs):
         return self.model.objects.get(id=self.kwargs.get('org_id'))
 
-
+class OrganizationUpdate(LoginRequiredMixin, UpdateView):
+    model = Organization
+    fields = ['name',]
+    slug_url_kwarg = 'org_id'
+    template_name = 'intake/generic-form.html'
 
 
 # @method_decorator([login_required, sc_required], name='dispatch')

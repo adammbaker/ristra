@@ -7,4 +7,4 @@ class MedicalForm(forms.ModelForm):
 
     class Meta:
         model = Medical
-        fields = ['provider','description','resolved','notes',]
+        fields = ['notes',]

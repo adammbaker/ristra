@@ -39,8 +39,6 @@ class HeadOfHouseholdForm(forms.ModelForm):
             'a_number',
             'date_of_birth',
             'phone_number',
-            'tsa_done',
-            'legal_done',
             'languages',
             'lodging',
             'destination_city',

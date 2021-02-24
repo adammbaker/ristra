@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from intake.choices import CAPACITY_CHOICES, LANGUAGE_CHOICES
+from intake.choices import CAPACITY_CHOICES, LANGUAGE_CHOICES, ROLE_CHOICES
 from intake.models import Capacity, Language, Lead, Organization, Profile, SiteCoordinator
 
 # class TeamLeadSignUpForm(UserCreationForm):
@@ -136,14 +136,10 @@ class SignUpForm(UserCreationForm):
         max_length=254,
         help_text='Enter a valid email address'
     )
-    ROLE_CHOICES=[
-        ('volunteer', 'Volunteer'),
-        ('team_lead','Team Lead'),
-        ('site_coordinator','Site Coordinator'),
-    ]
     # name = forms.CharField(max_length=200)
     languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+        # choices = LANGUAGE_CHOICES,
         queryset = Language.objects.all(),
         required=True
     )
@@ -217,6 +213,7 @@ class ProfileForm(forms.ModelForm):
     ]
     languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+        # choices = LANGUAGE_CHOICES,
         queryset = Language.objects.all(),
         required=True
     )

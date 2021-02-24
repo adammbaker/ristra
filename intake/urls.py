@@ -16,6 +16,7 @@ urlpatterns = [
         path('add/<user_id>', organization.OrganizationCreateView.as_view(), name='add'),
         path('<org_id>/detail', organization.OrganizationDetailView.as_view(), name='detail'),
         path('<org_id>/edit', organization.OrganizationEditView.as_view(), name='edit'),
+        path('<org_id>/update', organization.OrganizationUpdate.as_view(), name='update'),
         # path('', organization.OrganizationListView.as_view(), name='list'),
         # path('add/', organization.OrganizationCreationView.as_view(), name='add'),
         # path('<org_id>/', organization.OrganizationDetailView.as_view(), name='detail'),

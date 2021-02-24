@@ -1,7 +1,4 @@
-{% extends 'intake/base.html' %}
 <br><br>
-aoeu
-{% block content %}
 <div class="card">
   <li class="list-group-item"><h4>Please affiliate yourself with an organization below</h4></li>
       {% for unit in organization_list %}
@@ -51,4 +48,3 @@ aoeu
     {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
   </table>
 </div>
-{% endblock %}

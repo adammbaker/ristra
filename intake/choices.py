@@ -1,13 +1,12 @@
 CAPACITY_CHOICES = [
-    ('activities', 'Activities'),
-    ('changeofaddress', 'Change of Address'),
     ('clothes', 'Clothes'),
     ('departurebags', 'Departure Bags'),
     ('food', 'Food'),
+    ('hotelrunner', 'Hotel Runner'),
     ('intake', 'Intake'),
     ('medical', 'Medical'),
     ('travel', 'Travel'),
-    ('transport', 'Transport'),
+    ('transportation', 'Transportation'),
     ('volunteercoordinator', 'Volunteer Coordinator'),
     ('other', 'Other'),
 ]
@@ -237,5 +236,11 @@ COVID_VACCINE_CHOICES = [
     ('moderna', 'Moderna'),
     ('j_and_j', 'Johnson & Johnson'),
     ('astra_zeneca', 'AstraZeneca'),
+    ('unknown', 'Unknown'),
     ('other', 'Other'),
+]
+ROLE_CHOICES=[
+    ('volunteer', 'Volunteer'),
+    ('team_lead','Team Lead'),
+    ('site_coordinator','Site Coordinator'),
 ]
