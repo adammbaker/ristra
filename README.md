@@ -19,7 +19,7 @@ Join our Trello: https://trello.com/b/2WbNbMPk/ristra
 1. Run `python manage.py createsuperuser` and enter your own credentials.
 
 # The format of Ristra
-Ristra is intended to be used by non-profits who are assisting individuals released by ICE and who need assistance traveling to their destination.
+Ristra is intended to be used by non-profit entities who are assisting individuals released by ICE and who need assistance traveling to their destination.
 
 ## User accounts
 User accounts are required for using this site. Accounts are free to sign up for and they determine your abilities.
@@ -33,15 +33,8 @@ Team Leads will be able to do everything a Volunteer can do while also being abl
 ### Site Coordinator
 Site Coordinators are the heads of organizations and can do anything a Team Lead can do including creating an organization.
 
-## Campaigns
-As another method to mitigate data extraction, the concept of a campaign is utilized. Basically, a campaign restricts the information a user has access by tying their account temporarily to an organization. A campaign is a time-based authorization token that limits a user's view to families (and the children of families) for refugees who arrived on a bus a couple of days before the campaign's start date.
-
-### Starting a campaign
-Site Coordinators are the only user type to be able to start a campaign. A Site Coordinator can create an unlimited number of campaigns of varying lengths to help limit the information a user has access to.
-
-Each campaign has a shortened link (à la bit.ly) and a QR code (which links to that shortened link). The short link allows for computer users to manually enter the shortened link and the QR code is intended for use by mobile users. When viewing an individual campaign, this page can be printed and placed in areas around the staging location for convenient user on-boarding.
-
-These shortened links have limited duration as well, so printouts will need to be refreshed as needed. By visiting these links, the user's account is tied directly to the campaign's duration and organization and is indirectly tied to the families belonging to associated intake buses.
+### Starting an Organization
+Site Coordinators are the only user type to be able to create and manage an Organization.
 
 ## Ristra's Components
 ### Organization
@@ -53,37 +46,26 @@ Currently a Site Coordinator can only be in charge of a single organization. Thi
 Under each organization, there are locations that the organization uses to receive and process refugees. Locations can be anything but are most commonly motels, dormitories, or churches.
 
 ### Intake Bus
-Intake buses are the vehicles in which refugees are brought from where ICE released them to the location that belongs to the user's organization. In our case they are buses but they could be individual cars if necessary. What's important is that these are grouped by common arrival.
+Intake buses are the vehicles in which refugees are brought from where ICE released them to the location that belongs to the user's organization. In our case they are buses but they could be individual cars if necessary. What is important is that these are grouped by common arrival.
 
-### Family
-On the buses full of refugees are family units. When we were receiving refugees, they were only family units. All other individuals detained by ICE were deported or released in Mexico.
+### Head of Household
+On the buses are family units, or households. When we were receiving refugees there were only family units but the day could come in which individuals are released from detention; each individual would be their own household.
 
-This model is very shallow; that is, it contains many trivia regarding the family but does not speak much to the individuals. It serves as a focal point connecting individual asylees, the family's sponsor, and their travel plans.
 
 ### Sponsor
-As part of the conditions for release, each family must have the name, address, and contact information for someone already living in the United States of America who will be responsible for the family. Families can only have one sponsor at a time, though this may be able to change in the future as needed. This model is responsible for providing the information necessary for the Travel Team to make travel arrangements for the family.
+As part of the conditions for release, each household must have the name, address, and contact information for someone already living in the United States of America who will be responsible for the family. Households can only have one sponsor at a time, though this may be able to change in the future as needed. This model is responsible for providing the information necessary for the Travel Team to make travel arrangements for the family.
 
 ### Travel Plan
-This model contains the details and in future will provide helpful links for validating and centralizing travel information for the given family.
+This model contains the details and in future will provide helpful links for validating and centralizing travel information for the given household.
 
 ### Asylee
-Asylees are considered the individual members of the family unit.
+Asylees are considered the individual members of the household.
 
 ### Medical
 Any medical issues that an Asylee is treated for will be noted in this model.
 
 ## Capacities
 Capacities are the specializations of the individual Volunteers that they choose for themselves in the signup process. Team Leads in their capacity as Team Lead can only be in charge of one specialty at the moment. This may change in the future if there is a desire.
-
-### Activities
-Volunteers who choose Activities as a capacity are willing to help in areas that will keep Asylees, specifically children, active and engaged.
-
-*Spanish level desired: minimal*
-
-### Change of Address
-Volunteers who choose Change of Address as a capacity will be involved with changing the address or updating contact information as necessary.
-
-*Spanish level desired: minimal*
 
 ### Clothes
 Volunteers who choose Clothes as a capacity are willing to help in the clothing needs of the organization, sorting and separating donations and making them available to Asylees.
@@ -99,6 +81,11 @@ Volunteers who choose Departure Bags as a capacity are willing to help prepare m
 Volunteers who choose Food as a capacity are willing to contact local restaurants to see if they wish to provide food, to collect any donated food items, cook foods that need to be cooked, and help in general in the kitchen at the Location. Oftentimes these Families have been traveling for a long time without access to adequate food or water, even in government detention.
 
 *Spanish level desired: minimal*
+
+### Hotel Runner
+A hotel runner works with coordinators inside the hotel to be with travelers, for meals, stuff for kids.
+
+*Spanish level desired: moderate*
 
 ### Intake
 Volunteers who choose Intake as a capacity are willing to be personal guides to Families as they are processed from the Intake Bus to their housing at the Location and to connecting them to transportation options to get them to their destination.
