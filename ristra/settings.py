@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'qr_code',
     'shortener',
     'bootstrap4',
-    'bootstrap_datepicker_plus',
     'intake.apps.IntakeConfig',
     'django.contrib.admin',
     'django.contrib.auth',

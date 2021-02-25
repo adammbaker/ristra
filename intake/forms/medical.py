@@ -7,4 +7,5 @@ class MedicalForm(forms.ModelForm):
 
     class Meta:
         model = Medical
-        fields = ['notes',]
+        # fields = ['notes',]
+        fields = '__all__'

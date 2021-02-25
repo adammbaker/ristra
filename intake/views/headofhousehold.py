@@ -113,6 +113,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
 
     def get_context_data(self, **kwargs):
         context = super(HeadOfHouseholdHealthFollowUpTemplateView, self).get_context_data(**kwargs)
+        context['title'] = 'Follow Up Health Questions'
         context['asylee'] = self.kwargs.get('hoh_id')
         context['vaccine_form_class'] = self.vaccine_form_class
         context['sick_form_class'] = self.sick_form_class

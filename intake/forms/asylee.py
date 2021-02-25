@@ -1,8 +1,7 @@
 from django import forms
 from intake.choices import COVID_VACCINE_CHOICES
+from intake.forms.forms import DateInput
 from intake.models import Asylee
-
-from bootstrap_datepicker_plus import DatePickerInput
 
 # Create your forms here.
 class AsyleeForm(forms.ModelForm):
@@ -11,9 +10,7 @@ class AsyleeForm(forms.ModelForm):
     )
     date_of_birth = forms.DateField(
         help_text="MM/DD/YYYY",
-        widget=DatePickerInput(
-            options={"format": "YYYY-MM-DD HH:mm"}
-        )
+        widget=DateInput(),
     )
     is_currently_sick = forms.BooleanField(
         # help_text='Is sick now'

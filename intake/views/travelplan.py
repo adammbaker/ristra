@@ -11,6 +11,7 @@ from intake.forms.travelplan import AirlineTravelPlanForm, BusTravelPlanForm, Tr
 from intake.models import HeadOfHousehold, TravelPlan
 from intake.utilities import category_from_choices
 
+from datetime import datetime
 # Create your views here.
 class TravelPlanListView(LoginRequiredMixin, ListView):
     'Lists all objects related to their parent'
@@ -113,7 +114,6 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         context['travel_plan'] = self.kwargs.get('tp_id')
         context['airline_form_class'] = self.airline_form_class
         context['busline_form_class'] = self.busline_form_class
-        
         return context
 
     def get_success_url(self):

@@ -15,7 +15,9 @@ class AsyleeListView(LoginRequiredMixin, ListView):
     paginate_by = 0
 
     def get_queryset(self):
-        return self.request.user.locations()
+        print('XXX')
+        hoh = HeadOfHousehold.objects.get(id=self.kwargs.get('hoh_id'))
+        return hoh.asylees.all()
 
 class AsyleeCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
@@ -183,7 +185,7 @@ class AsyleeEditView(LoginRequiredMixin, UpdateView):
 class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
     vaccine_form_class = AsyleeVaccineForm
     sick_form_class = AsyleeSickForm
-    template_name = 'intake/travel-mode-follow-up.html'
+    template_name = 'intake/health-follow-up.html'
 
     def get_context_data(self, **kwargs):
         context = super(AsyleeHealthFollowUpTemplateView, self).get_context_data(**kwargs)

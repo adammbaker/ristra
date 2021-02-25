@@ -1,28 +1,26 @@
 from django import forms
+from intake.forms.forms import DateInput, DateTimeInput, TimeInput
 from intake.models import TravelPlan
 
-from bootstrap_datepicker_plus import DateTimePickerInput
+from datetime import datetime, timedelta
 
 # Create your forms here.
 class TravelPlanForm(forms.ModelForm):
     travel_date = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
-        widget=DateTimePickerInput(
-            options={"format": "MM/DD/YYYY HH:mm"}
-        ),
+        widget=DateTimeInput(),
+        initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
     )
     city_van_date = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
-        widget=DateTimePickerInput(
-            options={"format": "MM/DD/YYYY HH:mm"}
-        ),
+        widget=DateTimeInput(),
+        initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
     )
     eta = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
         label='Estimated Time of Arrival',
-        widget=DateTimePickerInput(
-            options={"format": "MM/DD/YYYY HH:mm"}
-        ),
+        widget=DateTimeInput(),
+        initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
     )
 
     class Meta:
