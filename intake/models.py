@@ -16,6 +16,7 @@ from shortener.models import UrlMap
 
 import hashlib
 from datetime import timedelta
+from django_cryptography.fields import encrypt
 from socket import gethostbyname, gethostname
 
 # Create your models here.
@@ -548,20 +549,21 @@ class Medical(models.Model):
     id = HashidAutoField(primary_key=True)
     provider = models.ForeignKey(Profile, related_name="medical_provider", on_delete=models.SET(get_sentinel_user))
     entered_by = models.ForeignKey(Profile, related_name="data_entry_volunteer", on_delete=models.SET(get_sentinel_user))
-    temperature = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Temperature ºF")
-    pulse = models.CharField(max_length=20, null=True, blank=True, verbose_name="Pulse")
-    blood_pressure = models.CharField(max_length=20, null=True, blank=True, verbose_name="Blood pressure")
-    weight = models.PositiveSmallIntegerField(default=0, verbose_name="Weight (lbs)", validators=[MinValueValidator(0),MaxValueValidator(2)])
-    height = models.CharField(max_length=20, null=True, blank=True, verbose_name="Height")
-    oxgyen_level = models.CharField(max_length=20, null=True, blank=True, verbose_name="Oxygen level")
-    vaccines_received = models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received")
-    allergies = models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies")
-    medications = models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications")
-    chronic_medical_problems = models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies")
-    symptoms = models.TextField(verbose_name="Symptoms observed", null=True, blank=True)
-    diagnosis = models.TextField(verbose_name="Diagnosis", null=True, blank=True)
-    treatment = models.TextField(verbose_name="Treatment", null=True, blank=True)
-    follow_up_needed = models.TextField(verbose_name="Follow up needed", null=True, blank=True)
+    temperature = encrypt(models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Temperature ºF"))
+    # temperature = encrypt(models.FloatField(null=True, blank=True, verbose_name="Temperature ºF"))
+    pulse = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Pulse"))
+    blood_pressure = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Blood pressure"))
+    weight = encrypt(models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, verbose_name="Weight (lbs)", validators=[MinValueValidator(0),MaxValueValidator(2)]))
+    height = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Height"))
+    oxgyen_level = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Oxygen level"))
+    vaccines_received = encrypt(models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received"))
+    allergies = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+    medications = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications"))
+    chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+    symptoms = encrypt(models.TextField(verbose_name="Symptoms observed", null=True, blank=True))
+    diagnosis = encrypt(models.TextField(verbose_name="Diagnosis", null=True, blank=True))
+    treatment = encrypt(models.TextField(verbose_name="Treatment", null=True, blank=True))
+    follow_up_needed = encrypt(models.TextField(verbose_name="Follow up needed", null=True, blank=True))
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property

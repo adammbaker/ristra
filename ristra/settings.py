@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 from socket import gethostname, gethostbyname
 
+# to get around an import NameError
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.hashes import SHA256
 import environ
 
 env = environ.Env()
@@ -201,3 +204,8 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 SECRET_SALT = b'\x8b\x85R\xd9\xc8\xa3\xc4rs2F\xc5\\\x035*'
 HASHID_FIELD_SALT = env("HASHID_FIELD_SALT")
+
+# Encryption via django-crpytography
+CRYPTOGRAPHY_BACKEND = default_backend()
+CRYPTOGRAPHY_DIGEST = SHA256
+CRYPTOGRAPHY_KEY = env("CRYPTOGRAPHY_KEY")

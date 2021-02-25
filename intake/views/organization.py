@@ -100,7 +100,7 @@ class OrganizationEditView(LoginRequiredMixin, UpdateView):
 class OrganizationUpdate(LoginRequiredMixin, UpdateView):
     model = Organization
     fields = ['name',]
-    slug_url_kwarg = 'org_id'
+    pk_url_kwarg = 'org_id'
     template_name = 'intake/generic-form.html'
 
 
