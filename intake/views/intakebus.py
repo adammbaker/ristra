@@ -7,8 +7,6 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.intakebus import IntakeBusForm
 from intake.models import IntakeBus, Location
 
-from bootstrap_datepicker_plus import DateTimePickerInput
-
 # Create your views here.
 class IntakeBusListView(LoginRequiredMixin, ListView):
     'Lists all objects related to their parent'

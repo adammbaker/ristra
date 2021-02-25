@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, User
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -15,9 +16,13 @@ from shortener.models import UrlMap
 
 import hashlib
 from datetime import timedelta
+from django_cryptography.fields import encrypt
 from socket import gethostbyname, gethostname
 
 # Create your models here.
+def get_sentinel_user():
+    return get_user_model().objects.get_or_create(username='deleted')[0]
+
 class Capacity(models.Model):
     name = models.CharField(max_length=100, verbose_name='Capacity')
 
@@ -102,7 +107,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # is_team_lead = models.BooleanField(default=False)
     # is_site_coordinator = models.BooleanField(default=False)
-    role = models.CharField(max_length=50, default='volunteer')
+    role = models.CharField(max_length=50, null=True)
     email_confirmed = models.BooleanField(default=False)
     # name = models.CharField(verbose_name='Your name', max_length=300)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
@@ -174,16 +179,16 @@ class Campaign(models.Model):
         }
 
 class Lead(models.Model):
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(Profile, on_delete=models.SET(get_sentinel_user), primary_key=True)
     specialty = models.CharField(verbose_name="Team lead area", max_length=100, choices=CAPACITY_CHOICES, default='other')
-    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    organization = models.OneToOneField('Organization', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.user.username
 
 class SiteCoordinator(models.Model):
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
-    # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(Profile, on_delete=models.SET(get_sentinel_user), primary_key=True)
+    # organization = models.OneToOneField('Organization', on_delete=models.SET(get_sentinel_user), null=True)
     organization = models.ManyToManyField('Organization', null=True)
 
     def to_card(self):
@@ -248,9 +253,9 @@ class Organization(models.Model):
         }
 
 class RequestQueue(models.Model):
-    # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
-    site_coordinator = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
-    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
+    # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.SET(get_sentinel_user), null=True)
+    site_coordinator = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
+    organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
 
 class Location(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -354,12 +359,12 @@ class Asylee(models.Model):
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
     had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease')
     had_covid_vaccine = models.BooleanField(default=False, verbose_name='Has received the COVID vaccine')
-    covid_vaccine_shots = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine shots received", validators=[MinValueValidator(0),MaxValueValidator(2)])
+    covid_vaccine_doses = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine doses received", validators=[MinValueValidator(0),MaxValueValidator(2)])
     vaccine_received = models.CharField(max_length=100, null=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
     sick_covid = models.BooleanField(default=False, verbose_name="Is currently sick from COVID")
     sick_other = models.BooleanField(default=False, verbose_name="Is currently sick but not from COVID")
-    tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
-    legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
+    # tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
+    # legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
@@ -397,7 +402,7 @@ class Asylee(models.Model):
 
 class HeadOfHousehold(Asylee):
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
-    intake_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
+    intake_by = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
     asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='head_of_household', default=None)
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
@@ -486,16 +491,19 @@ class Sponsor(models.Model):
 
 class TravelPlan(models.Model):
     id = HashidAutoField(primary_key=True)
-    arranged_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
+    arranged_by = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
     confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
     destination_state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
     travel_date = models.DateTimeField(verbose_name="Departure time of travel", null=True)
     city_van_date = models.DateTimeField(verbose_name="Departure time on City Van", null=True)
     travel_food_prepared = models.BooleanField(verbose_name="Is travel food prepared?", default=False)
-    eta = models.DateTimeField(verbose_name="Estimated time of arrival", null=True)
+    eta = models.DateTimeField(verbose_name="Estimated arrival", null=True)
     travel_mode = models.CharField(verbose_name="Mode of travel", max_length=100, choices=TRAVEL_MODE_CHOICES, default='other')
+    layovers = models.CharField(max_length=300, verbose_name='Layover(s)', null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    # Airline only
+    flight_number = models.CharField(max_length=200, verbose_name='Flight #(s)', null=True)
 
     @property
     def destination(self):
@@ -503,6 +511,13 @@ class TravelPlan(models.Model):
             'city': self.destination_city,
             'st_abbr': self.destination_state.upper()
         }
+
+    @property
+    def travel_time(self):
+        if self.eta and self.travel_date:
+            return f'{self.eta - self.travel_date}'
+        else:
+            return 'No ETA entered'
 
     def breadcrumbs(self, bc=''):
         parent = self.headofhousehold
@@ -532,10 +547,23 @@ class TravelPlan(models.Model):
 
 class Medical(models.Model):
     id = HashidAutoField(primary_key=True)
-    provider = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    issue_time = models.DateTimeField(verbose_name="Time the issue arose", auto_now_add=True)
-    resolution_time = models.DateTimeField(verbose_name="Time the issue was resolved", editable=True, null=True)
-    description = models.TextField(verbose_name="Description of issue", null=True, blank=True)
+    provider = models.ForeignKey(Profile, related_name="medical_provider", on_delete=models.SET(get_sentinel_user))
+    entered_by = models.ForeignKey(Profile, related_name="data_entry_volunteer", on_delete=models.SET(get_sentinel_user))
+    temperature = encrypt(models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Temperature ºF"))
+    # temperature = encrypt(models.FloatField(null=True, blank=True, verbose_name="Temperature ºF"))
+    pulse = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Pulse"))
+    blood_pressure = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Blood pressure"))
+    weight = encrypt(models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, verbose_name="Weight (lbs)", validators=[MinValueValidator(0)]))
+    height = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Height"))
+    oxgyen_level = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Oxygen level"))
+    vaccines_received = encrypt(models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received"))
+    allergies = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+    medications = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications"))
+    chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+    symptoms = encrypt(models.TextField(verbose_name="Symptoms observed", null=True, blank=True))
+    diagnosis = encrypt(models.TextField(verbose_name="Diagnosis", null=True, blank=True))
+    treatment = encrypt(models.TextField(verbose_name="Treatment", null=True, blank=True))
+    follow_up_needed = encrypt(models.TextField(verbose_name="Follow up needed", null=True, blank=True))
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property

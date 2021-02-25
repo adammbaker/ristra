@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from intake.choices import CAPACITY_CHOICES
 from intake.models import Capacity, Language
 
 
@@ -21,19 +22,7 @@ class Command(BaseCommand):
 
     def initialize_capacities(self):
         self.stdout.write(self.style.WARNING('Initializing model Capacities'))
-        volunteer_capacities = (
-            ('Activities'),
-            ('Change of Address'),
-            ('Clothes'),
-            ('Departure Bags'),
-            ('Food'),
-            ('Intake'),
-            ('Medical'),
-            ('Travel'),
-            ('Transport'),
-            ('Volunteer Coordinator'),
-            ('Other'),
-        )
+        volunteer_capacities = [x[1] for x in CAPACITY_CHOICES]
         for cap in volunteer_capacities:
             cap, cap_c = Capacity.objects.get_or_create(name=cap)
             if cap_c:

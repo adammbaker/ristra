@@ -1,8 +1,7 @@
 from django import forms
 from intake.choices import COVID_VACCINE_CHOICES
+from intake.forms.forms import DateInput
 from intake.models import Asylee
-
-from bootstrap_datepicker_plus import DatePickerInput
 
 # Create your forms here.
 class AsyleeForm(forms.ModelForm):
@@ -11,9 +10,7 @@ class AsyleeForm(forms.ModelForm):
     )
     date_of_birth = forms.DateField(
         help_text="MM/DD/YYYY",
-        widget=DatePickerInput(
-            options={"format": "YYYY-MM-DD HH:mm"}
-        )
+        widget=DateInput(),
     )
     is_currently_sick = forms.BooleanField(
         # help_text='Is sick now'
@@ -21,7 +18,7 @@ class AsyleeForm(forms.ModelForm):
     )
     class Meta:
         model = Asylee
-        fields = ['name','a_number','sex','date_of_birth','phone_number','tsa_done','legal_done','had_covid_disease','had_covid_vaccine', 'is_currently_sick','notes',]
+        fields = ['name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine', 'is_currently_sick','notes',]
 
 class AsyleeHealthFollowUpForm(forms.ModelForm):
     VACCINATION_CHOICES = [
@@ -39,7 +36,7 @@ class AsyleeHealthFollowUpForm(forms.ModelForm):
     )
     class Meta:
         model = Asylee
-        fields = ['covid_vaccine_shots','vaccine_received','sick_covid','sick_other',]
+        fields = ['vaccine_received','covid_vaccine_doses','sick_covid','sick_other',]
 
 class AsyleeVaccineForm(forms.ModelForm):
     VACCINATION_CHOICES = [
@@ -47,7 +44,7 @@ class AsyleeVaccineForm(forms.ModelForm):
         (1,'1'),
         (2,'2'),
     ]
-    covid_vaccine_shots = forms.ChoiceField(
+    covid_vaccine_doses = forms.ChoiceField(
         choices=VACCINATION_CHOICES,
         required=True,
     )
@@ -57,7 +54,7 @@ class AsyleeVaccineForm(forms.ModelForm):
     )
     class Meta:
         model = Asylee
-        fields = ['covid_vaccine_shots','vaccine_received',]
+        fields = ['vaccine_received','covid_vaccine_doses',]
 
 class AsyleeSickForm(forms.ModelForm):
     class Meta:

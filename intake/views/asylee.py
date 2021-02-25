@@ -15,7 +15,9 @@ class AsyleeListView(LoginRequiredMixin, ListView):
     paginate_by = 0
 
     def get_queryset(self):
-        return self.request.user.locations()
+        print('XXX')
+        hoh = HeadOfHousehold.objects.get(id=self.kwargs.get('hoh_id'))
+        return hoh.asylees.all()
 
 class AsyleeCreateView(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
@@ -42,8 +44,6 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee_phone_number = form.cleaned_data.get('phone_number')
         asylee_had_covid_disease = form.cleaned_data.get('had_covid_disease')
         asylee_had_covid_vaccine = form.cleaned_data.get('had_covid_vaccine')
-        asylee_tsa_done = form.cleaned_data.get('tsa_done')
-        asylee_legal_done = form.cleaned_data.get('legal_done')
         asylee_notes = form.cleaned_data.get('notes')
         hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
         asylee, asylee_c = Asylee.objects.get_or_create(
@@ -53,8 +53,6 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             phone_number = asylee_phone_number,
             had_covid_disease = asylee_had_covid_disease,
             had_covid_vaccine = asylee_had_covid_vaccine,
-            tsa_done = asylee_tsa_done,
-            legal_done = asylee_legal_done,
             notes = asylee_notes,
         )
         hoh.asylees.add(asylee)
@@ -191,6 +189,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AsyleeHealthFollowUpTemplateView, self).get_context_data(**kwargs)
+        context['title'] = 'Follow Up Health Questions'
         context['asylee'] = self.kwargs.get('asy_id')
         context['vaccine_form_class'] = self.vaccine_form_class
         context['sick_form_class'] = self.sick_form_class

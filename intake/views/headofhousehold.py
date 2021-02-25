@@ -47,8 +47,6 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         hoh_sex = form.cleaned_data.get('sex')
         hoh_date_of_birth = form.cleaned_data.get('date_of_birth')
         hoh_phone_number = form.cleaned_data.get('phone_number')
-        hoh_tsa_done = form.cleaned_data.get('tsa_done')
-        hoh_legal_done = form.cleaned_data.get('legal_done')
         hoh_notes = form.cleaned_data.get('notes')
         hoh_lodging = form.cleaned_data.get('lodging')
         hoh_destination_city = form.cleaned_data.get('destination_city')
@@ -64,8 +62,6 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             sex = hoh_sex,
             date_of_birth = hoh_date_of_birth,
             phone_number = hoh_phone_number,
-            tsa_done = hoh_tsa_done,
-            legal_done = hoh_legal_done,
             notes = hoh_notes,
             lodging = hoh_lodging,
             destination_city = hoh_destination_city,
@@ -117,6 +113,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
 
     def get_context_data(self, **kwargs):
         context = super(HeadOfHouseholdHealthFollowUpTemplateView, self).get_context_data(**kwargs)
+        context['title'] = 'Follow Up Health Questions'
         context['asylee'] = self.kwargs.get('hoh_id')
         context['vaccine_form_class'] = self.vaccine_form_class
         context['sick_form_class'] = self.sick_form_class
