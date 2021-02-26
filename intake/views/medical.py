@@ -90,6 +90,9 @@ class MedicalDetailView(LoginRequiredMixin, DetailView):
     model = Medical
 
     def get_object(self, **kwargs):
+        medical_capacity = Capacity.objects.get(name='Medical')
+        medical_in_user_capacities = medical_capacity in self.request.user.profile.capacities.all()
+        # if 
         return self.model.objects.get(id=self.kwargs['med_id'])
 
 class MedicalEditView(LoginRequiredMixin, UpdateView):

@@ -217,8 +217,6 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         up_languages = form.cleaned_data.get('languages')
         up_capacities = form.cleaned_data.get('capacities')
         up_role = form.cleaned_data.get('role')
-        print('L',type(up_languages))
-        print('C',type(up_capacities))
         user = User.objects.get(id = self.request.user.id)
         # user.profile.name = up_name
         user.profile.phone_number = up_phone_number
@@ -226,6 +224,7 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         user.profile.capacities.set(up_capacities)
         user.profile.role = up_role
         user.save()
+        messages.success(self.request, ('Your profile was successfully updated!'))
         return redirect('user:update profile')
 
 # class LocationEditView(LoginRequiredMixin, UpdateView):
