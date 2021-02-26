@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.forms.medical import MedicalForm
-from intake.models import Asylee, HeadOfHousehold, Medical
+from intake.models import Asylee, Capacity, HeadOfHousehold, Medical, Profile
 
 # Create your views here.
 class MedicalListView(LoginRequiredMixin, ListView):
@@ -25,7 +25,8 @@ class MedicalCreateView(LoginRequiredMixin, CreateView):
 
     def get_initial(self, *args, **kwargs):
         initial = super(self.__class__, self).get_initial(**kwargs)
-        initial['resolved'] = True
+        medical_capacity = Capacity.objects.filter(name='Medical')
+        initial['provider'] = Profile.objects.filter(capacities__in=medical_capacity)
         return initial
 
     def get_context_data(self, **kwargs):
@@ -42,18 +43,42 @@ class MedicalCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         med_provider = form.cleaned_data.get('provider')
-        med_description = form.cleaned_data.get('description')
+        med_entered_by = self.request.user.profile
+        med_temperature = form.cleaned_data.get('temperature')
+        med_pulse = form.cleaned_data.get('pulse')
+        med_blood_pressure = form.cleaned_data.get('blood_pressure')
+        med_weight = form.cleaned_data.get('weight')
+        med_height = form.cleaned_data.get('height')
+        med_oxgyen_level = form.cleaned_data.get('oxgyen_level')
+        med_vaccines_received = form.cleaned_data.get('vaccines_received')
+        med_allergies = form.cleaned_data.get('allergies')
+        med_medications = form.cleaned_data.get('medications')
+        med_chronic_medical_problems = form.cleaned_data.get('chronic_medical_problems')
+        med_symptoms = form.cleaned_data.get('symptoms')
+        med_diagnosis = form.cleaned_data.get('diagnosis')
+        med_treatment = form.cleaned_data.get('treatment')
+        med_follow_up_needed = form.cleaned_data.get('follow_up_needed')
         med_notes = form.cleaned_data.get('notes')
-        med_resolved = form.cleaned_data.get('resolved')
         asylee = get_object_or_404(Asylee, id=self.kwargs.get('asy_id'))
-        med, med_c = Medical.objects.get_or_create(
+        med = Medical.objects.create(
             provider = med_provider,
-            description = med_description,
+            entered_by = med_entered_by,
+            temperature = med_temperature,
+            pulse = med_pulse,
+            blood_pressure = med_blood_pressure,
+            weight = med_weight,
+            height = med_height,
+            oxgyen_level = med_oxgyen_level,
+            vaccines_received = med_vaccines_received,
+            allergies = med_allergies,
+            medications = med_medications,
+            chronic_medical_problems = med_chronic_medical_problems,
+            symptoms = med_symptoms,
+            diagnosis = med_diagnosis,
+            treatment = med_treatment,
+            follow_up_needed = med_follow_up_needed,
             notes = med_notes,
         )
-        if med_resolved:
-            med.resolution_time = timezone.now()
-            med.save()
         asylee.medicals.add(med)
         asylee.save()
         # return to parent detail
