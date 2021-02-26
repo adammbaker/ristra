@@ -133,6 +133,42 @@ class Profile(models.Model):
     def name(self):
         return self.user.get_full_name()
     
+    @property
+    def is_capable_clothes(self):
+        return 'Clothes' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_departurebags(self):
+        return 'Departure Bags' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_food(self):
+        return 'Food' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_hotelrunner(self):
+        return 'Hotel Runner' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_intake(self):
+        return 'Intake' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_medical(self):
+        return 'Medical' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_travel(self):
+        return 'Travel' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_transportation(self):
+        return 'Transportation' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_volunteercoordinator(self):
+        return 'Volunteer Coordinator' in self.capacities.values_list('name', flat=True)
+    
     def __str__(self):
         return f'{self.name}'
 

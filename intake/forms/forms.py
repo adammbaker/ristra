@@ -24,6 +24,7 @@ class DateTimeInput(forms.DateTimeInput):
         kwargs["format"] = "%Y-%m-%dT%H:%M"
         super().__init__(**kwargs)
 
+
 class SignUpForm(UserCreationForm):
     name = forms.CharField(help_text="First and last name", max_length=300)
     email = forms.EmailField(max_length=300)
