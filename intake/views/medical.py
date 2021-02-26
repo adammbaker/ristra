@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -92,8 +94,10 @@ class MedicalDetailView(LoginRequiredMixin, DetailView):
     def get_object(self, **kwargs):
         medical_capacity = Capacity.objects.get(name='Medical')
         medical_in_user_capacities = medical_capacity in self.request.user.profile.capacities.all()
-        # if 
-        return self.model.objects.get(id=self.kwargs['med_id'])
+        if self.request.user.profile.is_capable_medical:
+            return self.model.objects.get(id=self.kwargs['med_id'])
+        messages.warning(self.request, ('You do not have appropriate access for this page'))
+        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
 class MedicalEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'

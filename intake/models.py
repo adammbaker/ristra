@@ -602,6 +602,7 @@ class Medical(models.Model):
     follow_up_needed = encrypt(models.TextField(verbose_name="Follow up needed", null=True, blank=True))
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
+    @property
     def asylee(self):
         return self.asylee_set.first()
 
