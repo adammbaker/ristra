@@ -1,43 +1,11 @@
 {% extends 'intake/base.html' %}
 
+{% load my_tags %}
+
+{% block title %}{{ location.name }} List :: Ristra Refuge{% endblock %}
+
 {% block content %}
 
-  <div class="card">
-    <table class="table mb-0">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Intake Buses</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for unit in location_list %}
-          <tr>
-            <td class="align-middle">{{ unit.name }}</td>
-            <td class="align-middle">{{ unit.organization.location }}</td>
-            <td class="align-middle">{{ unit.intakebuses.count }}
-            <td class="text-right">
-              <a href="{% url 'location:detail' unit.id %}" class="card_link">See more</a>
-            </td>
-          </tr>
-        {% empty %}
-          <tr>
-            <td class="bg-light text-center font-italic" colspan="10">No locations found matching your request</td>
-          </tr>
-        {% endfor %}
-        {% if user.profile.role == 'site_coordinator' or user.profile.role == 'team_lead' %}
-        <tr>
-            <td colspan="10">
-                <a href="{% url 'location:add' unit.organization.id %}" class="btn btn-primary">Add New Location&nbsp;
-                <span class="badge badge-light">+</span></a>
-            </td>
-        </tr>
-        {% endif %}
-      </tbody>
-      {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
-    </table>
-  </div>
-  
+{% include "intake/location_list_inclusion.html" %}
+
 {% endblock %}

@@ -147,5 +147,24 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
             hoh.sick_other = sick_form.cleaned_data.get('sick_other', False)
         hoh.save()
         return redirect('headofhousehold:detail', hoh_id = hoh.id)
-        # return render(request, self.template_name, {'vaccine_form_class': vaccine_form_class, 'sick_form_class': sick_form_class})
-        # return render(request, self.template_name, {'form': form, 'profile_form': profile_form})
+
+
+
+class HeadOfHouseholdOverview(LoginRequiredMixin, DetailView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+    template_name = 'intake/headofhousehold_overview.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['lod'] = 'partial'
+        return super().get_context_data(**kwargs)
+
+
+class HeadOfHouseholdDetail(LoginRequiredMixin, DetailView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+
+
+class HeadOfHouseholdList(LoginRequiredMixin, ListView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'

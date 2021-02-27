@@ -2,6 +2,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
  
+## [0.6.4] - 2021-02-26
+
+ 
+### Added
+ 
+### Changed
+
+### Fixed
+- [intake/models.py](https://github.com/adammbaker/ristra/commit/f007565b8b23e471c853834eb2690e6aae929518)
+  A field in Medical was fixed to accurately reflect its field name; copy-and-paste issue
+ 
 ## [0.6.3] - 2021-02-25
 HTML5 datetime picker, README.
  

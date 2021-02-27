@@ -174,3 +174,11 @@ def staging(request):
         'url': 'http://www.ristra.com',
     }
     return HttpResponse(template.render(context, request))
+
+
+def cardtest(request):
+    'Gives an overview of the user'
+    template = loader.get_template('intake/card-test.html')
+    context = {
+    }
+    return HttpResponse(template.render(context, request))

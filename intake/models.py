@@ -253,7 +253,7 @@ class Organization(models.Model):
     def breadcrumbs(self, bc=''):
         model = self.name
         if bc != '':
-            return """<li class="breadcrumb-item"><a href="/organization/%(id)s/detail">%(model)s</a></li>""" % {
+            return """<li class="breadcrumb-item"><a href="/organization/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc
         if bc == '':
@@ -308,7 +308,7 @@ class Location(models.Model):
         parent = self.organization
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -359,7 +359,7 @@ class IntakeBus(models.Model):
         parent = self.location
         model = self.number
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -415,7 +415,7 @@ class Asylee(models.Model):
         parent = self.householdhead
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -464,7 +464,7 @@ class HeadOfHousehold(Asylee):
         parent = self.intakebus
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/headofhousehold/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/headofhousehold/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -510,7 +510,7 @@ class Sponsor(models.Model):
         parent = self.headofhousehold
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -559,7 +559,7 @@ class TravelPlan(models.Model):
         parent = self.headofhousehold
         model = 'Travel Plan'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model
             } + bc)
         if bc == '':
@@ -610,7 +610,7 @@ class Medical(models.Model):
         parent = self.asylee
         model = 'Medical'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':

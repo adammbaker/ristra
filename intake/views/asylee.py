@@ -223,5 +223,24 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             asylee.sick_other = sick_form.cleaned_data.get('sick_other', False)
         asylee.save()
         return redirect('headofhousehold:detail', hoh_id = asylee.householdhead.id)
-        # return render(request, self.template_name, {'vaccine_form_class': vaccine_form_class, 'sick_form_class': sick_form_class})
-        # return render(request, self.template_name, {'form': form, 'profile_form': profile_form})
+
+
+
+class AsyleeOverview(LoginRequiredMixin, DetailView):
+    model = Asylee
+    pk_url_kwarg = 'asy_id'
+    template_name = 'intake/asylee_overview.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['lod'] = 'partial'
+        return super().get_context_data(**kwargs)
+
+
+class AsyleeDetail(LoginRequiredMixin, DetailView):
+    model = Asylee
+    pk_url_kwarg = 'asy_id'
+
+
+class AsyleeList(LoginRequiredMixin, ListView):
+    model = Asylee
+    pk_url_kwarg = 'asy_id'

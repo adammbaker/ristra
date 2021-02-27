@@ -1,0 +1,4 @@
+<h1>{{location.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">{{location.organization.location}}</h6>
+<p class="card-text">{{location.intakebuses.count}} {% if location.intakebuses.count == 1 %}bus{% else %}buses{% endif %} associated with this location
+<p class="card-text">{{location.notes}}</p>

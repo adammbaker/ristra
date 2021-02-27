@@ -15,7 +15,7 @@
       {% if user.profile.affiliation %}
         <li class="list-group-item"><h3>Organizations to which you are affiliated</h3></li>
         
-        <a href="{% url 'organization:detail' user.profile.affiliation.id %}" class="active list-group-item list-group-item-action">
+        <a href="{% url 'organization:overview' user.profile.affiliation.id %}" class="active list-group-item list-group-item-action">
           <div class="d-flex w-100 justify-content-between">
             <u><h5 class="mb-1">{{ user.profile.affiliation.name }}</h5></u>
             <!-- <small></small> -->
