@@ -595,7 +595,7 @@ class Medical(models.Model):
     vaccines_received = encrypt(models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received"))
     allergies = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
     medications = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications"))
-    chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+    chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Chronic health issues"))
     symptoms = encrypt(models.TextField(verbose_name="Symptoms observed", null=True, blank=True))
     diagnosis = encrypt(models.TextField(verbose_name="Diagnosis", null=True, blank=True))
     treatment = encrypt(models.TextField(verbose_name="Treatment", null=True, blank=True))
