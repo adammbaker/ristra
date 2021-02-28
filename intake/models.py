@@ -622,7 +622,7 @@ class TravelPlan(models.Model):
     def __str__(self):
         return 'Travel Plan for %(hoh_name)s: %(travel_company)s Conf #%(conf)s' % {
             'hoh_name': self.headofhousehold.name,
-            'travel_company': self.travel_mode,
+            'travel_company': self.travel_mode.title(),
             'conf': self.confirmation,
         }
 

@@ -15,7 +15,7 @@
 
 <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
-        <tr><td>Phone #:</td><td><a href='tel:{{sponsor.phone_number|to_phone_number:True}}'>{{sponsor.phone_number|to_phone_number}}</a></td></tr>
+        <tr><td>Phone #:</td><td>{% if sponsor.phone_number.count >= 7 %}<a href='tel:{{sponsor.phone_number|to_phone_number:True}}'>{{sponsor.phone_number|to_phone_number}}</a>{% else %}{{sponsor.phone_number|to_phone_number}}{% endif %}</td></tr>
         {% if sponsor.address %}<tr><td>Address:</td><td>{{sponsor.address|title}}</td></tr>{% endif %}
         {% if sponsor.location %}<tr><td> </td><td>{{sponsor.location}}</td></tr>{% endif %}
         {% if sponsor.relation %}<tr><td>Relation:</td><td>{{sponsor.relation|title}}</td></tr>{% endif %}

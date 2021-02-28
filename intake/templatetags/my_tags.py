@@ -27,13 +27,11 @@ def shorten(obj, length=100):
 @register.filter
 def to_phone_number(number, callable=False):
     'Convert a 10 character string into (xxx) xxx-xxxx'
-    if number.startswith('+1'):
-        number = number[2:].strip()
-    number = [x for x in number if x.isdigit()]
-    if len(number) == 10:
-        first = ''.join(number[0:3])
-        second = ''.join(number[3:6])
-        third = ''.join(number[6:10])
+    number_copy = [x for x in number if x.isdigit()]
+    if len(number_copy) == 10:
+        first = ''.join(number_copy[0:3])
+        second = ''.join(number_copy[3:6])
+        third = ''.join(number_copy[6:10])
         if callable:
             return f'{first}-{second}-{third}'
         return f'({first}) {second}-{third}'

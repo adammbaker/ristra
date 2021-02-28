@@ -281,5 +281,10 @@ class AsyleeDelete(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        hoh_id = self.model.objects.get(id=self.kwargs.get('asy_id')).householdhead.id
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        asy = self.model.objects.get(id=self.kwargs.get('asy_id'))
+        # If the Asylee is not a HeadOfHousehold, delete Asylee and send to HoH
+        if asy != asy.householdhead.asylee_ptr:
+            hoh_id = asy.householdhead.id
+            return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        # Else, if Asylee is also HeadOfHousehold, delete both and send to IntakeBus
+        return reverse_lazy('intakebus:overview', kwargs={'ib_id': asy.householdhead.intakebus.id})

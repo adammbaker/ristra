@@ -3,13 +3,13 @@
 {% if headofhousehold.travel_plan %}
 {% else %}
   <div class="alert alert-warning" role="alert">
-    Please add a Travel Plan
+    Please add a Travel Plan below
   </div>
 {% endif %}
 {% if headofhousehold.sponsor %}
 {% else %}
   <div class="alert alert-warning" role="alert">
-    Please add a sponsor
+    Please add a Sponsor below
   </div>
 {% endif %}
 {% for asylee in headofhousehold.asylees.all %}
