@@ -2,12 +2,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
  
-## [0.6.4] - 2021-02-26
+## [0.6.4] - 2021-02-27
 
  
 ### Added
 - [Card test](https://github.com/adammbaker/ristra/commit/dbccee7c0458975a595281be29b4122963b3cde7#diff-100f5cc8a43b048b6d0b681a121803f37e4db8910d96e2704cb5dbe97d19a25f)
   Added a card test view for debug/design purposes
+- Models
+  Models now have Update and Delete views as well as descriptive detail and curt overview views.
  
 ### Changed
 - Templates
