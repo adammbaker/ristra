@@ -175,21 +175,10 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
-        print('TRIP UP')
-        print(instance)
         Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    print('TRIP SA')
-    print(type(instance))
-    print(type(instance.profile))
-    print('S', type(sender))
-    # print(instance.profile.name)
-    print(instance.profile.role)
-    print(instance.profile.languages.all())
-    print(instance.profile.capacities.all())
-    print(instance.profile.phone_number)
     instance.profile.save()
 
 class Campaign(models.Model):
@@ -334,8 +323,8 @@ class Location(models.Model):
 class IntakeBus(models.Model):
     id = HashidAutoField(primary_key=True)
     headsofhousehold = models.ManyToManyField('HeadOfHousehold', verbose_name='Heads of Households')
-    origin = models.CharField(max_length=300, verbose_name='City of origin of the bus')
-    state = models.CharField(verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES, default='other')
+    origin = models.CharField(max_length=300, default='El Paso', verbose_name='City of origin of the bus')
+    state = models.CharField(default='tx', verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES)
     arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now)
     number = models.CharField(verbose_name="Descriptive bus name", max_length=300, null=True, blank=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
@@ -392,11 +381,11 @@ class Asylee(models.Model):
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
-    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
+    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True, blank=True)
     had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease')
     had_covid_vaccine = models.BooleanField(default=False, verbose_name='Has received the COVID vaccine')
     covid_vaccine_doses = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine doses received", validators=[MinValueValidator(0),MaxValueValidator(2)])
-    vaccine_received = models.CharField(max_length=100, null=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
+    vaccine_received = models.CharField(max_length=100, null=True, blank=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
     sick_covid = models.BooleanField(default=False, verbose_name="Is currently sick from COVID")
     sick_other = models.BooleanField(default=False, verbose_name="Is currently sick but not from COVID")
     # tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
@@ -410,6 +399,58 @@ class Asylee(models.Model):
     @property
     def age(self):
         return (timezone.now().date() - self.date_of_birth).days//365
+    
+    @property
+    def had_covid_disease_str(self):
+        string = []
+        if self.sex == 'male':
+            string.append('He')
+        elif self.sex == 'female':
+            string.append('She')
+        else:
+            string.append('They')
+        if self.had_covid_disease:
+            if self.sex in ('male', 'female'):
+                string.append('<b>HAS</b>')
+            elif self.sex in ('other'):
+                string.append('<b>HAVE</b>')
+        else:
+            if self.sex in ('male', 'female'):
+                string.append('has <b>NOT</b>')
+            elif self.sex in ('other'):
+                string.append('have <b>NOT</b>')
+        return ' '.join(string) + ' had COVID-19 disease.'
+    
+    @property
+    def had_covid_vaccine_str(self):
+        string = []
+        if self.sex == 'male':
+            string.append('He')
+        elif self.sex == 'female':
+            string.append('She')
+        else:
+            string.append('They')
+        if self.had_covid_disease:
+            if self.sex in ('male', 'female'):
+                string.append('<b>HAS</b>')
+            elif self.sex in ('other'):
+                string.append('<b>HAVE</b>')
+            string.append(f'received {self.covid_vaccine_doses} doses of the {self.vaccine_received} vaccine.')
+        else:
+            if self.sex in ('male', 'female'):
+                string.append('has <b>NOT</b>')
+            elif self.sex in ('other'):
+                string.append('have <b>NOT</b>')
+            string.append('received any COVID-19 vaccine.')
+        return ' '.join(string)
+    
+    @property
+    def pronoun(self):
+        if self.sex == 'male':
+            return 'he'
+        if self.sex == 'female':
+            return 'she'
+        return 'they'
 
     def breadcrumbs(self, bc=''):
         parent = self.householdhead
@@ -551,9 +592,13 @@ class TravelPlan(models.Model):
     @property
     def travel_time(self):
         if self.eta and self.travel_date:
-            return f'{self.eta - self.travel_date}'
+            return self.eta - self.travel_date
         else:
             return 'No ETA entered'
+    
+    @property
+    def departure_time(self):
+        return min(self.travel_date, self.city_van_date)
 
     def breadcrumbs(self, bc=''):
         parent = self.headofhousehold

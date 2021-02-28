@@ -6,12 +6,20 @@ All notable changes to this project will be documented in this file.
 
  
 ### Added
+- [Card test](https://github.com/adammbaker/ristra/commit/dbccee7c0458975a595281be29b4122963b3cde7#diff-100f5cc8a43b048b6d0b681a121803f37e4db8910d96e2704cb5dbe97d19a25f)
+  Added a card test view for debug/design purposes
  
 ### Changed
+- Templates
+  Templates are a lot more reusable and flexible. I've switched from one view to several views with templates that you can plug-and-play. This reduces complexity of generic views and also more closely aligns with how generic views should be integrated.
 
 ### Fixed
 - [intake/models.py](https://github.com/adammbaker/ristra/commit/f007565b8b23e471c853834eb2690e6aae929518)
   A field in Medical was fixed to accurately reflect its field name; copy-and-paste issue
+- [Typo](https://github.com/adammbaker/ristra/commit/dbccee7c0458975a595281be29b4122963b3cde7#diff-f216c3e9acfe834e1af705b9fae4e7fd9e1fd4a3d9710d952dd9596214379806)
+  There was a typo in the footer. How embarassing.
+- [intake/models.py](https://github.com/adammbaker/ristra/commit/dbccee7c0458975a595281be29b4122963b3cde7#diff-2b8788fe07dd603a3b6ee130f6ab32e676ee82c24c3a63497e2ea41664d127e1)
+  Fixed the breadcrumbs to allow for Overview views instead of DetailViews
  
 ## [0.6.3] - 2021-02-25
 HTML5 datetime picker, README.

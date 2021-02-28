@@ -1,17 +1,103 @@
 {% extends 'intake/base.html' %}
 
 {% block title %}
-    Medical Issue Detailed View
+    Medical Issue Detailed View :: RistraRefuge
 {% endblock %}
 
 {% block content %}
 
-    <h1>Patient: {{medical.asylee.name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">From {{medical.asylee.headofhousehold.country_of_origin|title}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Arrived on {{medical.asylee.headofhousehold.intakebus.number}} at {{medical.asylee.headofhousehold.intakebus.arrival_time}}</h6>
-    <p class="card-text">Medical provider: {{medical.provider}}</p>
-    <p class="card-text">Data entry: {{medical.entered_by}}</p>
-    <p class="card-text">Notes: {{medical.notes}}</p>
+{% if medical.asylee.sick_covid %}
+<div class="alert alert-danger" role="alert">
+  {{ medical.asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
+</div>
+{% endif %}
+
+<h1>Patient: {{medical.asylee.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">From {{medical.asylee.headofhousehold.country_of_origin|title}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Arrived on {{ medical.asylee.headofhousehold.intakebus.number }} at {{ medical.asylee.headofhousehold.intakebus.arrival_time }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Headed to {{ medical.asylee.householdhead.destination }} by {{ medical.asylee.headofhousehold.travel_plan.departure_time }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Language{% if medical.asylee.householdhead.languages.count > 1 %}s{% endif %} spoken:
+{% for language in medical.asylee.headofhousehold.languages.all %}
+    <span class="badge rounded-pill text-light bg-primary">{{ language|title }}</span>
+{% endfor %}
+</h6>
+<h6 class="card-subtitle mb-2 text-muted">Sex: {{medical.asylee.sex}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Age: {{medical.asylee.age}} years</h6>
+
+
+  <table class="table-sm table-striped table-borderless mb-0">
+    <tbody>
+      <thead><tr><td>Medical provider:</td><td>{{medical.provider}}</td></tr></thead>
+      <thead><tr><td>Data entry by</td><td>{{medical.entered_by}}</td></tr></thead>
+      <tr><td></td><td>{{ medical.asylee.pronoun|title }} 
+      {% if medical.asylee.sex == 'male' or medical.asylee.sex == 'female' %}
+        {% if medical.asylee.had_covid_disease %}
+          HAS
+          {% else %} has NOT
+        {% endif %}
+        {% else %}
+        {% if medical.asylee.had_covid_disease %}
+          HAVE
+          {% else %} have NOT
+        {% endif %}
+      {% endif %} had COVID-19.</td></tr>
+      <tr><td></td><td>{{ medical.asylee.pronoun|title }} 
+      {% if medical.asylee.sex == 'male' or medical.asylee.sex == 'female' %}
+        {% if medical.asylee.had_covid_disease %}
+          HAS
+          {% else %} has NOT
+        {% endif %}
+        {% else %}
+        {% if medical.asylee.had_covid_vaccine %}
+          HAVE
+          {% else %} have NOT
+        {% endif %}
+      {% endif %} had COVID-19 vaccine. {% if medical.asylee.had_covid_vaccine %}{{medical.asylee.vaccine_received|title}}: {{medical.asylee.covid_vaccine_doses}} dose{% if medical.asylee.covid_vaccine_doses == 1 %}{% else %}s{% endif %}.{% endif %}</td></tr>
+      {% if medical.asylee.sick_covid %}<tr><td></td><td>
+        {{ medical.asylee.pronoun|title }} 
+        {% if medical.asylee.sex == 'male' or medical.asylee.sex == 'female' %}is{% else %}are{% endif %}
+          sick with COVID-19.</td></tr>
+      {% endif %}
+
+      {% if medical.asylee.sick_other %}<tr><td></td><td>
+        {{ medical.asylee.pronoun|title }} 
+        {% if medical.asylee.sex == 'male' or medical.asylee.sex == 'female' %}is{% else %}are{% endif %}
+          sick (but not from COVID-19).</td></tr>
+      {% endif %}
+
+      {% if medical.temperature %}<tr><td>Temperature:</td><td>{{ medical.temperature }}ºF</td></tr>{% endif %}
+      {% if medical.pulse %}<tr><td>Pulse:</td><td> {{ medical.pulse }}</td></tr>{% endif %}
+      {% if medical.blood_pressure %}<tr><td>Blood pressure:</td><td> {{ medical.blood_pressure }}</td></tr>{% endif %}
+      {% if medical.weight %}<tr><td>Weight:</td><td> {{ medical.weight }} lbs</td></tr>{% endif %}
+      {% if medical.height %}<tr><td>Height:</td><td> {{ medical.height }}</td></tr>{% endif %}
+      {% if medical.oxgyen_level %}<tr><td>Blood oxygen level:</td><td> {{ medical.oxgyen_level }}</td></tr>{% endif %}
+      {% if medical.vaccines_received %}<tr><td>Additional vaccines received:</td><td> {{ medical.vaccines_received }}</td></tr>{% endif %}
+      {% if medical.allergies %}<tr><td>Allergies:</td><td> {{ medical.allergies }}</td></tr>{% endif %}
+      {% if medical.medications %}<tr><td>Medications:</td><td> {{ medical.medications }}</td></tr>{% endif %}
+      {% if medical.chronic_medical_problems %}<tr><td>Chronic medical problems:</td><td> {{ medical.chronic_medical_problems }}</td></tr>{% endif %}
+      {% if medical.symptoms %}<tr><td>Symptoms:</td><td> {{ medical.symptoms }}</td></tr>{% endif %}
+      {% if medical.diagnosis %}<tr><td>Diagnosis:</td><td> {{ medical.diagnosis }}</td></tr>{% endif %}
+      {% if medical.treatment %}<tr><td>Treatment:</td><td> {{ medical.treatment }}</td></tr>{% endif %}
+      {% if medical.follow_up_needed %}<tr><td>Follow up needed:</td><td> {{ medical.follow_up_needed }}</td></tr>{% endif %}
+      {% if medical.notes %}<tr><td>Notes:</td><td> {{ medical.notes }}</td></tr>{% endif %}
+    </tbody>
+  </table><br><br>
+
+{% if lod == "partial" %}
+  <a href="{% url 'medical:detail' med_id=medical.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
+{% else %}
+  <a href="{% url 'asylee:overview' asy_id=medical.asylee.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to {{ medical.asylee.name }}</button></a><br>
+
+  {% if user.profile.is_capable_medical %}
     <br><br>
+    <a href="{% url 'medical:update' medical.id %}">
+      <button type="button" class="btn btn-warning">Update Medical Issue</button>
+    </a>
+    <br><br>
+    <a href="{% url 'medical:delete' medical.id %}">
+      <button type="button" class="btn btn-danger">Delete Medical Issue</button>
+    </a>
+  {% endif %}
+{% endif %}
 
 {% endblock %}

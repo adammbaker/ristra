@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from intake.forms.medical import MedicalForm
 from intake.models import Asylee, Capacity, HeadOfHousehold, Medical, Profile
 
@@ -83,9 +85,9 @@ class MedicalCreateView(LoginRequiredMixin, CreateView):
         )
         asylee.medicals.add(med)
         asylee.save()
-        # return to parent detail
-        print('Sending to asylee detail for', asylee.id)
-        return redirect('asylee:detail', asy_id = asylee.id)
+        # return to parent overview
+        print('Sending to asylee overview for', asylee.id)
+        return redirect('asylee:overview', asy_id = asylee.id)
 
 class MedicalDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -108,59 +110,37 @@ class MedicalEditView(LoginRequiredMixin, UpdateView):
         return self.model.objects.get(id=self.kwargs['med_id'])
 
 
+class MedicalUpdate(LoginRequiredMixin, UpdateView):
+    'Allows a privileged user to to edit/update the instance of an object'
+    model = Medical
+    parent = Asylee
+    # fields = ('provider','temperature','pulse','blood_pressure','weight','height','oxgyen_level','vaccines_received','allergies','medications','chronic_medical_problems','symptoms','diagnosis','treatment','follow_up_needed','notes',)
+    form_class = MedicalForm
+    pk_url_kwarg = 'med_id'
+    template_name = 'intake/generic-form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['button_text'] = 'Update %(model)s' % {
+            'model': self.model.__name__
+        }
+        kwargs['title'] = 'Edit a%(article_n)s %(model)s to %(target)s' % {
+            'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
+            'model': self.model.__name__,
+            'target': self.parent.__name__
+        }
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        return reverse_lazy('medical:detail', kwargs={'med_id': self.kwargs.get('med_id')})
 
 
-# @method_decorator([login_required], name='dispatch')
-# class MedicalCreationView(LoginRequiredMixin, CreateView):
-#     model = Medical
-#     form_class = MedicalForm
-#     template_name = 'intake/medical-add-form.html'
-#
-#     def get_initial(self, *args, **kwargs):
-#         initial = super(self.__class__, self).get_initial(**kwargs)
-#         initial['resolved'] = True
-#         return initial
-#
-#     def get_context_data(self, **kwargs):
-#         kwargs['user_type'] = 'Medical Issue'
-#         kwargs['asylee'] = Asylee.objects.get(id=self.kwargs['asylee_id'])
-#         return super().get_context_data(**kwargs)
-#
-#     def form_valid(self, form):
-#         med_provider = form.cleaned_data['provider']
-#         med_description = form.cleaned_data['description']
-#         med_notes = form.cleaned_data['notes']
-#         med_resolved = form.cleaned_data['resolved']
-#         asylee = get_object_or_404(Asylee, id=self.kwargs['asylee_id'])
-#         med, med_c = Medical.objects.get_or_create(
-#             provider = med_provider,
-#             description = med_description,
-#             notes = med_notes,
-#         )
-#         if med_resolved:
-#             med.resolution_time = timezone.now()
-#             med.save()
-#         asylee.medicals.add(med)
-#         asylee.save()
-#         # return to parent detail
-#         print('Sending to asylee detail for', asylee.id)
-#         return redirect('asylee:detail', asylee_id = asylee.id)
-#
-# class MedicalDetailView(LoginRequiredMixin, ListView):
-#     'Shows the current Medical'
-#     model = Medical
-#     context_object_name = 'med'
-#     ordering = ('-id', )
-#     paginate_by = 0
-#     template_name = 'intake/medical-detail.html'
-#
-#     def get_queryset(self):
-#         queryset = get_object_or_404(self.model, id=self.kwargs['med_id'])
-#         return queryset
-#
-#     def get_context_data(self, **kwargs):
-#         # Call the base implementation first to get the context
-#         context = super(self.__class__, self).get_context_data(**kwargs)
-#         # Create any data and add it to the context
-#         context['active_view'] = self.context_object_name
-#         return context
+class MedicalDelete(LoginRequiredMixin, DeleteView):
+    model = Medical
+    pk_url_kwarg = 'med_id'
+    template_name = 'intake/confirm_delete.html'
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        asy_id = self.model.objects.get(id=self.kwargs.get('med_id')).asylee.id
+        return reverse_lazy('asylee:overview', kwargs={'asy_id': asy_id})

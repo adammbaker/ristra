@@ -1,3 +1,36 @@
-<h1>{{intakebus.number}}</h1>
-<h6 class="card-subtitle mb-2 text-muted">Arrived at {{intakebus.location}} on {{intakebus.arrival_time}}</h6>
-<p class="card-text">{{intakebus.notes}}</p>
+{% load my_tags %}
+
+<h1>{{ intakebus.number }}</h1>
+<h6 class="card-subtitle mb-2 text-muted">Arrived at {{ intakebus.location }} on {{ intakebus.arrival_time }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Coming from {{ intakebus.origin_location }}</h6>
+{% if lod == 'partial' %}
+<p class="card-text">{{ intakebus.notes|shorten }}</p>
+{% else %}
+<p class="card-text">{{ intakebus.notes }}</p>
+{% endif %}
+
+{% if lod == 'partial' %}
+{% else %}
+  <table class="table-sm table-striped table-borderless mb-0">
+    <tbody>
+    {% if intakebus.headsofhousehold %}<tr><td>Number of households:</td><td>{{ intakebus.headsofhousehold.count }}</td></tr>{% endif %}
+    </tbody>
+  </table><br><br>
+{% endif %}
+
+{% if lod == "partial" %}
+  <a href="{% url 'intakebus:detail' ib_id=intakebus.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
+{% else %}
+  <a href="{% url 'intakebus:overview' ib_id=intakebus.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+
+{% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
+  <br><br>
+  <a href="{% url 'intakebus:update' intakebus.id %}">
+    <button type="button" class="btn btn-warning">Update {{ intakebus.number }}</button>
+  </a>
+  <br><br>
+  <a href="{% url 'intakebus:delete' intakebus.id %}">
+    <button type="button" class="btn btn-danger">Delete {{ intakebus.number }}</button>
+  </a>
+  {% endif %}
+{% endif %}

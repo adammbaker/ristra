@@ -1,0 +1,20 @@
+{% extends 'intake/base.html' %}
+
+{% load bootstrap4 %}
+{% bootstrap_css %}         {# Embed Bootstrap CSS #}
+{% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
+
+{% block title %}Delete {{ object }} :: RistraRefuge{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+<div class="row">
+    <div class="col-md-8 col-sm-10 col-12">
+        <h2>Are you sure you want to delete "{{ object }}"?</h2>
+        <form role="form" class="form-horizontal" method="post">
+            {% csrf_token %}
+            {% buttons submit='Confirm delete' layout='horizontal' %}{% endbuttons %}
+        </form>
+    </div>
+</div>
+{% endblock %}

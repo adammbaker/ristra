@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.edit import FormView
 from intake.forms.asylee import AsyleeForm, AsyleeHealthFollowUpForm, AsyleeVaccineForm, AsyleeSickForm
 from intake.models import Asylee, HeadOfHousehold
@@ -50,11 +52,12 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             name = asylee_name,
             sex = asylee_sex,
             date_of_birth = asylee_date_of_birth,
-            phone_number = asylee_phone_number,
-            had_covid_disease = asylee_had_covid_disease,
-            had_covid_vaccine = asylee_had_covid_vaccine,
-            notes = asylee_notes,
         )
+        asylee.phone_number = asylee_phone_number
+        asylee.had_covid_disease = asylee_had_covid_disease
+        asylee.had_covid_vaccine = asylee_had_covid_vaccine
+        asylee.notes = asylee_notes
+        asylee.save()
         hoh.asylees.add(asylee)
         hoh.save()
         # if Asylee is currently sick or has received a COVID vaccine
@@ -74,7 +77,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             return redirect('asylee:health sick', asy_id = asylee.id)
         # return to parent detail
         print('Sending to faimly detail for', hoh.id)
-        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+        return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
 class AsyleeDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -244,3 +247,39 @@ class AsyleeDetail(LoginRequiredMixin, DetailView):
 class AsyleeList(LoginRequiredMixin, ListView):
     model = Asylee
     pk_url_kwarg = 'asy_id'
+
+
+class AsyleeUpdate(LoginRequiredMixin, UpdateView):
+    'Allows a privileged user to to edit/update the instance of an object'
+    model = Asylee
+    parent = HeadOfHousehold
+    fields = ('name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','notes',)
+    # form_class = AsyleeForm
+    pk_url_kwarg = 'asy_id'
+    template_name = 'intake/generic-form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['button_text'] = 'Update %(model)s' % {
+            'model': self.model.__name__
+        }
+        kwargs['title'] = 'Edit a%(article_n)s %(model)s to %(target)s' % {
+            'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
+            'model': self.model.__name__,
+            'target': self.parent.__name__
+        }
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        return reverse_lazy('asylee:detail', kwargs={'asy_id': self.kwargs.get('asy_id')})
+
+
+class AsyleeDelete(LoginRequiredMixin, DeleteView):
+    model = Asylee
+    pk_url_kwarg = 'asy_id'
+    template_name = 'intake/confirm_delete.html'
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        hoh_id = self.model.objects.get(id=self.kwargs.get('asy_id')).householdhead.id
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})

@@ -1,18 +1,43 @@
 {% extends 'intake/base.html' %}
 
+{% load my_tags %}
+
 {% block title %}
-    Sponsor Detailed View
+    Sponsor Detailed View :: RistraRefuge
 {% endblock %}
 
 {% block content %}
 
-    <h1>{{Sponsor.name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">For {{sponsor.headofhousehold.name}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Lives in {{sponsor.location}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Household is headed to {{sponsor.headofhousehold.destination}}</h6>
-    <p class="card-text">Phone #: {{sponsor.phone_number}}</p>
-    <p class="card-text">Address: {{sponsor.address}}, {{sponsor.location}}</p>
-    <p class="card-text">Notes: {{sponsor.notes}}</p>
+<h1>{{ sponsor.name }}</h1>
+<h6 class="card-subtitle mb-2 text-muted">For the household of {{ sponsor.headofhousehold.name }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Sponsor lives in {{ sponsor.location }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Household is headed to {{ sponsor.headofhousehold.destination }}</h6>
+
+<table class="table-sm table-striped table-borderless mb-0">
+    <tbody>
+        <tr><td>Phone #:</td><td><a href='tel:{{sponsor.phone_number|to_phone_number:True}}'>{{sponsor.phone_number|to_phone_number}}</a></td></tr>
+        {% if sponsor.address %}<tr><td>Address:</td><td>{{sponsor.address|title}}</td></tr>{% endif %}
+        {% if sponsor.location %}<tr><td> </td><td>{{sponsor.location}}</td></tr>{% endif %}
+        {% if sponsor.relation %}<tr><td>Relation:</td><td>{{sponsor.relation|title}}</td></tr>{% endif %}
+        {% if sponsor.notes %}<tr><td>Notes:</td><td>{{sponsor.notes}}</td></tr>{% endif %}
+    </tbody>
+</table><br><br>
+
+{% if lod == "partial" %}
+  <a href="{% url 'sponsor:detail' spon_id=sponsor.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
+{% else %}
+  <a href="{% url 'headofhousehold:overview' hoh_id=sponsor.headofhousehold.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to {{ sponsor.headofhousehold.name }}</button></a><br>
+
+  {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
     <br><br>
+    <a href="{% url 'sponsor:update' sponsor.id %}">
+      <button type="button" class="btn btn-warning">Update {{ sponsor.name }}</button>
+    </a>
+    <br><br>
+    <a href="{% url 'sponsor:delete' sponsor.id %}">
+      <button type="button" class="btn btn-danger">Delete {{ sponsor.name }}</button>
+    </a>
+  {% endif %}
+{% endif %}
 
 {% endblock %}

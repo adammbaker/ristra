@@ -77,7 +77,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         body.append('%(org_loc)s' % {'org_loc': org.location})
         body.append(f'\nPlease visit {get_current_site(self.request)}/requestqueue/')
         send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com'], fail_silently=False)
-        return redirect('organization:detail', org_id = org.id)
+        return redirect('organization:overview', org_id = org.id)
 
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
