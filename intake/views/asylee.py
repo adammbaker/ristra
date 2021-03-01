@@ -41,6 +41,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         asylee_name = form.cleaned_data.get('name')
+        asylee_a_number = form.cleaned_data.get('a_number')
         asylee_sex = form.cleaned_data.get('sex')
         asylee_date_of_birth = form.cleaned_data.get('date_of_birth')
         asylee_phone_number = form.cleaned_data.get('phone_number')
@@ -53,6 +54,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             sex = asylee_sex,
             date_of_birth = asylee_date_of_birth,
         )
+        asylee.a_number = asylee_a_number
         asylee.phone_number = asylee_phone_number
         asylee.had_covid_disease = asylee_had_covid_disease
         asylee.had_covid_vaccine = asylee_had_covid_vaccine

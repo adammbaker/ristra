@@ -1,7 +1,7 @@
 from django import template
 from django.utils import timezone
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 # Create your filters here.
 register = template.Library()
@@ -60,3 +60,10 @@ def time_to_now(obj, as_string=False):
         string += f'{hours}h {minutes}m'
         return string
     return td
+
+@register.filter
+def hdYIMp(obj):
+    'Takes a datetime object and returns it in mm dd YYYY II:MM p'
+    if isinstance(obj, datetime):
+        return obj.strftime('%h %d, %Y %I:%M %p')
+    return obj

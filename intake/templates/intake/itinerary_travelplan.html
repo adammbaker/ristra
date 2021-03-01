@@ -1,0 +1,10 @@
+{% load my_tags %}
+<tr><td colspan="3">&nbsp</td></tr>
+<tr><td>{{ asy.householdhead.travel_plan.travel_mode|title }}</td><td>&nbsp</td><td>{{ asy.householdhead.travel_plan.flight_number }}</td></tr>
+<tr><td><small class="text-muted">airline / aerolínea</small></td><td>&nbsp</td><td><small class="text-muted">flight number / número de vuelo</small></td></tr>
+<tr><td colspan="3">&nbsp</td></tr>
+<tr><td>{{ asy.householdhead.travel_plan.destination }}</td><td>&nbsp</td><td>{{ asy.householdhead.travel_plan.layovers|title }}</td></tr>
+<tr><td><small class="text-muted">destination / destinación</small></td><td>&nbsp</td><td><small class="text-muted">layover / parada</small></td></tr>
+<tr><td colspan="3">&nbsp</td></tr>
+<tr><td>{{ asy.householdhead.travel_plan.eta|hdYIMp }}</td><td>&nbsp</td><td>{{ asy.householdhead.travel_plan.travel_time }}</td></tr>
+<tr><td><small class="text-muted">eta / tiempo estimado de llegada</small></td><td>&nbsp</td><td><small class="text-muted">duration / duración</small></td></tr>

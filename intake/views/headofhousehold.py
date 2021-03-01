@@ -46,6 +46,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         hoh_intake_by = self.request.user
         hoh_name = form.cleaned_data.get('name')
+        hoh_a_number = form.cleaned_data.get('a_number')
         hoh_sex = form.cleaned_data.get('sex')
         hoh_date_of_birth = form.cleaned_data.get('date_of_birth')
         hoh_phone_number = form.cleaned_data.get('phone_number')
@@ -61,6 +62,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         ib = get_object_or_404(IntakeBus, id=self.kwargs.get('ib_id'))
         hoh, hoh_c = HeadOfHousehold.objects.get_or_create(
             name = hoh_name,
+            a_number = hoh_a_number,
             sex = hoh_sex,
             date_of_birth = hoh_date_of_birth,
             phone_number = hoh_phone_number,
@@ -206,3 +208,9 @@ class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):
         # TK get logging in here for user
         ib_id = self.model.objects.get(id=self.kwargs.get('hoh_id')).intakebus.id
         return reverse_lazy('intakebus:overview', kwargs={'ib_id': ib_id})
+
+
+class ItineraryDetail(LoginRequiredMixin, DetailView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+    template_name = 'intake/itinerary.html'

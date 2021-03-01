@@ -71,6 +71,7 @@ urlpatterns = [
         path('<hoh_id>/overview', headofhousehold.HeadOfHouseholdOverview.as_view(), name='overview'),
         path('<hoh_id>/update', headofhousehold.HeadOfHouseholdUpdate.as_view(), name='update'),
         path('<hoh_id>/delete', headofhousehold.HeadOfHouseholdDelete.as_view(), name='delete'),
+        path('<hoh_id>/itinerary', headofhousehold.ItineraryDetail.as_view(), name='itinerary'),
         path('followup/health/<hoh_id>', headofhousehold.HeadOfHouseholdHealthFollowUpTemplateView.as_view(), name='health follow up'),
         # path('<hoh_id>/', headofhousehold.HeadOfHouseholdDetailView.as_view(), name='detail'),
         # path('add/<ib_id>/', headofhousehold.HeadOfHouseholdCreationView.as_view(), name='add'),
