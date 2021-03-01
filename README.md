@@ -10,7 +10,6 @@ Join our Trello: https://trello.com/b/2WbNbMPk/ristra
 1. Install virtualenv and create a python3 virtual environment; `virtualenv -p python3 venv`.
 1. Activate the virtual environment; `source venv/bin/activate`.
 1. Download the necessary libraries; `pip install -r requirements.txt`.
-1. Run `python manage.py makemigrations`.
 1. Run `python manage.py migrate`.
 1. Run `python manage.py bootstrap` to initialize necessary tables.
 1. Run `python manage.py createsuperuser` and enter the credentials of a superuser.

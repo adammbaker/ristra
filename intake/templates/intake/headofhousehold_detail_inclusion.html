@@ -38,7 +38,7 @@
 {% else %}
   <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
-    {% if headofhousehold.intake_by %}<tr><td>Intake by:</td><td>{{ headofhousehold.intake_by }}</td></tr>{% endif %}
+    {% if headofhousehold.intake_by %}<tr><td>Intake by:</td><td>{% if headofhousehold.intake_by.name %}{{headofhousehold.intake_by.name}}{% else %}{{ headofhousehold.intake_by.user.username }}{% endif %}</td></tr>{% endif %}
     {% if headofhousehold.sponsor %}<tr><td>Sponsor:</td><td><a href="{% url 'sponsor:detail' spon_id=headofhousehold.sponsor.id %}">{{ headofhousehold.sponsor.name }}</a></td></tr>{% endif %}
     {% if headofhousehold.travel_plan %}<tr><td>Travel Plan:</td><td><a href="{% url 'travelplan:detail' tp_id=headofhousehold.travel_plan.id %}">Travel Plan detail</a></td></tr>{% endif %}
     {% if headofhousehold.days_traveling %}<tr><td>Days traveling:</td><td>{{ headofhousehold.days_traveling }}</td></tr>{% endif %}

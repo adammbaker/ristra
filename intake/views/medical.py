@@ -93,13 +93,19 @@ class MedicalDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
     model = Medical
 
+    def test_func(self):
+        return self.request.user.profile.is_capable_medical
+
     def get_object(self, **kwargs):
         medical_capacity = Capacity.objects.get(name='Medical')
         medical_in_user_capacities = medical_capacity in self.request.user.profile.capacities.all()
         if self.request.user.profile.is_capable_medical:
+            print('XX')
             return self.model.objects.get(id=self.kwargs['med_id'])
+        asy_id = self.model.objects.get(id=self.kwargs['med_id']).asylee.id
+        print('YY', asy_id)
         messages.warning(self.request, ('You do not have appropriate access for this page'))
-        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+        return reverse_lazy('asylee:overview', kwargs={'asy_id': asy_id})
 
 class MedicalEditView(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit the instance of an object'
