@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
  
+## [0.7.0] - 2021-03-01
+
+### Added
+- Reports - 
+  Reports are dynamically-generated updates of critical information. It is intended to be used be used by Site Coordinators to keep an eye on their organization.
+ 
+### Changed
+
+### Fixed
+ 
 ## [0.6.4] - 2021-02-28
 
 ### Added

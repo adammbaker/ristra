@@ -238,6 +238,13 @@ class Organization(models.Model):
             'city': self.city,
             'state': self.state.upper(),
         }
+    
+    @property
+    def is_active(self):
+        for loc in self.locations.all():
+            if loc.is_active:
+                return loc.is_active
+        return loc.is_active
 
     def breadcrumbs(self, bc=''):
         model = self.name
@@ -292,6 +299,13 @@ class Location(models.Model):
     @property
     def organization(self):
         return self.organization_set.first()
+    
+    @property
+    def is_active(self):
+        for ib in self.intakebuses.all():
+            if ib.is_active:
+                return ib.is_active
+        return ib.is_active
 
     def breadcrumbs(self, bc=''):
         parent = self.organization
@@ -339,6 +353,13 @@ class IntakeBus(models.Model):
             'city': self.origin,
             'st_abbr': self.state.upper()
         }
+    
+    @property
+    def is_active(self):
+        for hoh in self.headsofhousehold.all():
+            if hoh.is_active:
+                return hoh.is_active
+        return hoh.is_active
 
     @property
     def destination(self):
@@ -399,6 +420,10 @@ class Asylee(models.Model):
     @property
     def age(self):
         return (timezone.now().date() - self.date_of_birth).days//365
+    
+    @property
+    def is_active(self):
+        return self.householdhead.is_active
     
     @property
     def had_covid_disease_str(self):
@@ -483,8 +508,8 @@ class HeadOfHousehold(Asylee):
     asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='head_of_household', default=None)
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
-    lodging = models.CharField(verbose_name="Room assignment", max_length=300, null=True)
-    destination_city = models.CharField(verbose_name="Destination city", max_length=300, null=True)
+    lodging = models.CharField(verbose_name="Room assignment", max_length=300, null=True, blank=True)
+    destination_city = models.CharField(verbose_name="Destination city", max_length=300, null=True, blank=True)
     state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
     days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
     days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
@@ -500,6 +525,10 @@ class HeadOfHousehold(Asylee):
             'city': self.destination_city,
             'st_abbr': self.state.upper()
         }
+    
+    @property
+    def is_active(self):
+        return self.travel_plan.eta - timezone.now() > timedelta(-1)
 
     def breadcrumbs(self, bc=''):
         parent = self.intakebus
