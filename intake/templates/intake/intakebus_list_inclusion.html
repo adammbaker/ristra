@@ -1,0 +1,35 @@
+<div class="card">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>Household Name</th>
+        <th>Dest.</th>
+        <th>Households</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for unit in intakebus.headsofhousehold.all %}
+        <tr>
+          <td class="align-middle">{{ unit.headofhousehold.name }}</td>
+          <td class="align-middle">{{ unit.destination }}</td>
+          <td class="align-middle">{{ unit.asylees.count }}</td>
+          <td class="text-right">
+            <a href="{% url 'headofhousehold:overview' unit.id %}" class="card_link">See more</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td class="bg-light text-center font-italic" colspan="10">No heads of household found matching your request</td>
+        </tr>
+      {% endfor %}
+      <tr>
+          <td colspan="10">
+              <a href="{% url 'headofhousehold:add' intakebus.id %}" class="btn btn-primary">Add New Household&nbsp;
+              <span class="badge badge-light">+</span></a>
+          </td>
+      </tr>
+    </tbody>
+    {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+  </table>
+</div>

@@ -15,7 +15,7 @@
       {% if user.profile.affiliation %}
         <li class="list-group-item"><h3>Organizations to which you are affiliated</h3></li>
         
-        <a href="{% url 'organization:detail' user.profile.affiliation.id %}" class="active list-group-item list-group-item-action">
+        <a href="{% url 'organization:overview' user.profile.affiliation.id %}" class="active list-group-item list-group-item-action">
           <div class="d-flex w-100 justify-content-between">
             <u><h5 class="mb-1">{{ user.profile.affiliation.name }}</h5></u>
             <!-- <small></small> -->
@@ -26,14 +26,14 @@
 
       {% else %}
         
-        {% include 'intake/organization_list.html' with organization_list=organizations %}
+        {% include 'intake/organization_affiliate.html' with organization_list=organizations %}
         
       {% endif %}
       <br>
       {% if user.profile.affiliation %}
         {% for org in organizations %}
-        <li class="list-group-item"><h4>Additional organizations you can affiliate yourself with</h4></li>
-        <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
+        <li class="list-group-item"><h4>Organizations you can also affiliate yourself with</h4></li>
+        <a href="{% url 'organization:list' org.id %}" class="list-group-item list-group-item-action">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{ org.name }}</h5>
             <!-- <small></small> -->
@@ -48,32 +48,11 @@
     {% endif %}
     <br>
 
-    <!-- Success Alert -->
-    <div class="alert alert-success alert-dismissible fade show">
-        <strong>Success!</strong> Your message has been sent successfully.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {% if user.is_authenticated and user.profile.affiliation == None %}
+    <div class="jumbotron">
+      <p class="lead">Affiliating yourself with an organization will allow you to successfully partner with that organization and help them carry out their duties.
+        You must affiliate with an organization or, if you have the proper credentials, create a new organization.
+        Organizations that you wish to create must first be approved by a site administrator.</p>
     </div>
-    <!-- Error Alert -->
-    <div class="alert alert-danger alert-dismissible fade show">
-        <strong>Error!</strong> A problem has been occurred while submitting your data.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    <!-- Warning Alert -->
-    <div class="alert alert-warning alert-dismissible fade show">
-        <strong>Warning!</strong> There was a problem with your network connection.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    <!-- Info Alert -->
-    <div class="alert alert-info alert-dismissible fade show">
-        <strong>Info!</strong> Please read the comments carefully.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-
-    {% if user.is_authenticated %}
-        <h6>User is authenticated</h6>
-        <h6>|{{user.profile.role}}|</h6>
-        {% if sesh == True %}
-            <h6>Session is set</h6>
-        {% endif %}<!--endif django.session['user'] is set-->
-    {% endif %}<!--endif user.is_authenticated-->
+    {% endif %}
 {% endblock %}

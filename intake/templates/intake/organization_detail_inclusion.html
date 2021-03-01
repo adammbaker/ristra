@@ -1,0 +1,27 @@
+{% load my_tags %}
+
+{% if organization.is_valid == False %}
+  <!-- Warning Alert -->
+  <div class="alert alert-warning alert-dismissible fade show">
+    <strong>Please wait</strong> while our site admin approves your organization.
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+{% endif %}
+
+<h1>{{organization.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">{{organization.location}}</h6>
+{% if organization.is_valid != True %}
+  <span class="badge badge-pill badge-sm badge-danger">awaiting validation</span>
+{% endif %}
+
+{% if lod == "partial" %}
+  <p class="card-text">{{organization.notes|shorten}}</p>
+{% else %}
+  <p class="card-text">{{organization.notes}}</p>
+{% endif %}
+  <a href="{{organization.url}}" class="card-link">{{organization.url}}</a><br><br>
+{% if lod == "partial" %}
+  <a href="{% url 'organization:detail' org_id=organization.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
+{% else %}
+  <a href="{% url 'organization:overview' org_id=organization.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+{% endif %}

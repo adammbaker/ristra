@@ -1,0 +1,86 @@
+{% load my_tags %}
+
+{% if headofhousehold.travel_plan %}
+{% else %}
+  <div class="alert alert-warning" role="alert">
+    Please add a Travel Plan below
+  </div>
+{% endif %}
+{% if headofhousehold.sponsor %}
+{% else %}
+  <div class="alert alert-warning" role="alert">
+    Please add a Sponsor below
+  </div>
+{% endif %}
+{% for asylee in headofhousehold.asylees.all %}
+  {% if asylee.sick_covid %}
+  <div class="alert alert-danger" role="alert">
+    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
+  </div>
+  {% endif %}
+{% endfor %}
+
+<h1>Household of {{ headofhousehold.name }}</h1>
+<h6 class="card-subtitle mb-2 text-muted">From {{ headofhousehold.country_of_origin|title }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Language{% if headofhousehold.languages.count > 1 %}s{% endif %} spoken:
+    {% for language in headofhousehold.languages.all %}
+        <span class="badge rounded-pill text-light bg-primary">{{ language|title }}</span>
+    {% endfor %}
+</h6>
+<h6 class="card-subtitle mb-2 text-muted">{{ headofhousehold.intakebus.location.name }} room {{ headofhousehold.lodging }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Arrived on {{ headofhousehold.intakebus.number }} at {{ headofhousehold.intakebus.arrival_time }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Heading to {{ headofhousehold.destination }}</h6>
+{% if headofhousehold.travel_plan %}
+  <h6 class="card-subtitle mb-2 text-muted">Travel set for {{ headofhousehold.travel_plan.destination }}</h6>
+{% endif %}<br>
+
+{% if lod == 'partial' %}
+{% else %}
+  <table class="table-sm table-striped table-borderless mb-0">
+    <tbody>
+    {% if headofhousehold.intake_by %}<tr><td>Intake by:</td><td>{{ headofhousehold.intake_by }}</td></tr>{% endif %}
+    {% if headofhousehold.sponsor %}<tr><td>Sponsor:</td><td><a href="{% url 'sponsor:detail' spon_id=headofhousehold.sponsor.id %}">{{ headofhousehold.sponsor.name }}</a></td></tr>{% endif %}
+    {% if headofhousehold.travel_plan %}<tr><td>Travel Plan:</td><td><a href="{% url 'travelplan:detail' tp_id=headofhousehold.travel_plan.id %}">Travel Plan detail</a></td></tr>{% endif %}
+    {% if headofhousehold.days_traveling %}<tr><td>Days traveling:</td><td>{{ headofhousehold.days_traveling }}</td></tr>{% endif %}
+    {% if headofhousehold.days_detained %}<tr><td>Days detained:</td><td>{{ headofhousehold.days_detained }}</td></tr>{% endif %}
+    </tbody>
+  </table><br><br>
+
+<table class="table-sm table-striped table-borderless mb-0">
+  <tbody>
+    <thead><tr><td>MEMBERS OF THE HOUSEHOLD</td></tr></thead>
+    {% for asylee in headofhousehold.asylees.all %}
+      <tr><td>{{ asylee.name }}</td><td>{{ asylee.age }} years old</td><td><a href="{% url 'asylee:detail' asy_id=asylee.id %}">See more</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table><br><br>
+{% endif %}
+
+
+{% if lod == 'partial' %}
+<p class="card-text">{{ headofhousehold.notes|shorten }}</p>
+{% else %}
+<p class="card-text">{{ headofhousehold.notes }}</p>
+{% endif %}
+{% if lod == "partial" %}
+  <a href="{% url 'headofhousehold:detail' hoh_id=headofhousehold.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a>
+  {% if headofhousehold.travel_plan %}
+    <a href="{% url 'headofhousehold:itinerary' hoh_id=headofhousehold.id %}" class="card-link"><button type="button" class="btn btn-outline-dark btn-sm">See itinerary</button></a>
+  {% else %}
+    <button type="button" class="btn btn-outline-dark" disabled>See itinerary</button>
+  {% endif %}
+  <br>
+{% else %}
+  <a href="{% url 'headofhousehold:overview' hoh_id=headofhousehold.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+
+  {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
+  <br><br>
+  <a href="{% url 'headofhousehold:update' headofhousehold.id %}">
+    <button type="button" class="btn btn-warning">Update {{ headofhousehold.name }}</button>
+  </a>
+  <br><br>
+  <a href="{% url 'headofhousehold:delete' headofhousehold.id %}">
+    <button type="button" class="btn btn-danger">Delete {{ headofhousehold.name }}</button>
+  </a>
+  {% endif %}
+{% endif %}

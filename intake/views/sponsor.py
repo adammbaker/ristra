@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from intake.forms.sponsor import SponsorForm
 from intake.models import HeadOfHousehold, Sponsor
 
@@ -53,9 +55,9 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         )
         hoh.sponsor = sponsor
         hoh.save()
-        # return to parent detail
-        print('Sending to faimly detail for', hoh.id)
-        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+        # return to parent overview
+        print('Sending to faimly overview for', hoh.id)
+        return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
 class SponsorDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -74,62 +76,37 @@ class SponsorEditView(LoginRequiredMixin, UpdateView):
 
 
 
+class SponsorUpdate(LoginRequiredMixin, UpdateView):
+    'Allows a privileged user to to edit/update the instance of an object'
+    model = Sponsor
+    parent = HeadOfHousehold
+    # fields = '__all__'
+    form_class = SponsorForm
+    pk_url_kwarg = 'spon_id'
+    template_name = 'intake/generic-form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['button_text'] = 'Update %(model)s' % {
+            'model': self.model.__name__
+        }
+        kwargs['title'] = 'Edit a%(article_n)s %(model)s to %(target)s' % {
+            'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
+            'model': self.model.__name__,
+            'target': self.parent.__name__
+        }
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        return reverse_lazy('sponsor:detail', kwargs={'spon_id': self.kwargs.get('spon_id')})
 
 
+class SponsorDelete(LoginRequiredMixin, DeleteView):
+    model = Sponsor
+    pk_url_kwarg = 'spon_id'
+    template_name = 'intake/confirm_delete.html'
 
-
-
-# @method_decorator([login_required], name='dispatch')
-# class SponsorCreationView(LoginRequiredMixin, CreateView):
-#     model = Sponsor
-#     form_class = SponsorForm
-#     template_name = 'intake/sponsor-add-form.html'
-#
-#     def get_context_data(self, **kwargs):
-#         kwargs['user_type'] = 'Sponsor'
-#         kwargs['family'] = Family.objects.get(id=self.kwargs['fam_id'])
-#         return super().get_context_data(**kwargs)
-#
-#     def form_valid(self, form):
-#         sponsor_name = form.cleaned_data['name']
-#         sponsor_phone_number = form.cleaned_data['phone_number']
-#         sponsor_address = form.cleaned_data['address']
-#         sponsor_city = form.cleaned_data['city']
-#         sponsor_state = form.cleaned_data['state']
-#         sponsor_relation = form.cleaned_data['relation']
-#         sponsor_notes = form.cleaned_data['notes']
-#         fam = get_object_or_404(Family, id=self.kwargs['fam_id'])
-#         sponsor, sponsor_c = Sponsor.objects.get_or_create(
-#             name = sponsor_name,
-#             phone_number = sponsor_phone_number,
-#             address = sponsor_address,
-#             city = sponsor_city,
-#             state = sponsor_state,
-#             relation = sponsor_relation,
-#             notes = sponsor_notes,
-#         )
-#         print('FAM',fam.id, fam.family_name)
-#         fam.sponsor = sponsor
-#         fam.save()
-#         # return to parent detail
-#         print('Sending to faimly detail for', fam.id)
-#         return redirect('family:detail', fam_id = fam.id)
-#
-# class SponsorDetailView(LoginRequiredMixin, ListView):
-#     'Shows the current Sponsor'
-#     model = Sponsor
-#     context_object_name = 'sponsor'
-#     ordering = ('-id', )
-#     paginate_by = 0
-#     template_name = 'intake/sponsor-detail.html'
-#
-#     def get_queryset(self):
-#         queryset = get_object_or_404(self.model, id=self.kwargs['sponsor_id'])
-#         return queryset
-#
-#     def get_context_data(self, **kwargs):
-#         # Call the base implementation first to get the context
-#         context = super(self.__class__, self).get_context_data(**kwargs)
-#         # Create any data and add it to the context
-#         context['active_view'] = self.context_object_name
-#         return context
+    def get_success_url(self):
+        # TK get logging in here for user
+        hoh_id = self.model.objects.get(id=self.kwargs.get('spon_id')).headofhousehold.id
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})

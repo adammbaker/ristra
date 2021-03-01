@@ -1,0 +1,13 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}{{ intakebus.number }} Overview :: Ristra Refuge{% endblock %}
+
+{% block content %}
+
+{% include "intake/intakebus_detail_inclusion.html" with lod=lod %}
+
+<br><br>
+
+{% include "intake/intakebus_list_inclusion.html" %}
+
+{% endblock %}

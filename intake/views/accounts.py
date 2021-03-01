@@ -16,6 +16,7 @@ from django.views.generic.base import TemplateView
 from intake.forms.signup import ProfileForm, SignUpForm
 # from intake.forms.signup import NewSignUpForm, ProfileForm, SignUpForm, UserForm
 from intake.models import Profile, User
+from intake.templatetags.my_tags import to_phone_number
 from intake.tokens import account_activation_token
 
 # Create your views here.
@@ -60,7 +61,7 @@ class SignUpView(CreateView):
             profile.languages.set(form.cleaned_data.get('languages'))
             profile.capacities.set(form.cleaned_data.get('capacities'))
             profile.role = form.cleaned_data.get('role')
-            profile.phone_number = form.cleaned_data.get('phone_number')
+            profile.phone_number = to_phone_number(form.cleaned_data.get('phone_number'))
             profile.save()
 
             current_site = get_current_site(request)
@@ -217,8 +218,6 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         up_languages = form.cleaned_data.get('languages')
         up_capacities = form.cleaned_data.get('capacities')
         up_role = form.cleaned_data.get('role')
-        print('L',type(up_languages))
-        print('C',type(up_capacities))
         user = User.objects.get(id = self.request.user.id)
         # user.profile.name = up_name
         user.profile.phone_number = up_phone_number
@@ -226,6 +225,7 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         user.profile.capacities.set(up_capacities)
         user.profile.role = up_role
         user.save()
+        messages.success(self.request, ('Your profile was successfully updated!'))
         return redirect('user:update profile')
 
 # class LocationEditView(LoginRequiredMixin, UpdateView):

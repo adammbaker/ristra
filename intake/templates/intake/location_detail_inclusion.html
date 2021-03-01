@@ -1,0 +1,27 @@
+{% load my_tags %}
+
+<h1>{{location.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">{{ location.organization.location }}</h6>
+<p class="card-text">{{ location.intakebuses.count }} {% if location.intakebuses.count == 1 %}bus{% else %}buses{% endif %} associated with this location
+{% if lod == 'partial' %}
+<p class="card-text">{{ location.notes|shorten }}</p>
+{% else %}
+<p class="card-text">{{ location.notes }}</p>
+{% endif %}
+
+{% if lod == "partial" %}
+  <a href="{% url 'location:detail' loc_id=location.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
+{% else %}
+  <a href="{% url 'location:overview' loc_id=location.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+
+  {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
+  <br><br>
+  <a href="{% url 'location:update' location.id %}">
+    <button type="button" class="btn btn-warning">Update {{ location.name }}</button>
+  </a>
+  <br><br>
+  <a href="{% url 'location:delete' location.id %}">
+    <button type="button" class="btn btn-danger">Delete {{ location.name }}</button>
+  </a>
+  {% endif %}
+{% endif %}

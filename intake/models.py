@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, User
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -15,9 +16,13 @@ from shortener.models import UrlMap
 
 import hashlib
 from datetime import timedelta
+from django_cryptography.fields import encrypt
 from socket import gethostbyname, gethostname
 
 # Create your models here.
+def get_sentinel_user():
+    return get_user_model().objects.get_or_create(username='deleted')[0]
+
 class Capacity(models.Model):
     name = models.CharField(max_length=100, verbose_name='Capacity')
 
@@ -102,7 +107,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # is_team_lead = models.BooleanField(default=False)
     # is_site_coordinator = models.BooleanField(default=False)
-    role = models.CharField(max_length=50, default='volunteer')
+    role = models.CharField(max_length=50, null=True)
     email_confirmed = models.BooleanField(default=False)
     # name = models.CharField(verbose_name='Your name', max_length=300)
     phone_number = models.CharField(verbose_name='Your phone number', max_length=300)
@@ -128,27 +133,52 @@ class Profile(models.Model):
     def name(self):
         return self.user.get_full_name()
     
+    @property
+    def is_capable_clothes(self):
+        return 'Clothes' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_departurebags(self):
+        return 'Departure Bags' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_food(self):
+        return 'Food' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_hotelrunner(self):
+        return 'Hotel Runner' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_intake(self):
+        return 'Intake' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_medical(self):
+        return 'Medical' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_travel(self):
+        return 'Travel' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_transportation(self):
+        return 'Transportation' in self.capacities.values_list('name', flat=True)
+
+    @property
+    def is_capable_volunteercoordinator(self):
+        return 'Volunteer Coordinator' in self.capacities.values_list('name', flat=True)
+    
     def __str__(self):
         return f'{self.name}'
 
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
-        print('TRIP UP')
-        print(instance)
         Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    print('TRIP SA')
-    print(type(instance))
-    print(type(instance.profile))
-    print('S', type(sender))
-    # print(instance.profile.name)
-    print(instance.profile.role)
-    print(instance.profile.languages.all())
-    print(instance.profile.capacities.all())
-    print(instance.profile.phone_number)
     instance.profile.save()
 
 class Campaign(models.Model):
@@ -174,16 +204,16 @@ class Campaign(models.Model):
         }
 
 class Lead(models.Model):
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(Profile, on_delete=models.SET(get_sentinel_user), primary_key=True)
     specialty = models.CharField(verbose_name="Team lead area", max_length=100, choices=CAPACITY_CHOICES, default='other')
-    organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    organization = models.OneToOneField('Organization', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.user.username
 
 class SiteCoordinator(models.Model):
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
-    # organization = models.OneToOneField('Organization', on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(Profile, on_delete=models.SET(get_sentinel_user), primary_key=True)
+    # organization = models.OneToOneField('Organization', on_delete=models.SET(get_sentinel_user), null=True)
     organization = models.ManyToManyField('Organization', null=True)
 
     def to_card(self):
@@ -212,7 +242,7 @@ class Organization(models.Model):
     def breadcrumbs(self, bc=''):
         model = self.name
         if bc != '':
-            return """<li class="breadcrumb-item"><a href="/organization/%(id)s/detail">%(model)s</a></li>""" % {
+            return """<li class="breadcrumb-item"><a href="/organization/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc
         if bc == '':
@@ -248,9 +278,9 @@ class Organization(models.Model):
         }
 
 class RequestQueue(models.Model):
-    # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.CASCADE, null=True)
-    site_coordinator = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
-    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, null=True)
+    # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.SET(get_sentinel_user), null=True)
+    site_coordinator = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
+    organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
 
 class Location(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -267,7 +297,7 @@ class Location(models.Model):
         parent = self.organization
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/location/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -293,8 +323,8 @@ class Location(models.Model):
 class IntakeBus(models.Model):
     id = HashidAutoField(primary_key=True)
     headsofhousehold = models.ManyToManyField('HeadOfHousehold', verbose_name='Heads of Households')
-    origin = models.CharField(max_length=300, verbose_name='City of origin of the bus')
-    state = models.CharField(verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES, default='other')
+    origin = models.CharField(max_length=300, default='El Paso', verbose_name='City of origin of the bus')
+    state = models.CharField(default='tx', verbose_name="State of origin of the bus", max_length=100, choices=STATE_CHOICES)
     arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now)
     number = models.CharField(verbose_name="Descriptive bus name", max_length=300, null=True, blank=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
@@ -318,7 +348,7 @@ class IntakeBus(models.Model):
         parent = self.location
         model = self.number
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/intakebus/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -351,15 +381,15 @@ class Asylee(models.Model):
     medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
-    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True)
+    phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True, blank=True)
     had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease')
     had_covid_vaccine = models.BooleanField(default=False, verbose_name='Has received the COVID vaccine')
-    covid_vaccine_shots = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine shots received", validators=[MinValueValidator(0),MaxValueValidator(2)])
-    vaccine_received = models.CharField(max_length=100, null=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
+    covid_vaccine_doses = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine doses received", validators=[MinValueValidator(0),MaxValueValidator(2)])
+    vaccine_received = models.CharField(max_length=100, null=True, blank=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
     sick_covid = models.BooleanField(default=False, verbose_name="Is currently sick from COVID")
     sick_other = models.BooleanField(default=False, verbose_name="Is currently sick but not from COVID")
-    tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
-    legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
+    # tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
+    # legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
@@ -369,12 +399,64 @@ class Asylee(models.Model):
     @property
     def age(self):
         return (timezone.now().date() - self.date_of_birth).days//365
+    
+    @property
+    def had_covid_disease_str(self):
+        string = []
+        if self.sex == 'male':
+            string.append('He')
+        elif self.sex == 'female':
+            string.append('She')
+        else:
+            string.append('They')
+        if self.had_covid_disease:
+            if self.sex in ('male', 'female'):
+                string.append('<b>HAS</b>')
+            elif self.sex in ('other'):
+                string.append('<b>HAVE</b>')
+        else:
+            if self.sex in ('male', 'female'):
+                string.append('has <b>NOT</b>')
+            elif self.sex in ('other'):
+                string.append('have <b>NOT</b>')
+        return ' '.join(string) + ' had COVID-19 disease.'
+    
+    @property
+    def had_covid_vaccine_str(self):
+        string = []
+        if self.sex == 'male':
+            string.append('He')
+        elif self.sex == 'female':
+            string.append('She')
+        else:
+            string.append('They')
+        if self.had_covid_disease:
+            if self.sex in ('male', 'female'):
+                string.append('<b>HAS</b>')
+            elif self.sex in ('other'):
+                string.append('<b>HAVE</b>')
+            string.append(f'received {self.covid_vaccine_doses} doses of the {self.vaccine_received} vaccine.')
+        else:
+            if self.sex in ('male', 'female'):
+                string.append('has <b>NOT</b>')
+            elif self.sex in ('other'):
+                string.append('have <b>NOT</b>')
+            string.append('received any COVID-19 vaccine.')
+        return ' '.join(string)
+    
+    @property
+    def pronoun(self):
+        if self.sex == 'male':
+            return 'he'
+        if self.sex == 'female':
+            return 'she'
+        return 'they'
 
     def breadcrumbs(self, bc=''):
         parent = self.householdhead
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/asylee/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -397,7 +479,7 @@ class Asylee(models.Model):
 
 class HeadOfHousehold(Asylee):
     languages = models.ManyToManyField('Language', verbose_name='Languages Spoken')
-    intake_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
+    intake_by = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
     asylees = models.ManyToManyField('Asylee', verbose_name='Asylees', related_name='head_of_household', default=None)
     sponsor = models.OneToOneField('Sponsor', verbose_name='Sponsors', on_delete=models.SET_NULL, null=True)
     travel_plan = models.OneToOneField('TravelPlan', verbose_name='Travel Plans', on_delete=models.SET_NULL, null=True)
@@ -423,7 +505,7 @@ class HeadOfHousehold(Asylee):
         parent = self.intakebus
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/headofhousehold/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/headofhousehold/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -469,7 +551,7 @@ class Sponsor(models.Model):
         parent = self.headofhousehold
         model = self.name
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/sponsor/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':
@@ -486,16 +568,19 @@ class Sponsor(models.Model):
 
 class TravelPlan(models.Model):
     id = HashidAutoField(primary_key=True)
-    arranged_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True)
+    arranged_by = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
     confirmation = models.CharField(verbose_name="Confirmation #", max_length=100, null=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=100, null=True)
     destination_state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
     travel_date = models.DateTimeField(verbose_name="Departure time of travel", null=True)
     city_van_date = models.DateTimeField(verbose_name="Departure time on City Van", null=True)
     travel_food_prepared = models.BooleanField(verbose_name="Is travel food prepared?", default=False)
-    eta = models.DateTimeField(verbose_name="Estimated time of arrival", null=True)
+    eta = models.DateTimeField(verbose_name="Estimated arrival", null=True)
     travel_mode = models.CharField(verbose_name="Mode of travel", max_length=100, choices=TRAVEL_MODE_CHOICES, default='other')
+    layovers = models.CharField(max_length=300, verbose_name='Layover(s)', null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    # Airline only
+    flight_number = models.CharField(max_length=200, verbose_name='Flight #(s)', null=True)
 
     @property
     def destination(self):
@@ -504,11 +589,22 @@ class TravelPlan(models.Model):
             'st_abbr': self.destination_state.upper()
         }
 
+    @property
+    def travel_time(self):
+        if self.eta and self.travel_date:
+            return self.eta - self.travel_date
+        else:
+            return 'No ETA entered'
+    
+    @property
+    def departure_time(self):
+        return min(self.travel_date, self.city_van_date)
+
     def breadcrumbs(self, bc=''):
         parent = self.headofhousehold
         model = 'Travel Plan'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/travelplan/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model
             } + bc)
         if bc == '':
@@ -526,16 +622,29 @@ class TravelPlan(models.Model):
     def __str__(self):
         return 'Travel Plan for %(hoh_name)s: %(travel_company)s Conf #%(conf)s' % {
             'hoh_name': self.headofhousehold.name,
-            'travel_company': self.travel_mode,
+            'travel_company': self.travel_mode.title(),
             'conf': self.confirmation,
         }
 
 class Medical(models.Model):
     id = HashidAutoField(primary_key=True)
-    provider = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    issue_time = models.DateTimeField(verbose_name="Time the issue arose", auto_now_add=True)
-    resolution_time = models.DateTimeField(verbose_name="Time the issue was resolved", editable=True, null=True)
-    description = models.TextField(verbose_name="Description of issue", null=True, blank=True)
+    provider = models.ForeignKey(Profile, related_name="medical_provider", on_delete=models.SET(get_sentinel_user))
+    entered_by = models.ForeignKey(Profile, related_name="data_entry_volunteer", on_delete=models.SET(get_sentinel_user))
+    temperature = encrypt(models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Temperature ºF"))
+    # temperature = encrypt(models.FloatField(null=True, blank=True, verbose_name="Temperature ºF"))
+    pulse = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Pulse"))
+    blood_pressure = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Blood pressure"))
+    weight = encrypt(models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, verbose_name="Weight (lbs)", validators=[MinValueValidator(0)]))
+    height = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Height"))
+    oxgyen_level = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Oxygen level"))
+    vaccines_received = encrypt(models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received"))
+    allergies = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+    medications = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications"))
+    chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Chronic health issues"))
+    symptoms = encrypt(models.TextField(verbose_name="Symptoms observed", null=True, blank=True))
+    diagnosis = encrypt(models.TextField(verbose_name="Diagnosis", null=True, blank=True))
+    treatment = encrypt(models.TextField(verbose_name="Treatment", null=True, blank=True))
+    follow_up_needed = encrypt(models.TextField(verbose_name="Follow up needed", null=True, blank=True))
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
     @property
@@ -546,7 +655,7 @@ class Medical(models.Model):
         parent = self.asylee
         model = 'Medical'
         if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/detail">%(model)s</a></li>""" % {
+            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/overview">%(model)s</a></li>""" % {
                 'model': model, 'id': self.id
             } + bc)
         if bc == '':

@@ -1,0 +1,50 @@
+<br><br>
+<div class="card">
+  <li class="list-group-item"><h4>Please affiliate yourself with an organization below</h4></li>
+      {% for unit in organization_list %}
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="align-middle">{{ unit.name }}</td>
+          <td class="align-middle">{{ unit.location }}</td>
+          <td class="text-right">
+            <a href="{% url 'user:affiliate' unit.id %}" class="card_link">Affiliate</a>
+          </td>
+        </tr>
+      {% empty %}
+      <table class="table mb-0">
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="bg-light text-center font-italic" colspan="10">No organizations exist</td>
+        </tr>
+      {% endfor %}
+      {% if user.profile.role == 'site_coordinator' %}
+        {% if user.profile.can_create_organization == True %}
+          <tr>
+              <td colspan="10">
+                  <a href="{% url 'organization:add' user.id %}" class="btn btn-primary">Add New Organization&nbsp;
+                  <span class="badge badge-light">+</span></a>
+              </td>
+          </tr>
+        {% else %}
+            <tr>
+              <td colspan="10">
+                  <a href="{% url 'user:request permission' %}" class="btn btn-info">Request Permission to Add New Organization&nbsp;
+                  <span class="badge badge-light">+</span></a>
+              </td>
+          </tr>
+        {% endif %}
+      {% endif %}
+    </tbody>
+    {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+  </table>
+</div>

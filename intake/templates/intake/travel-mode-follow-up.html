@@ -1,0 +1,25 @@
+{% extends 'intake/base.html' %}
+
+{% load bootstrap4 %}
+{% bootstrap_css %}         {# Embed Bootstrap CSS #}
+{% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
+
+{% block title %}Follow Up Travel Mode Questionnaire{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-sm-10 col-12">
+        <h2>{{title}}</h2>
+        <form role="form" class="form-horizontal" method="post">
+            {% csrf_token %}
+            {% if request.session.travel_mode_category == 'Air' %}
+                {% bootstrap_form airline_form_class layout="horizontal" %}
+            {% endif %}
+            {% if request.session.travel_mode_category == 'Bus' %}
+                {% bootstrap_form busline_form_class layout="horizontal" %}
+            {% endif %}
+            {% buttons submit='Submit' reset='Reset' layout='horizontal' %}{% endbuttons %}
+        </form>
+    </div>
+</div>
+{% endblock %}
