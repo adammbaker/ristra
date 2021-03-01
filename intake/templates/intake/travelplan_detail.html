@@ -1,22 +1,55 @@
 {% extends 'intake/base.html' %}
 
+{% load my_tags %}
+
 {% block title %}
     Travel Plan Detailed View
 {% endblock %}
 
 {% block content %}
 
-    <h1>For {{travelplan.headofhousehold.name}}</h1>
-    <h6 class="card-subtitle mb-2 text-muted">Arranged by {{travelplan.arranged_by.name}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Household is heading to {{travelplan.headofhousehold.destination}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Travel plan is set for  {{travelplan.destination}}</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Traveling by {{travelplan.travel_mode|title}}</h6>
-    <p class="card-text">Confirmation #: {{travelplan.confirmation}}</p>
-    <p class="card-text">Time of travel: {{travelplan.travel_date}}</p>
-    <p class="card-text">Time of city van departure: {{travelplan.city_van_date}}</p>
-    <p class="card-text">Travel food is {% if travelplan.travel_food_prepared == False %}<strong>not</strong> {% endif %} prepared</p>
-    <p class="card-text">Household will be home approx {{travelplan.eta}}</p>
-    <p class="card-text">Notes: {{travelplan.notes}}</p>
+<h1>For {{travelplan.headofhousehold.name}}</h1>
+<h6 class="card-subtitle mb-2 text-muted">Arranged by {{travelplan.arranged_by.name}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Household is heading to {{travelplan.headofhousehold.destination}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Travel plan is set for  {{travelplan.destination}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Traveling by {{travelplan.travel_mode|title}}</h6>
+<p class="card-text">Confirmation #: {{travelplan.confirmation}}</p>
+<p class="card-text">Time of travel: {{travelplan.travel_date}}</p>
+<p class="card-text">Time of city van departure: {{travelplan.city_van_date}}</p>
+<p class="card-text">Travel food is {% if travelplan.travel_food_prepared == False %}<strong>not</strong> {% endif %} prepared</p>
+<p class="card-text">Household will be home approx {{travelplan.eta}}</p>
+
+<table class="table-sm table-striped table-borderless mb-0">
+    <tbody>
+    {% if travelplan.arranged_by %}<tr><td>Arranged by:</td><td>{{travelplan.arranged_by}}</td></tr>{% endif %}
+    {% if travelplan.confirmation %}<tr><td>Confirmation #:</td><td>{{travelplan.confirmation}}</td></tr>{% endif %}
+    {% if travelplan.destination %}<tr><td>Destination:</td><td>{{travelplan.destination}}</td></tr>{% endif %}
+    {% if travelplan.travel_date %}<tr><td>Travel time:</td><td>{{travelplan.travel_date}} <span class="card-subtitle mb-2 text-muted">(in {{travelplan.travel_date|time_to_now:True}})</span></td></tr>{% endif %}
+    {% if travelplan.city_van_date %}<tr><td>City van time:</td><td>{{travelplan.city_van_date}} <span class="card-subtitle mb-2 text-muted">(in {{travelplan.city_van_date|time_to_now:True}})</span></td></tr>{% endif %}
+    {% if travelplan.eta %}<tr><td>Estimated time of arrival:</td><td>{{travelplan.eta}} <span class="card-subtitle mb-2 text-muted">(in {{travelplan.eta|time_to_now:True}})</span></td></tr>{% endif %}
+    {% if travelplan.travel_time %}<tr><td>Duration of travel:</td><td>{{travelplan.travel_time|time_to_now:True}}</td></tr>{% endif %}
+    {% if travelplan.travel_mode %}<tr><td>Mode of travel:</td><td>{{travelplan.travel_mode|title}}</td></tr>{% endif %}
+    {% if travelplan.flight_number %}<tr><td>Flight #(s):</td><td>{{travelplan.flight_number}}</td></tr>{% endif %}
+    {% if travelplan.layovers %}<tr><td>Layovers:</td><td>{{travelplan.layovers}}</td></tr>{% endif %}
+    {% if travelplan.notes %}<tr><td>Notes:</td><td>{{travelplan.notes}}</td></tr>{% endif %}
+    </tbody>
+</table><br><br>
+
+{% if lod == "partial" %}
+  <a href="{% url 'travelplan:detail' tp_id=travelplan.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
+{% else %}
+  <a href="{% url 'headofhousehold:overview' hoh_id=travelplan.headofhousehold.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to {{ travelplan.headofhousehold.name }}</button></a><br>
+
+  {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
     <br><br>
+    <a href="{% url 'travelplan:update' travelplan.id %}">
+      <button type="button" class="btn btn-warning">Update Travel for {{ travelplan.headofhousehold.name }}</button>
+    </a>
+    <br><br>
+    <a href="{% url 'travelplan:delete' travelplan.id %}">
+      <button type="button" class="btn btn-danger">Delete Travel for {{ travelplan.headofhousehold.name }}</button>
+    </a>
+  {% endif %}
+{% endif %}
 
 {% endblock %}

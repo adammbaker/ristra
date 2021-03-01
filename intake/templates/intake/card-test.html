@@ -1,0 +1,13 @@
+{% extends 'intake/base.html' %}
+
+{% block content %}
+<h1>H1 header one</h1>
+<h1 class="card-title">h1 card title</h1>
+<h6 class="card-subtitle mb-2 text-muted">h6 card subtitle text muted</h6>
+<span class="badge badge-pill badge-sm badge-danger">span badge danger</span>
+<p class="card-text">p card text</p>
+<a href="{% url 'home' %}" class="card-link">a href card link</a><br>
+<small class="text-muted"><a href="{% url 'home' %}" class="card-link">small text muted card link</a></small><br>
+<small class="text-muted">small text muted</small>
+
+{% endblock %}

@@ -2,9 +2,11 @@ from intake.choices import TRAVEL_MODE_CHOICES
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from intake.choices import TRAVEL_MODE_CHOICES
 from intake.forms.sponsor import SponsorForm
 from intake.forms.travelplan import AirlineTravelPlanForm, BusTravelPlanForm, TravelPlanForm
@@ -72,9 +74,9 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         travel_mode_category = category_from_choices(TRAVEL_MODE_CHOICES, tp.travel_mode)
         print('TP_c', travel_mode_category)
         if travel_mode_category not in ('Air','Bus'):
-            # return to parent detail
-            print('Sending to faimly detail for', hoh.id)
-            return redirect('headofhousehold:detail', hoh_id = hoh.id)
+            # return to parent overview
+            print('Sending to faimly overview for', hoh.id)
+            return redirect('headofhousehold:overview', hoh_id = hoh.id)
         # if travel_mode_category == 'Air':
         #     self.request.session['travel_mode'] = 'Air'
         # elif travel_mode_category == 'Bus':
@@ -146,5 +148,39 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             tp.layovers = busline_form.cleaned_data.get('layovers')
         tp.save()
         return redirect('headofhousehold:detail', hoh_id = tp.headofhousehold.id)
-        # return render(request, self.template_name, {'vaccine_form_class': vaccine_form_class, 'sick_form_class': sick_form_class})
-        # return render(request, self.template_name, {'form': form, 'profile_form': profile_form})
+
+
+class TravelPlanUpdate(LoginRequiredMixin, UpdateView):
+    'Allows a privileged user to to edit/update the instance of an object'
+    model = TravelPlan
+    parent = HeadOfHousehold
+    # fields = ('confirmation','destination_city','destination_state','travel_date','city_van_date','travel_food_prepared','eta','travel_mode','layovers','notes','flight_number',)
+    form_class = TravelPlanForm
+    pk_url_kwarg = 'tp_id'
+    template_name = 'intake/generic-form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['button_text'] = 'Update %(model)s' % {
+            'model': self.model.__name__
+        }
+        kwargs['title'] = 'Edit a%(article_n)s %(model)s to %(target)s' % {
+            'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
+            'model': self.model.__name__,
+            'target': self.parent.__name__
+        }
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        return reverse_lazy('travelplan:detail', kwargs={'tp_id': self.kwargs.get('tp_id')})
+
+
+class TravelPlanDelete(LoginRequiredMixin, DeleteView):
+    model = TravelPlan
+    pk_url_kwarg = 'tp_id'
+    template_name = 'intake/confirm_delete.html'
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        hoh_id = self.model.objects.get(id=self.kwargs.get('tp_id')).headofhousehold.id
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})

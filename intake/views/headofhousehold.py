@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 # from intake.decorators import is_affiliated
 from intake.forms.asylee import AsyleeForm, AsyleeVaccineForm, AsyleeSickForm
 from intake.forms.headofhousehold import HeadOfHouseholdForm
@@ -44,6 +46,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         hoh_intake_by = self.request.user
         hoh_name = form.cleaned_data.get('name')
+        hoh_a_number = form.cleaned_data.get('a_number')
         hoh_sex = form.cleaned_data.get('sex')
         hoh_date_of_birth = form.cleaned_data.get('date_of_birth')
         hoh_phone_number = form.cleaned_data.get('phone_number')
@@ -59,6 +62,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         ib = get_object_or_404(IntakeBus, id=self.kwargs.get('ib_id'))
         hoh, hoh_c = HeadOfHousehold.objects.get_or_create(
             name = hoh_name,
+            a_number = hoh_a_number,
             sex = hoh_sex,
             date_of_birth = hoh_date_of_birth,
             phone_number = hoh_phone_number,
@@ -147,5 +151,66 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
             hoh.sick_other = sick_form.cleaned_data.get('sick_other', False)
         hoh.save()
         return redirect('headofhousehold:detail', hoh_id = hoh.id)
-        # return render(request, self.template_name, {'vaccine_form_class': vaccine_form_class, 'sick_form_class': sick_form_class})
-        # return render(request, self.template_name, {'form': form, 'profile_form': profile_form})
+
+
+
+class HeadOfHouseholdOverview(LoginRequiredMixin, DetailView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+    template_name = 'intake/headofhousehold_overview.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['lod'] = 'partial'
+        return super().get_context_data(**kwargs)
+
+
+class HeadOfHouseholdDetail(LoginRequiredMixin, DetailView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+
+
+class HeadOfHouseholdList(LoginRequiredMixin, ListView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+
+
+class HeadOfHouseholdUpdate(LoginRequiredMixin, UpdateView):
+    'Allows a privileged user to to edit/update the instance of an object'
+    model = HeadOfHousehold
+    parent = IntakeBus
+    fields = ('languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','notes',)
+    # form_class = HeadOfHouseholdForm
+    pk_url_kwarg = 'hoh_id'
+    template_name = 'intake/generic-form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['button_text'] = 'Update %(model)s' % {
+            'model': self.model.__name__
+        }
+        kwargs['title'] = 'Edit a%(article_n)s %(model)s to %(target)s' % {
+            'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
+            'model': self.model.__name__,
+            'target': self.parent.__name__
+        }
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        return reverse_lazy('headofhousehold:detail', kwargs={'hoh_id': self.kwargs.get('hoh_id')})
+
+
+class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+    template_name = 'intake/confirm_delete.html'
+
+    def get_success_url(self):
+        # TK get logging in here for user
+        ib_id = self.model.objects.get(id=self.kwargs.get('hoh_id')).intakebus.id
+        return reverse_lazy('intakebus:overview', kwargs={'ib_id': ib_id})
+
+
+class ItineraryDetail(LoginRequiredMixin, DetailView):
+    model = HeadOfHousehold
+    pk_url_kwarg = 'hoh_id'
+    template_name = 'intake/itinerary.html'
