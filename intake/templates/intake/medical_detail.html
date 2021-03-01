@@ -12,6 +12,8 @@
 </div>
 {% endif %}
 
+{% if user.profile.is_capable_medical %}
+
 <h1>Patient: {{medical.asylee.name}}</h1>
 <h6 class="card-subtitle mb-2 text-muted">From {{medical.asylee.householdhead.country_of_origin|title}}</h6>
 <h6 class="card-subtitle mb-2 text-muted">Arrived on {{ medical.asylee.householdhead.intakebus.number }} at {{ medical.asylee.householdhead.intakebus.arrival_time }}</h6>
@@ -98,6 +100,11 @@
       <button type="button" class="btn btn-danger">Delete Medical Issue</button>
     </a>
   {% endif %}
+{% endif %}
+
+{% else %}
+  <!--  user doesn't have medical permission -->
+  <a href="{{object}}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go back</button></a><br>
 {% endif %}
 
 {% endblock %}
