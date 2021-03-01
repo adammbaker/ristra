@@ -7,7 +7,10 @@
 <tr><td><small class="text-muted">destination / destinación</small></td><td>&nbsp</td><td><small class="text-muted">layover / parada</small></td></tr>
 <tr><td colspan="3">&nbsp</td></tr>
 <tr><td>{{ asy.householdhead.travel_plan.travel_date|hdYIMp }}</td><td>&nbsp</td><td>&nbsp</td></tr>
-<tr><td><small class="text-muted">departure time / hora de salida </small></td><td>&nbsp</td><td><small class="text-muted">duration / duración</small></td></tr>
+<tr><td><small class="text-muted">departure time / hora de salida </small></td><td colspan="2">&nbsp</td></tr>
 <tr><td colspan="3">&nbsp</td></tr>
 <tr><td>{{ asy.householdhead.travel_plan.eta|hdYIMp }}</td><td>&nbsp</td><td>{{ asy.householdhead.travel_plan.travel_time|time_to_now }}</td></tr>
 <tr><td><small class="text-muted">arrival time / hora de llegada</small></td><td>&nbsp</td><td><small class="text-muted">duration / duración</small></td></tr>
+<tr><td colspan="3">&nbsp</td></tr>
+<tr><td colspan="3">Notes / notas</td></tr>
+<tr><td colspan="3">{{ asy.householdhead.travel_plan.notes }}</td></tr>

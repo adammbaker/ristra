@@ -13,9 +13,9 @@
 {% endif %}
 
 <h1>Patient: {{medical.asylee.name}}</h1>
-<h6 class="card-subtitle mb-2 text-muted">From {{medical.asylee.headofhousehold.country_of_origin|title}}</h6>
-<h6 class="card-subtitle mb-2 text-muted">Arrived on {{ medical.asylee.headofhousehold.intakebus.number }} at {{ medical.asylee.headofhousehold.intakebus.arrival_time }}</h6>
-<h6 class="card-subtitle mb-2 text-muted">Headed to {{ medical.asylee.householdhead.destination }} by {{ medical.asylee.headofhousehold.travel_plan.departure_time }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">From {{medical.asylee.householdhead.country_of_origin|title}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Arrived on {{ medical.asylee.householdhead.intakebus.number }} at {{ medical.asylee.householdhead.intakebus.arrival_time }}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Headed to {{ medical.asylee.householdhead.destination }} by {{ medical.asylee.householdhead.travel_plan.departure_time }}</h6>
 <h6 class="card-subtitle mb-2 text-muted">Language{% if medical.asylee.householdhead.languages.count > 1 %}s{% endif %} spoken:
 {% for language in medical.asylee.headofhousehold.languages.all %}
     <span class="badge rounded-pill text-light bg-primary">{{ language|title }}</span>

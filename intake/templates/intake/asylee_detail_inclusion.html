@@ -8,14 +8,14 @@
 
 <h1>{{asylee.name}}</h1>
 <h6 class="card-subtitle mb-2 text-muted">Alien number: {{ asylee.a_number }}</h6>
-<h6 class="card-subtitle mb-2 text-muted">From {{asylee.headofhousehold.country_of_origin|title}}</h6>
-<h6 class="card-subtitle mb-2 text-muted">Language{% if household.languages.count > 1 %}s{% endif %} spoken:
-    {% for language in headofhousehold.languages.all %}
+<h6 class="card-subtitle mb-2 text-muted">From {{asylee.householdhead.country_of_origin|title}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Language{% if asylee.householdhead.languages.count > 1 %}s{% endif %} spoken:
+    {% for language in asylee.householdhead.languages.all %}
         <span class="badge rounded-pill text-light bg-primary">{{ language|title }}</span>
     {% endfor %}
 </h6>
-<h6 class="card-subtitle mb-2 text-muted">Arrived on {{asylee.headofhousehold.intakebus.number}} at {{asylee.headofhousehold.intakebus.arrival_time}}</h6>
-<h6 class="card-subtitle mb-2 text-muted">Heading to {{asylee.headofhousehold.destination}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Arrived on {{asylee.householdhead.intakebus.number}} at {{asylee.householdhead.intakebus.arrival_time}}</h6>
+<h6 class="card-subtitle mb-2 text-muted">Heading to {{asylee.householdhead.destination}}</h6>
 {% if lod == 'partial' %}
 <p class="card-text">{{ asylee.notes|shorten }}</p>
 {% else %}
