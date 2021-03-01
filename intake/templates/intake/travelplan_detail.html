@@ -43,11 +43,11 @@
   {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
     <br><br>
     <a href="{% url 'travelplan:update' travelplan.id %}">
-      <button type="button" class="btn btn-warning">Update Travel for {{ travelplan.headofhousehold.name }}</button>
+      <button type="button" class="btn btn-warning">Update Travel Plan for {{ travelplan.headofhousehold.name }}</button>
     </a>
     <br><br>
     <a href="{% url 'travelplan:delete' travelplan.id %}">
-      <button type="button" class="btn btn-danger">Delete Travel for {{ travelplan.headofhousehold.name }}</button>
+      <button type="button" class="btn btn-danger">Delete Travel Plan for {{ travelplan.headofhousehold.name }}</button>
     </a>
   {% endif %}
 {% endif %}
