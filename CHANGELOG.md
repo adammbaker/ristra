@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Fixed
+- [Models] (https://github.com/adammbaker/ristra/commit/345dc9ae92cfc38ab39a0978b3f1186848dfefef#diff-2b8788fe07dd603a3b6ee130f6ab32e676ee82c24c3a63497e2ea41664d127e1)
+  Removed requirement for Lodging to be specified during Head of Household intake.
  
 ## [0.6.4] - 2021-02-28
 
