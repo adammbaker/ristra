@@ -3,8 +3,11 @@ from intake.models import Capacity, Medical, Profile
 
 # Create your forms here.
 class MedicalForm(forms.ModelForm):
+
     provider = forms.ModelChoiceField(
-        queryset = Profile.objects.filter(capacities__in=Capacity.objects.filter(name='Medical'))
+        queryset = Profile.objects.filter(
+            capacities__in=Capacity.objects.filter(name='Medical'),
+        )
     )
     
     class Meta:

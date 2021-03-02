@@ -528,7 +528,10 @@ class HeadOfHousehold(Asylee):
     
     @property
     def is_active(self):
-        return self.travel_plan.eta - timezone.now() > timedelta(-1)
+        if self.travel_plan:
+            if self.travel_plan.eta:
+                return self.travel_plan.eta - timezone.now() > timedelta(-1)
+        return True
 
     def breadcrumbs(self, bc=''):
         parent = self.intakebus

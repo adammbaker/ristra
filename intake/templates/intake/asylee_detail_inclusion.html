@@ -1,5 +1,11 @@
 {% load my_tags %}
 
+{% if asylee.a_number %}
+{% else %}
+  <div class="alert alert-warning" role="alert">
+    Please add an A-number below
+  </div>
+{% endif %}
 {% if asylee.sick_covid %}
 <div class="alert alert-danger" role="alert">
   {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.

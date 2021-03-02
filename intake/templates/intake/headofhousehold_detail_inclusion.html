@@ -12,6 +12,12 @@
     Please add a Sponsor below
   </div>
 {% endif %}
+{% if headofhousehold.a_number %}
+{% else %}
+  <div class="alert alert-warning" role="alert">
+    Please add an A-number below
+  </div>
+{% endif %}
 {% for asylee in headofhousehold.asylees.all %}
   {% if asylee.sick_covid %}
   <div class="alert alert-danger" role="alert">

@@ -7,7 +7,7 @@
 <div class="container">
 <div class="row">
 <div class="col-sm-6">
-<table class="table-sm table table-striped mb-0">
+<table class="table-sm table table-borderless table-striped mb-0">
   <thead>
     <th colspan="2" style="text-align:center;">TOTAL EVER</th>
   </thead>
@@ -20,7 +20,7 @@
 </table><br><br>
 </div>
 <div class="col-sm-6">
-<table class="table-sm table table-striped mb-0">
+<table class="table-sm table table-borderless table-striped mb-0">
   <thead>
     <th colspan="2" style="text-align:center;">TOTAL ACTIVE</th>
   </thead>
@@ -29,6 +29,19 @@
     <tr><td>Active intake buses:</td><td>{{ ib_active_count }}</td></tr>
     <tr><td>Active households:</td><td>{{ hoh_active_count }}</td></tr>
     <tr><td>Active asylees:</td><td>{{ asy_active_count }}</td></tr>
+  </tbody>
+</table><br><br>
+</div>
+</div>
+<div class="col-sm-6">
+<table class="table-sm table table-borderless table-striped mb-0">
+  <thead>
+    <th colspan="2" style="text-align:center;">HOUSEHOLDS LACKING</th>
+  </thead>
+  <tbody>
+    <tr><td>Households lacking travel:</td><td>{{ hoh_no_tp }}</td></tr>
+    <tr><td>Households lacking sponsor:</td><td>{{ hoh_no_spon }}</td></tr>
+    <tr><td>Asylees lacking A-number:</td><td>{{ asy_no_a_anum }}</td></tr>
   </tbody>
 </table><br><br>
 </div>

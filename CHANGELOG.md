@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - [Templates] (https://github.com/adammbaker/ristra/commit/d7b60dacd77658ba493924a75075e785195f5c8f)
   Rearranged the Update and Delete model buttons to avoid them being accidentally invoked.
+- [User profile] (https://github.com/adammbaker/ristra/commit/6d012608a762107e7ce54364187228654b561463)
+  Changed the user's capacities selection to checkboxes.
 
 ### Fixed
 - [Models] (https://github.com/adammbaker/ristra/commit/345dc9ae92cfc38ab39a0978b3f1186848dfefef#diff-2b8788fe07dd603a3b6ee130f6ab32e676ee82c24c3a63497e2ea41664d127e1)

@@ -5,12 +5,23 @@ from intake.models import HeadOfHousehold, IntakeBus, Language
 
 # Create your forms here.
 class HeadOfHouseholdForm(forms.ModelForm):
+    # a_number = forms.CharField(
+    #     widget=forms.TextInput(
+    #         attrs={'placeholder': 'A-'},
+    #     )
+    # )
     phone_number = forms.CharField(
         required=False
     )
     date_of_birth = forms.DateField(
         help_text="MM/DD/YYYY",
-        widget=DateInput(),
+        widget=DateInput(
+            attrs={
+                'min':'1900-01-01',
+                'max':'2100-12-31',
+                'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            }
+        ),
     )
     languages = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
