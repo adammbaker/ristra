@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
   Reports are dynamically-generated updates of critical information. It is intended to be used be used by Site Coordinators to keep an eye on their organization.
  
 ### Changed
+- [Templates] (https://github.com/adammbaker/ristra/commit/d7b60dacd77658ba493924a75075e785195f5c8f)
+  Rearranged the Update and Delete model buttons to avoid them being accidentally invoked.
 
 ### Fixed
 - [Models] (https://github.com/adammbaker/ristra/commit/345dc9ae92cfc38ab39a0978b3f1186848dfefef#diff-2b8788fe07dd603a3b6ee130f6ab32e676ee82c24c3a63497e2ea41664d127e1)

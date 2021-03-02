@@ -146,7 +146,8 @@ class SignUpForm(UserCreationForm):
     capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
         queryset = Capacity.objects.all(),
-        required=True
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
     )
     phone_number = forms.CharField(
         help_text='Your phone number will be kept private and used only if necessary to contact you.'
@@ -220,6 +221,7 @@ class ProfileForm(forms.ModelForm):
     capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
         queryset = Capacity.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=True
     )
     phone_number = forms.CharField(
