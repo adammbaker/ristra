@@ -356,10 +356,13 @@ class IntakeBus(models.Model):
     
     @property
     def is_active(self):
-        for hoh in self.headsofhousehold.all():
-            if hoh.is_active:
-                return hoh.is_active
-        return hoh.is_active
+        if self.headsofhousehold.exists():
+            for hoh in self.headsofhousehold.all():
+                if hoh.is_active:
+                    return hoh.is_active
+            return hoh.is_active
+        # Bus may have just recently arrived; give them 6 hours to intake
+        return timezone.now() - self.arrival_time < timedelta(0.25)
 
     @property
     def destination(self):
