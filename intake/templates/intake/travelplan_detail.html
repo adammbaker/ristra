@@ -19,6 +19,9 @@
 <p class="card-text">Travel food is {% if travelplan.travel_food_prepared == False %}<strong>not</strong> {% endif %} prepared</p>
 <p class="card-text">Household will be home approx {{travelplan.eta}}</p>
 
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
 <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
     {% if travelplan.arranged_by %}<tr><td>Arranged by:</td><td>{{travelplan.arranged_by}}</td></tr>{% endif %}
@@ -34,6 +37,9 @@
     {% if travelplan.notes %}<tr><td>Notes:</td><td>{{travelplan.notes}}</td></tr>{% endif %}
     </tbody>
 </table><br><br>
+</div>
+</div>
+</div>
 
 {% if lod == "partial" %}
   <a href="{% url 'travelplan:detail' tp_id=travelplan.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
@@ -45,7 +51,7 @@
     <a href="{% url 'travelplan:update' travelplan.id %}">
       <button type="button" class="btn btn-warning">Update Travel Plan for {{ travelplan.headofhousehold.name }}</button>
     </a>
-    <br><br>
+    <div class="container">&nbsp</div><div class="container">&nbsp</div>
     <a href="{% url 'travelplan:delete' travelplan.id %}">
       <button type="button" class="btn btn-danger">Delete Travel Plan for {{ travelplan.headofhousehold.name }}</button>
     </a>

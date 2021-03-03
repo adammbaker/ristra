@@ -27,6 +27,9 @@
 <h6 class="card-subtitle mb-2 text-muted">Age: {{medical.asylee.age}} years</h6>
 
 
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
   <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
       <thead><tr><td>Medical provider:</td><td>{{medical.provider}}</td></tr></thead>
@@ -84,6 +87,9 @@
       {% if medical.notes %}<tr><td>Notes:</td><td> {{ medical.notes }}</td></tr>{% endif %}
     </tbody>
   </table><br><br>
+</div>
+</div>
+</div>
 
 {% if lod == "partial" %}
   <a href="{% url 'medical:detail' med_id=medical.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
@@ -95,7 +101,7 @@
     <a href="{% url 'medical:update' medical.id %}">
       <button type="button" class="btn btn-warning">Update Medical Issue</button>
     </a>
-    <br><br>
+    <div class="container">&nbsp</div><div class="container">&nbsp</div>
     <a href="{% url 'medical:delete' medical.id %}">
       <button type="button" class="btn btn-danger">Delete Medical Issue</button>
     </a>

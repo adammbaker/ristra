@@ -1,6 +1,39 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
+
+## [0.7.1] - 2021-03-02
+
+### Added
+- Reports - Added more reports
+  - Active Households
+  - Active Asylees
+  - At-A-Glance
+  - Households in Motion
+- [Sponsor] (https://github.com/adammbaker/ristra/commit/5118aadc801c9aa0ad947ee145a0971c196cec37)
+  Added ZIP code field to Sponsor
+
+### Changed
+- IntakeBus -
+  Now takes you to IntakeBus overview instead of detail
+- [Templates] (https://github.com/adammbaker/ristra/commit/19b79cd79b426e7a9a408d19a0568e9ea754bb20)
+  Formatted them a bit better
+
+## [0.7.0] - 2021-03-01
+
+### Added
+- Reports - 
+  Reports are dynamically-generated updates of critical information. It is intended to be used be used by Site Coordinators to keep an eye on their organization.
+ 
+### Changed
+- [Templates] (https://github.com/adammbaker/ristra/commit/d7b60dacd77658ba493924a75075e785195f5c8f)
+  Rearranged the Update and Delete model buttons to avoid them being accidentally invoked.
+- [User profile] (https://github.com/adammbaker/ristra/commit/6d012608a762107e7ce54364187228654b561463)
+  Changed the user's capacities selection to checkboxes.
+
+### Fixed
+- [Models] (https://github.com/adammbaker/ristra/commit/345dc9ae92cfc38ab39a0978b3f1186848dfefef#diff-2b8788fe07dd603a3b6ee130f6ab32e676ee82c24c3a63497e2ea41664d127e1)
+  Removed requirement for Lodging to be specified during Head of Household intake.
  
 ## [0.6.4] - 2021-02-28
 

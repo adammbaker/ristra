@@ -13,6 +13,9 @@
 <h6 class="card-subtitle mb-2 text-muted">Sponsor lives in {{ sponsor.location }}</h6>
 <h6 class="card-subtitle mb-2 text-muted">Household is headed to {{ sponsor.headofhousehold.destination }}</h6>
 
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
 <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
         <tr><td>Phone #:</td><td>{% if sponsor.phone_number.count >= 7 %}<a href='tel:{{sponsor.phone_number|to_phone_number:True}}'>{{sponsor.phone_number|to_phone_number}}</a>{% else %}{{sponsor.phone_number|to_phone_number}}{% endif %}</td></tr>
@@ -22,6 +25,9 @@
         {% if sponsor.notes %}<tr><td>Notes:</td><td>{{sponsor.notes}}</td></tr>{% endif %}
     </tbody>
 </table><br><br>
+</div>
+</div>
+</div>
 
 {% if lod == "partial" %}
   <a href="{% url 'sponsor:detail' spon_id=sponsor.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
@@ -33,7 +39,7 @@
     <a href="{% url 'sponsor:update' sponsor.id %}">
       <button type="button" class="btn btn-warning">Update {{ sponsor.name }}</button>
     </a>
-    <br><br>
+    <div class="container">&nbsp</div><div class="container">&nbsp</div>
     <a href="{% url 'sponsor:delete' sponsor.id %}">
       <button type="button" class="btn btn-danger">Delete {{ sponsor.name }}</button>
     </a>

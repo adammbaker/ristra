@@ -13,12 +13,12 @@ class Command(BaseCommand):
     #     parser.add_argument('action', nargs='+', type=str)
 
     def handle(self, *args, **options):
-        start = timezone.now()
+        start = timezone.localtime()
         self.initialize_capacities()
         self.initialize_languages()
         # self.initialize_lodging_types()
         # self.initialize_states()
-        done = timezone.now()
+        done = timezone.localtime()
 
     def initialize_capacities(self):
         self.stdout.write(self.style.WARNING('Initializing model Capacities'))

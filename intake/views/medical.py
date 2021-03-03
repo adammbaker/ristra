@@ -27,12 +27,6 @@ class MedicalCreateView(LoginRequiredMixin, CreateView):
     form_class = MedicalForm
     template_name = 'intake/generic-form.html'
 
-    def get_initial(self, *args, **kwargs):
-        initial = super(self.__class__, self).get_initial(**kwargs)
-        medical_capacity = Capacity.objects.filter(name='Medical')
-        initial['provider'] = Profile.objects.filter(capacities__in=medical_capacity)
-        return initial
-
     def get_context_data(self, **kwargs):
         kwargs['button_text'] = 'Add %(model)s' % {
             'model': self.model.__name__

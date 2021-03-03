@@ -11,11 +11,17 @@
 
 {% if lod == 'partial' %}
 {% else %}
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
   <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
     {% if intakebus.headsofhousehold %}<tr><td>Number of households:</td><td>{{ intakebus.headsofhousehold.count }}</td></tr>{% endif %}
     </tbody>
   </table><br><br>
+</div>
+</div>
+</div>
 {% endif %}
 
 {% if lod == "partial" %}
@@ -28,7 +34,7 @@
   <a href="{% url 'intakebus:update' intakebus.id %}">
     <button type="button" class="btn btn-warning">Update {{ intakebus.number }}</button>
   </a>
-  <br><br>
+  <div class="container">&nbsp</div><div class="container">&nbsp</div>
   <a href="{% url 'intakebus:delete' intakebus.id %}">
     <button type="button" class="btn btn-danger">Delete {{ intakebus.number }}</button>
   </a>

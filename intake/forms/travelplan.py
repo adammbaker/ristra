@@ -8,18 +8,36 @@ from datetime import datetime, timedelta
 class TravelPlanForm(forms.ModelForm):
     travel_date = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
-        widget=DateTimeInput(),
+        widget=DateTimeInput(
+            attrs={
+                'min':'2020-01-01T00:00:00',
+                'max':'2100-12-31T00:00:00',
+                'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}',
+            }
+        ),
         initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
     )
     city_van_date = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
-        widget=DateTimeInput(),
+        widget=DateTimeInput(
+            attrs={
+                'min':'2020-01-01T00:00:00',
+                'max':'2100-12-31T00:00:00',
+                'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}',
+            }
+        ),
         initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
     )
     eta = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
         label='Estimated Time of Arrival',
-        widget=DateTimeInput(),
+        widget=DateTimeInput(
+            attrs={
+                'min':'2020-01-01T00:00:00',
+                'max':'2100-12-31T00:00:00',
+                'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}',
+            }
+        ),
         initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
     )
 

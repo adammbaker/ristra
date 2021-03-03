@@ -1,6 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from intake.views import accounts, asylee, campaign, headofhousehold, intakebus, location, medical, organization, requestqueue, signup, sponsor, travelplan, users, views
+from intake.views import accounts, asylee, campaign, headofhousehold, intakebus
+from intake.views import location, medical, organization, reports, requestqueue, signup, sponsor, travelplan, users, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
@@ -141,6 +142,17 @@ urlpatterns = [
     #     path('taken/', point_of_contact.TakenQuizListView.as_view(), name='taken_quiz_list'),
     #     path('quiz/<int:pk>/', point_of_contact.take_quiz, name='take_quiz'),
     ], 'intake'), namespace='user')),
+
+    path('report/', include(([
+        path('ataglance', reports.AtAGlance.as_view(), name='at a glance'),
+        path('active/households', reports.ActiveHouseholds.as_view(), name='active households'),
+        path('active/asylees', reports.ActiveAsylees.as_view(), name='active asylees'),
+        # path('add/<hoh_id>', reports.TravelPlanCreateView.as_view(), name='add'),
+        # path('<tp_id>/detail', reports.TravelPlanDetailView.as_view(), name='detail'),
+        # path('<tp_id>/update', reports.TravelPlanUpdate.as_view(), name='update'),
+        # path('<tp_id>/delete', reports.TravelPlanDelete.as_view(), name='delete'),
+        # path('followup/<tp_id>', reports.TravelModeFollowUpTemplateView.as_view(), name='travel follow up'),
+    ], 'intake'), namespace='report')),
 
     # path('poc/', include(([
     #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),

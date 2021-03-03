@@ -1,5 +1,11 @@
 {% load my_tags %}
 
+{% if asylee.a_number %}
+{% else %}
+  <div class="alert alert-warning" role="alert">
+    Please add an A-number below
+  </div>
+{% endif %}
 {% if asylee.sick_covid %}
 <div class="alert alert-danger" role="alert">
   {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
@@ -25,6 +31,9 @@
 
 {% if lod == 'partial' %}
 {% else %}
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
 <table class="table-sm table-striped table-borderless mb-0">
   <tbody>
     {% if asylee.sex %}<tr><td>Sex:</td><td>{{ asylee.sex }}</td></tr>{% endif %}
@@ -46,6 +55,9 @@
     {% endif %}
   </tbody>
 </table><br><br>
+</div>
+</div>
+</div>
 {% endif %}
 
 
@@ -59,7 +71,7 @@
   <a href="{% url 'asylee:update' asylee.id %}">
     <button type="button" class="btn btn-warning">Update {{ asylee.name }}</button>
   </a>
-  <br><br>
+  <div class="container">&nbsp</div><div class="container">&nbsp</div>
   <a href="{% url 'asylee:delete' asylee.id %}">
     <button type="button" class="btn btn-danger">Delete {{ asylee.name }}</button>
   </a>
