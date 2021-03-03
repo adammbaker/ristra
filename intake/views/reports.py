@@ -96,7 +96,8 @@ class ActiveHouseholds(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         org = self.request.user.profile.affiliation
-        active_hohs = [x for x in HeadOfHousehold.objects.filter(intakebus__location__organization=org).all() if x.is_active]
+        active_hohs = [x for x in HeadOfHousehold.objects.filter(intakebus__location__organization=org).order_by('intakebus__arrival_time') if x.is_active]
+        sorted(active_hohs, key=lambda x: x.intakebus.arrival_time)
         kwargs['active_households'] = active_hohs
         return super().get_context_data(**kwargs)
 
@@ -111,6 +112,7 @@ class ActiveAsylees(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         org = self.request.user.profile.affiliation
-        active_asys = [x for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=org).order_by('head_of_household') if x.is_active]
+        active_asys = [x for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=org).order_by('head_of_household__intakebus__arrival_time','head_of_household') if x.is_active]
+        sorted(active_asys, key=lambda x: x.householdhead.intakebus.arrival_time)
         kwargs['active_asylees'] = active_asys
         return super().get_context_data(**kwargs)
