@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
   - Active Asylees
   - At-A-Glance
   - Households in Motion
+- Sponsor -
+  Added ZIP code field to Sponsor
 
 ### Changed
 - IntakeBus -
