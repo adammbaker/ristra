@@ -144,7 +144,9 @@ urlpatterns = [
     ], 'intake'), namespace='user')),
 
     path('report/', include(([
-        path('ataglance', reports.ReportAtAGlance.as_view(), name='at a glance'),
+        path('ataglance', reports.AtAGlance.as_view(), name='at a glance'),
+        path('active/households', reports.ActiveHouseholds.as_view(), name='active households'),
+        path('active/asylees', reports.ActiveAsylees.as_view(), name='active asylees'),
         # path('add/<hoh_id>', reports.TravelPlanCreateView.as_view(), name='add'),
         # path('<tp_id>/detail', reports.TravelPlanDetailView.as_view(), name='detail'),
         # path('<tp_id>/update', reports.TravelPlanUpdate.as_view(), name='update'),

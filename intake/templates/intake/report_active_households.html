@@ -1,0 +1,41 @@
+{% extends 'intake/base.html' %}
+
+{% load my_tags %}
+
+{% block title %}Active Households Report :: Ristra Refuge{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<div class="row">
+<div class="col-md">
+<table class="table-sm table table-borderless table-striped mb-0">
+  <thead>
+    <tr><th colspan="2" style="text-align:center;"><h4>ACTIVE HOUSEHOLDS: {{ active_households.count }}</h4></th></tr>
+    <tr>
+      <th>Household of</th>
+      <th>Number in Household</th>
+      <th>From</th>
+      <th>Destination</th>
+      <th>Time Here</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for unit in active_households %}
+    <tr>
+      <td>{{ unit.name }}</td>
+      <td>{{ unit.asylees.count }}</td>
+      <td>{{ unit.country_of_origin|title }}</td>
+      <td>{{ unit.destination }}</td>
+      <td>{{ unit.intakebus.arrival_time|time_to_now_abs:True }}</td>
+      <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.id %}">See more</a>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table><br><br>
+</div class="col-sm-6">
+</div class="row">
+</div class="container">
+
+{% endblock %}

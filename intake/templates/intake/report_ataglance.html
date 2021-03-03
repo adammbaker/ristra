@@ -5,6 +5,7 @@
 {% block content %}
 
 <div class="container">
+<h1>{{organization.name}} At-A-Glance</h1>
 <div class="row">
 <div class="col-sm-6">
 <table class="table-sm table table-borderless table-striped mb-0">
@@ -32,7 +33,6 @@
   </tbody>
 </table><br><br>
 </div>
-</div>
 <div class="col-sm-6">
 <table class="table-sm table table-borderless table-striped mb-0">
   <thead>
@@ -42,6 +42,19 @@
     <tr><td>Households lacking travel:</td><td>{{ hoh_no_tp }}</td></tr>
     <tr><td>Households lacking sponsor:</td><td>{{ hoh_no_spon }}</td></tr>
     <tr><td>Asylees lacking A-number:</td><td>{{ asy_no_a_anum }}</td></tr>
+  </tbody>
+</table><br><br>
+</div>
+<div class="col-sm-6">
+<table class="table-sm table table-borderless table-striped mb-0">
+  <thead>
+    <th colspan="2" style="text-align:center;">HOUSEHOLDS IN MOTION</th>
+  </thead>
+  <tbody>
+    <tr><td>Households arrived yesterday:</td><td>{{ hohs_arr_yday }}</td></tr>
+    <tr><td>Households arrived today:</td><td>{{ hohs_arr_today }}</td></tr>
+    <tr><td>Households leaving today:</td><td>{{ hohs_lvg_today }}</td></tr>
+    <tr><td>Households leaving tomorrow:</td><td>{{ hohs_lvg_tom }}</td></tr>
   </tbody>
 </table><br><br>
 </div>
