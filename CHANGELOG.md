@@ -10,12 +10,14 @@ All notable changes to this project will be documented in this file.
   - Active Asylees
   - At-A-Glance
   - Households in Motion
-- Sponsor -
+- [Sponsor] (https://github.com/adammbaker/ristra/commit/5118aadc801c9aa0ad947ee145a0971c196cec37)
   Added ZIP code field to Sponsor
 
 ### Changed
 - IntakeBus -
   Now takes you to IntakeBus overview instead of detail
+- [Templates] (https://github.com/adammbaker/ristra/commit/19b79cd79b426e7a9a408d19a0568e9ea754bb20)
+  Formatted them a bit better
 
 ## [0.7.0] - 2021-03-01
 
