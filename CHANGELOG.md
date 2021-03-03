@@ -1,7 +1,20 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
- 
+
+## [0.7.1] - 2021-03-02
+
+### Added
+- Reports - Added more reports
+  - Active Households
+  - Active Asylees
+  - At-A-Glance
+  - Households in Motion
+
+### Changed
+- IntakeBus -
+  Now takes you to IntakeBus overview instead of detail
+
 ## [0.7.0] - 2021-03-01
 
 ### Added
