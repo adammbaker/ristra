@@ -568,7 +568,7 @@ class Sponsor(models.Model):
 
     @property
     def location(self):
-        return f'{self.city}, {self.state} {self.zip_code}'
+        return f'{self.city}, {self.state.upper()} {self.zip_code}'
 
     def __str__(self):
         return '%(name)s - %(phone)s, lives in %(loc)s' % {

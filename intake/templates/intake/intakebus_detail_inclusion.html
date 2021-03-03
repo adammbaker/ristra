@@ -11,11 +11,17 @@
 
 {% if lod == 'partial' %}
 {% else %}
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
   <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
     {% if intakebus.headsofhousehold %}<tr><td>Number of households:</td><td>{{ intakebus.headsofhousehold.count }}</td></tr>{% endif %}
     </tbody>
   </table><br><br>
+</div>
+</div>
+</div>
 {% endif %}
 
 {% if lod == "partial" %}

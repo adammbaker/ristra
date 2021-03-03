@@ -42,6 +42,9 @@
 
 {% if lod == 'partial' %}
 {% else %}
+<div class="container">
+<div class="row">
+<div class="col-sm-6">
   <table class="table-sm table-striped table-borderless mb-0">
     <tbody>
     {% if headofhousehold.intake_by %}<tr><td>Intake by:</td><td>{% if headofhousehold.intake_by.name %}{{headofhousehold.intake_by.name}}{% else %}{{ headofhousehold.intake_by.user.username }}{% endif %}</td></tr>{% endif %}
@@ -51,7 +54,11 @@
     {% if headofhousehold.days_detained %}<tr><td>Days detained:</td><td>{{ headofhousehold.days_detained }}</td></tr>{% endif %}
     </tbody>
   </table><br><br>
+</div>
+</div>
 
+<div class="row">
+<div class="col-sm-6">
 <table class="table-sm table-striped table-borderless mb-0">
   <tbody>
     <thead><tr><td>MEMBERS OF THE HOUSEHOLD</td></tr></thead>
@@ -60,6 +67,9 @@
     {% endfor %}
   </tbody>
 </table><br><br>
+</div>
+</div>
+</div>
 {% endif %}
 
 
