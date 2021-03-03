@@ -12,4 +12,4 @@ class SponsorForm(forms.ModelForm):
 
     class Meta:
         model = Sponsor
-        fields = ['name','phone_number','address','city','state','relation','notes',]
+        fields = ['name','phone_number','address','city','state','zip_code','relation','notes',]
