@@ -562,6 +562,7 @@ class Sponsor(models.Model):
     address = models.CharField(verbose_name="Sponsor's address", max_length=300, null=True)
     city = models.CharField(verbose_name="Sponsor's city", max_length=300, null=True)
     state = models.CharField(verbose_name="Sponsor's state", max_length=100, choices=STATE_CHOICES, default='other')
+    zip = models.CharField(verbose_name="Sponsor's ZIP code", max_length=10, null=True, blank=True)
     relation = models.CharField(max_length=300, verbose_name="Relation to head of household", null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
