@@ -58,7 +58,7 @@ class AtAGlance(LoginRequiredMixin, DetailView):
             no_a_num & affd_org
         ).count()
         # HOUSEHOLDS IN MOTION
-        today = timezone.now()
+        today = timezone.localtime(timezone.now()).date()
         yesterday = today - timedelta(1)
         tomorrow = today + timedelta(1)
         overmorrow = today + timedelta(2)
@@ -83,6 +83,7 @@ class AtAGlance(LoginRequiredMixin, DetailView):
         kwargs['hohs_arr_today'] = hoh_arr_today
         kwargs['hohs_lvg_today'] = hoh_leaving_today
         kwargs['hohs_lvg_tom'] = hoh_leaving_tom
+        kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 
 
@@ -99,20 +100,161 @@ class ActiveHouseholds(LoginRequiredMixin, DetailView):
         active_hohs = [x for x in HeadOfHousehold.objects.filter(intakebus__location__organization=org).order_by('intakebus__arrival_time') if x.is_active]
         sorted(active_hohs, key=lambda x: x.intakebus.arrival_time)
         kwargs['active_households'] = active_hohs
+        kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 
 
 class ActiveAsylees(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
     model = Organization
-    template_name = 'intake/report_active_asylees.html'
+    template_name = 'intake/report_generic_asylees.html'
 
     def get_object(self, **kwargs):
-        return self.request.user.profile.affiliation
+        org = self.request.user.profile.affiliation
+        unit_list = [x for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=org).order_by('head_of_household__intakebus__arrival_time','head_of_household') if x.is_active]
+        return sorted(unit_list, key=lambda x: x.householdhead.intakebus.arrival_time)
 
     def get_context_data(self, **kwargs):
-        org = self.request.user.profile.affiliation
-        active_asys = [x for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=org).order_by('head_of_household__intakebus__arrival_time','head_of_household') if x.is_active]
-        sorted(active_asys, key=lambda x: x.householdhead.intakebus.arrival_time)
-        kwargs['active_asylees'] = active_asys
+        kwargs['report_title'] = 'Active Asylees'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsLackingTravelPlan(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return HeadOfHousehold.objects.filter(
+            travel_plan=None,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        )
+
+
+class HouseholdsLackingSponsor(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return HeadOfHousehold.objects.filter(
+            sponsor=None,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class AsyleesLackingANumber(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = Asylee
+    template_name = 'intake/report_generic_asylees.html'
+
+    def get_object(self, **kwargs):
+        no_a_num = Q(a_number=None) | Q(a_number='A-')
+        affd_org = Q(
+            head_of_household__intakebus__location__organization=self.request.user.profile.affiliation
+        )
+        return Asylee.objects.filter(
+            no_a_num & affd_org
+        )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Asylees Lacking A-Numbers'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsArrivedYesterday(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS IN MOTION
+        today = timezone.localtime(timezone.now()).date()
+        yesterday = today - timedelta(1)
+        hohs = HeadOfHousehold.objects.filter(
+            intakebus__location__organization=self.request.user.profile.affiliation,
+            intakebus__arrival_time__gte=yesterday,
+            intakebus__arrival_time__lte=today,
+        )
+        return hohs
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Arrived Yesterday'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsArrivedToday(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS IN MOTION
+        today = timezone.localtime(timezone.now()).date()
+        tomorrow = today + timedelta(1)
+        hohs = HeadOfHousehold.objects.filter(
+            intakebus__location__organization=self.request.user.profile.affiliation,
+            intakebus__arrival_time__gte=today,
+            intakebus__arrival_time__lte=tomorrow,
+        )
+        return hohs
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Arrived Today'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsLeavingToday(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS IN MOTION
+        today = timezone.localtime(timezone.now()).date()
+        tomorrow = today + timedelta(1)
+        hohs = HeadOfHousehold.objects.filter(
+            intakebus__location__organization=self.request.user.profile.affiliation,
+            travel_plan__city_van_date__gte=today,
+            travel_plan__city_van_date__lte=tomorrow,
+        )
+        return hohs
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Leaving Today'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsLeavingTomorrow(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS IN MOTION
+        today = timezone.localtime(timezone.now()).date()
+        tomorrow = today + timedelta(1)
+        overmorrow = today + timedelta(2)
+        hohs = HeadOfHousehold.objects.filter(
+            intakebus__location__organization=self.request.user.profile.affiliation,
+            travel_plan__city_van_date__gte=tomorrow,
+            travel_plan__city_van_date__lte=overmorrow,
+        )
+        return hohs
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Leaving Tomorrow'
+        kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
