@@ -92,7 +92,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
             return redirect('headofhousehold:health follow up', hoh_id = hoh.id)
         # return to parent detail
-        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+        return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
 # @method_decorator([is_affiliated], name='dispatch')
 class HeadOfHouseholdDetailView(LoginRequiredMixin, DetailView):
