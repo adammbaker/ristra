@@ -145,8 +145,16 @@ urlpatterns = [
 
     path('report/', include(([
         path('ataglance', reports.AtAGlance.as_view(), name='at a glance'),
-        path('active/households', reports.ActiveHouseholds.as_view(), name='active households'),
-        path('active/asylees', reports.ActiveAsylees.as_view(), name='active asylees'),
+        path('households/active', reports.ActiveHouseholds.as_view(), name='active households'),
+        path('asylees/active', reports.ActiveAsylees.as_view(), name='active asylees'),
+        path('households/lacking_travel_plan', reports.HouseholdsLackingTravelPlan.as_view(), name='hohs lack tp'),
+        path('households/lacking_sponsor', reports.HouseholdsLackingSponsor.as_view(), name='hohs lack spon'),
+        path('asylees/lacking_a_number', reports.AsyleesLackingANumber.as_view(), name='asys lack anum'),
+        path('households/arrived_yesterday', reports.HouseholdsArrivedYesterday.as_view(), name='hohs arr yday'),
+        path('households/arrived_today', reports.HouseholdsArrivedToday.as_view(), name='hohs arr today'),
+        path('households/leaving_tomorrow', reports.HouseholdsLeavingTomorrow.as_view(), name='hohs lvg tom'),
+        path('households/leaving_today', reports.HouseholdsLeavingToday.as_view(), name='hohs lvg today'),
+        path('asylees/search', reports.ReportSearch.as_view(), name='asylees search'),
         # path('add/<hoh_id>', reports.TravelPlanCreateView.as_view(), name='add'),
         # path('<tp_id>/detail', reports.TravelPlanDetailView.as_view(), name='detail'),
         # path('<tp_id>/update', reports.TravelPlanUpdate.as_view(), name='update'),

@@ -1,15 +1,5 @@
-{% extends 'intake/base.html' %}
-
 {% load my_tags %}
 
-{% block title %}Active Asylees Report :: Ristra Refuge{% endblock %}
-
-{% block content %}
-
-<div class="container">
-<h1 class="text-center">{{organization.name}} Active Asylees</h1>
-<div class="row">
-<div class="col-md">
 <table class="table-sm table table-borderless table-striped mb-0">
   <thead>
     <tr>
@@ -23,26 +13,16 @@
     </tr>
   </thead>
   <tbody>
-    {% for unit in active_asylees %}
+    {% for unit in unit_list %}
     <tr>
-      <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">{{ unit.name }}</a></td>
+      <td>{{ unit.name }}</td>
       <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
       <td>{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
       <td>{{ unit.householdhead.destination }}</td>
       <td>{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
-      <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}
+      <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}</td>
       <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">See more</a>
     </tr>
     {% endfor %}
   </tbody>
 </table><br><br>
-</div class="col-sm-6">
-</div class="row">
-
-<div class="jumbotron">
-  <p class="lead">An Asylee is considered active if they have not yet left or are within 24 hours of arriving at their destination.</p>
-</div>
-
-</div class="container">
-
-{% endblock %}
