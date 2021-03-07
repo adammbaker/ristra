@@ -73,8 +73,8 @@
               Here Since
               {% if sorting.sorting == 'arrival_time' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
           </th>
-          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'departure' %}-{% endif %}departure">
-              Departs
+          <th class="text-wrap"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'departure' %}-{% endif %}departure">
+              Departure
               {% if sorting.sorting == 'departure' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
           </th>
           <th>
@@ -82,7 +82,6 @@
               Bus
               {% if sorting.sorting == 'bus' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
           </th>
-          <th>Loc</th>
           <th>Trvl</th>
           <th>Spon</th>
         </tr>
@@ -95,11 +94,10 @@
             <td class="text-center">{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
             <td>{{ unit.householdhead.destination }}</td>
             <td class="text-right">{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
-            <td class="text-center">{% if unit.householdhead.travel_plan %}{{ unit.householdhead.travel_plan.departure_time|mdYIMp }}{% else %}<a href="{% url 'travelplan:add' hoh_id=unit.householdhead.id %}">➕</a>{% endif %}</td>
+            <td class="text-center">{% if unit.householdhead.travel_plan %}{{ unit.householdhead.travel_plan.departure_time|mdYIMp }}{% else %}<a href="{% url 'travelplan:add' hoh_id=unit.householdhead.id %}"><span class="text-danger">✛</span></a>{% endif %}</td>
             <td><a href="{% url 'intakebus:overview' ib_id=unit.householdhead.intakebus.id %}">{{ unit.householdhead.intakebus.number }}</a></td>
-            <td><a href="{% url 'location:overview' loc_id=unit.householdhead.intakebus.location.id %}">🏨</a></td>
-            <td>{% if unit.householdhead.travel_plan %}<a href="{% url 'travelplan:detail' tp_id=unit.householdhead.travel_plan.id %}">🛫</a>{% else %}<a href="{% url 'travelplan:add' hoh_id=unit.householdhead.id %}">➕</a>{% endif %}</td>
-            <td>{% if unit.householdhead.sponsor %}<a href="{% url 'sponsor:detail' spon_id=unit.householdhead.sponsor.id %}">🙋</a>{% else %}<a href="{% url 'sponsor:add' hoh_id=unit.householdhead.id %}">➕</a>{% endif %}</td>
+            <td>{% if unit.householdhead.travel_plan %}<a href="{% url 'travelplan:detail' tp_id=unit.householdhead.travel_plan.id %}"><span class="text-success">✓</span></a>{% else %}<a href="{% url 'travelplan:add' hoh_id=unit.householdhead.id %}"><span class="text-danger">✛</span></a>{% endif %}</td>
+            <td>{% if unit.householdhead.sponsor %}<a href="{% url 'sponsor:detail' spon_id=unit.householdhead.sponsor.id %}"><span class="text-success">✓</span></a>{% else %}<a href="{% url 'sponsor:add' hoh_id=unit.householdhead.id %}"><span class="text-danger">✛</span></a>{% endif %}</td>
           </tr>
         {% empty %}
           <tr>
@@ -114,10 +112,9 @@
             <th>Rm #</th>
             <th>Dest.</th>
             <th> Here Since</th>
-            <th>Departure</th>
+            <th class="text-wrap">Departure</th>
             <th>Bus</th>
-            <th>Loc</th>
-            <th>rvl</th>
+            <th>Trvl</th>
             <th>Spon</th>
           </tr>
         </tfoot>

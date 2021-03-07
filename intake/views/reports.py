@@ -295,9 +295,16 @@ class ReportSearch(LoginRequiredMixin, ListView):
                 sort_by = ['head_of_household__state', 'head_of_household__destination_city']
             else:
                 sort_by = [sort_by]
-        return self.model.objects.filter(
-            head_of_household__intakebus__location__organization=self.request.user.profile.affiliation,            
-        ).order_by(*sort_by)
+        q_org = Q(head_of_household__intakebus__location__organization=self.request.user.profile.affiliation)
+        q_active = Q(head_of_household__travel_plan=None) | Q(head_of_household__travel_plan__eta__gt=timezone.now() - timedelta(1))
+        asys = self.model.objects.filter(
+            q_org & q_active
+        )
+        # asys = self.model.objects.filter(
+        #     head_of_household__intakebus__location__organization=self.request.user.profile.affiliation,
+        #     head_of_household__travel_plan__eta__gt=timezone.now() - timedelta(1),
+        # )
+        return asys.order_by(*sort_by)
 
     def get_context_data(self, **kwargs):
         sort_by = self.request.GET.get('sort_by',None)
@@ -309,5 +316,4 @@ class ReportSearch(LoginRequiredMixin, ListView):
         kwargs['destinations'] = sorted(set([x.householdhead.destination for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=self.request.user.profile.affiliation)]))
         kwargs['active_view'] = 'search'
         kwargs['report_title'] = 'Search all'
-        print('XX', sort_by)
         return super().get_context_data(**kwargs)
