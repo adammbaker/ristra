@@ -258,3 +258,56 @@ class HouseholdsLeavingTomorrow(LoginRequiredMixin, DetailView):
         kwargs['report_title'] = 'Households Leaving Tomorrow'
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
+
+
+class ReportSearch(LoginRequiredMixin, ListView):
+    model = Asylee
+    template_name = 'intake/report_list.html'
+
+    def get_queryset(self, *args, **kwargs):
+        sort_by = self.request.GET.get('sort_by', ['name', 'head_of_household__name','head_of_household__lodging','head_of_household__destination_state','head_of_household__intakebus__arrival_time','head_of_household__travel_plan__city_van_date','head_of_household__intakebus__number'])
+        if isinstance(sort_by, str):
+            if sort_by == 'asylee':
+                sort_by = 'name'
+            elif sort_by == '-asylee':
+                sort_by = '-name'
+            elif sort_by == 'household':
+                sort_by = 'head_of_household__name'
+            elif sort_by == '-household':
+                sort_by = '-head_of_household__name'
+            elif sort_by == 'lodging':
+                sort_by = 'head_of_household__lodging'
+            elif sort_by == '-lodging':
+                sort_by = '-head_of_household__lodging'
+            elif sort_by == 'arrival_time':
+                sort_by = 'head_of_household__intakebus__arrival_time'
+            elif sort_by == '-arrival_time':
+                sort_by = '-head_of_household__intakebus__arrival_time'
+            elif sort_by == 'departure':
+                sort_by = 'head_of_household__travel_plan__city_van_date'
+            elif sort_by == '-departure':
+                sort_by = '-head_of_household__travel_plan__city_van_date'
+            elif sort_by == 'bus':
+                sort_by = 'head_of_household__intakebus__number'
+            elif sort_by == '-bus':
+                sort_by = '-head_of_household__intakebus__number'
+            if sort_by in ('destination', '-destination'):
+                sort_by = ['head_of_household__state', 'head_of_household__destination_city']
+            else:
+                sort_by = [sort_by]
+        return self.model.objects.filter(
+            head_of_household__intakebus__location__organization=self.request.user.profile.affiliation,            
+        ).order_by(*sort_by)
+
+    def get_context_data(self, **kwargs):
+        sort_by = self.request.GET.get('sort_by',None)
+        desc = sort_by.startswith('-') if sort_by else False
+        if desc:
+            sort_by = sort_by[1:]
+        fields = {'sorting': sort_by, 'ascending': not desc}
+        kwargs['sorting'] = fields
+        kwargs['destinations'] = sorted(set([x.householdhead.destination for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=self.request.user.profile.affiliation)]))
+        kwargs['active_view'] = 'search'
+        kwargs['report_title'] = 'Search all'
+        print('XX', sort_by)
+        return super().get_context_data(**kwargs)

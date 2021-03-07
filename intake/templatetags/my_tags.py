@@ -100,3 +100,10 @@ def hdYIMp(obj):
     if isinstance(obj, datetime):
         return obj.strftime('%h %d, %Y %I:%M %p')
     return obj
+
+@register.filter
+def mdYIMp(obj):
+    'Takes a datetime object and returns it in mm/dd/YYYY II:MM p'
+    if isinstance(obj, datetime):
+        return obj.strftime('%m/%d/%Y %I:%M %p')
+    return obj
