@@ -5,6 +5,8 @@
 
 {% load my_tags %}
 
+{% block title %}{{ report_title}} :: Ristra Refuge{% endblock %}
+
 {% block content %}
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -25,9 +27,7 @@
     {{message}}
 </div>-->
 
-<br>
-<br>
-<br>
+<h1 class="text-center">{{user.profile.affiliation.name}} {{ report_title }}</h1><br>
   <div class="card">
     <table id="asylee_list" class="table-sm table table-striped mb-0">
       <thead>
@@ -118,7 +118,10 @@
             <th>Spon</th>
           </tr>
         </tfoot>
-    </table>
+    </table><br><br>
+  </div><br><br>
+  <div class="jumbotron">
+    <p class="lead">An Asylee is considered active if they have not yet left or are within 24 hours of arriving at their destination.</p>
   </div>
   <script  type="text/javascript">
     var $rows = $('.table > tbody tr');

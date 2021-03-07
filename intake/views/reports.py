@@ -315,5 +315,5 @@ class ReportSearch(LoginRequiredMixin, ListView):
         kwargs['sorting'] = fields
         kwargs['destinations'] = sorted(set([x.householdhead.destination for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=self.request.user.profile.affiliation)]))
         kwargs['active_view'] = 'search'
-        kwargs['report_title'] = 'Search all'
+        kwargs['report_title'] = 'Search'
         return super().get_context_data(**kwargs)

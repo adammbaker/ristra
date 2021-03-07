@@ -2,6 +2,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.7.2] - 2021-03-06
+
+### Added
+- Reports - Added more reports
+  - Active Households
+  - Active Asylees
+  - Households lacking Travel Plans
+  - Households lacking Sponsors
+  - Asylees lacking A-numbers
+  - Households arriving yesterday
+  - Households arriving today
+  - Households leaving today
+  - Households leaving tomorrow
+
+- [Household/Asylee Search] (https://github.com/adammbaker/ristra/commit/f91fd72a0f9e78c4f092a01277686d9ef9c9d2af#diff-e4f1e0a67d4d6833e949166a8a0681fb014fe1be32ff27849f2693bddd5bd4bf)
+  You can now search through a list of all active Asylees, Households, and Destinations!
+
 ## [0.7.1] - 2021-03-02
 
 ### Added
