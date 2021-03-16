@@ -37,6 +37,7 @@ class SignUpForm(UserCreationForm):
     capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
         queryset = Capacity.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=True
     )
     # languages = forms.ModelMultipleChoiceField(queryset=Languages.objects.all())

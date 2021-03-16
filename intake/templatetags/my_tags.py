@@ -44,26 +44,66 @@ def time_to_now(obj, as_string=False):
         td = obj
     else:
         td = obj - timezone.now()
-    if as_string:
-        string = ''
-        if td.days:
-            string += f'{td.days}d '
-        remaining_seconds = td.seconds % 86400
-        hours = remaining_seconds // 3600 
-        # remaining seconds
-        remaining_seconds -= hours * 3600
-        # minutes
-        minutes = remaining_seconds // 60
-        # remaining seconds
-        seconds = remaining_seconds - (minutes * 60)
-        # total time
-        string += f'{hours}h {minutes}m'
-        return string
-    return td
+    try:
+        if as_string:
+            string = ''
+            if td.days:
+                string += f'{td.days}d '
+            remaining_seconds = td.seconds % 86400
+            hours = remaining_seconds // 3600 
+            # remaining seconds
+            remaining_seconds -= hours * 3600
+            # minutes
+            minutes = remaining_seconds // 60
+            # remaining seconds
+            seconds = remaining_seconds - (minutes * 60)
+            # total time
+            string += f'{hours}h {minutes}m'
+            return string
+        return td
+    except TypeError:
+        return obj
+
+@register.filter
+def time_to_now_abs(obj, as_string=False):
+    'Returns a timedelta obj, or human-readable version if True'
+    try:
+        if isinstance(obj, timedelta):
+            td = obj
+        else:
+            if timezone.now() > obj:
+                td = timezone.now() - obj
+            elif timezone.now() <= obj:
+                td = obj - timezone.now()
+        if as_string:
+            string = ''
+            if td.days:
+                string += f'{abs(td.days)}d '
+            remaining_seconds = td.seconds % 86400
+            hours = remaining_seconds // 3600 
+            # remaining seconds
+            remaining_seconds -= hours * 3600
+            # minutes
+            minutes = remaining_seconds // 60
+            # remaining seconds
+            seconds = remaining_seconds - (minutes * 60)
+            # total time
+            string += f'{hours:02d}h {minutes:02d}m'
+            return string
+        return td
+    except TypeError:
+        return obj
 
 @register.filter
 def hdYIMp(obj):
     'Takes a datetime object and returns it in mm dd YYYY II:MM p'
     if isinstance(obj, datetime):
         return obj.strftime('%h %d, %Y %I:%M %p')
+    return obj
+
+@register.filter
+def mdYIMp(obj):
+    'Takes a datetime object and returns it in mm/dd/YYYY II:MM p'
+    if isinstance(obj, datetime):
+        return obj.strftime('%m/%d/%Y %I:%M %p')
     return obj

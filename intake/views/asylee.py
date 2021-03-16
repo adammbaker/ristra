@@ -48,7 +48,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee_had_covid_disease = form.cleaned_data.get('had_covid_disease')
         asylee_had_covid_vaccine = form.cleaned_data.get('had_covid_vaccine')
         asylee_notes = form.cleaned_data.get('notes')
-        hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
+        hoh = HeadOfHousehold.objects.get(id=self.kwargs.get('hoh_id'))
         asylee, asylee_c = Asylee.objects.get_or_create(
             name = asylee_name,
             sex = asylee_sex,

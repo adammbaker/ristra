@@ -22,19 +22,20 @@
       <!-- <li class="nav-item{% if active_view == 'Campaign' %} active{% endif %}">
         <a class="nav-link" href="{% url 'campaign:list' user.id %}">Campaigns</a>
       </li> -->
-      <!-- <li class="nav-item dropdown">
+      <li class="nav-item dropdown {% if active_view == 'reports' %} active{% endif %}">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
+          Reports
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="{% url 'report:at a glance' %}">At-A-Glance</a>
+          <a class="dropdown-item" href="{% url 'report:active households' %}">Active Households</a>
+          <a class="dropdown-item" href="{% url 'report:active asylees' %}">Active Asylees</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="{% url 'report:asylees search' %}">Search Asylees</a>
         </div>
-      </li> -->
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+      <li class="nav-item{% if active_view == 'search' %} active{% endif %}">
+        <a class="nav-link" href="{% url 'report:asylees search' %}">Search</a>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">

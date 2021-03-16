@@ -1,0 +1,28 @@
+{% load my_tags %}
+
+<table class="table-sm table table-borderless table-striped mb-0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Household</th>
+      <th>Room #</th>
+      <th>Destination</th>
+      <th>Time Here</th>
+      <th>Departure</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for unit in unit_list %}
+    <tr>
+      <td>{{ unit.name }}</td>
+      <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
+      <td>{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
+      <td>{{ unit.householdhead.destination }}</td>
+      <td>{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
+      <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}</td>
+      <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">See more</a>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table><br><br>

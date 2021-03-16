@@ -49,10 +49,11 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
             phone_number = sponsor_phone_number,
             address = sponsor_address,
             city = sponsor_city,
-            state = sponsor_state,
-            relation = sponsor_relation,
-            notes = sponsor_notes,
         )
+        sponsor.state = sponsor_state
+        sponsor.relation = sponsor_relation
+        sponsor.notes = sponsor_notes
+        sponsor.save()
         hoh.sponsor = sponsor
         hoh.save()
         # return to parent overview

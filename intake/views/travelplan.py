@@ -56,16 +56,17 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
         tp, tp_c = TravelPlan.objects.get_or_create(
             arranged_by = tp_arranged_by,
-            confirmation = tp_confirmation,
             destination_city = tp_destination_city,
             destination_state = tp_destination_state,
             travel_date = tp_travel_date,
-            city_van_date = tp_city_van_date,
-            travel_food_prepared = tp_travel_food_prepared,
-            eta = tp_eta,
-            travel_mode = tp_travel_mode,
-            notes = tp_notes,
         )
+        tp.confirmation = tp_confirmation
+        tp.city_van_date = tp_city_van_date
+        tp.travel_food_prepared = tp_travel_food_prepared
+        tp.eta = tp_eta
+        tp.travel_mode = tp_travel_mode
+        tp.notes = tp_notes
+        tp.save()
         # print('HOH',hoh.id, hoh.name)
         # print('TPP', tp, tp.id, tp_c)
         hoh.travel_plan = tp
@@ -121,7 +122,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
     def get_success_url(self):
         tp_id = self.kwargs.get('tp_id')
         hoh_id = TravelPlan.objects.get(id=tp_id).headofhousehold
-        return redirect('headofhousehold:detail', hoh_id = hoh_id)
+        return redirect('headofhousehold:overview', hoh_id = hoh_id)
 
     def form_valid(self, airline_form_class, busline_form_class):
         tp_id = self.kwargs.get('tp_id')
@@ -134,7 +135,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             tp.layovers = airline_form_class.cleaned_data.get('layovers')
         tp.flight_number = airline_form_class.cleaned_data.get('flight_number')
         tp.save()
-        return redirect('headofhousehold:detail', hoh_id = tp.householdhead.id)
+        return redirect('headofhousehold:overview', hoh_id = tp.householdhead.id)
 
     def post(self, request, *args, **kwargs):
         airline_form = self.airline_form_class(request.POST)
@@ -147,7 +148,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         if busline_form.is_valid():
             tp.layovers = busline_form.cleaned_data.get('layovers')
         tp.save()
-        return redirect('headofhousehold:detail', hoh_id = tp.headofhousehold.id)
+        return redirect('headofhousehold:overview', hoh_id = tp.headofhousehold.id)
 
 
 class TravelPlanUpdate(LoginRequiredMixin, UpdateView):

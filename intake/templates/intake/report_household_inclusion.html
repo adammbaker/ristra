@@ -1,0 +1,34 @@
+{% load my_tags %}
+
+<table class="table-sm table table-borderless table-striped mb-0">
+  <thead>
+    <tr>
+      <th>Household of</th>
+      <th>Room #</th>
+      <th>Number in<br>Household</th>
+      <th>From</th>
+      <th>Destination</th>
+      <th>Time Here</th>
+      <th>Departure</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for unit in unit_list %}
+    <tr>
+      <td>{{ unit.name }}</td>
+      <td>{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
+      <td>{{ unit.asylees.count }}</td>
+      <td>{{ unit.country_of_origin|title }}</td>
+      <td>{{ unit.destination }}</td>
+      <td>{{ unit.intakebus.arrival_time|time_to_now_abs:True }}</td>
+      <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}
+      <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.id %}">See more</a>
+    </tr>
+    {% empty %}
+    <tr>
+      <td class="bg-light text-center font-italic" colspan="10">No results found matching your request</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table><br><br>
