@@ -55,6 +55,7 @@ class SignUpView(CreateView):
             user = form.save(commit=False)
             user.is_active = False # Deactivate account till it is confirmed
             user.save()
+            print('User saved')
 
             profile = Profile.objects.get(user=user)
             # profile.name = form.cleaned_data.get('name')
@@ -63,6 +64,7 @@ class SignUpView(CreateView):
             profile.role = form.cleaned_data.get('role')
             profile.phone_number = to_phone_number(form.cleaned_data.get('phone_number'))
             profile.save()
+            print('Profile Saved')
 
             current_site = get_current_site(request)
             subject = 'Activate Your Ristra account'
