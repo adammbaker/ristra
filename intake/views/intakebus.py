@@ -51,10 +51,12 @@ class IntakeBusCreateView(LoginRequiredMixin, CreateView):
         ib, ib_c = IntakeBus.objects.get_or_create(
             origin = ib_origin,
             state = ib_state,
-            arrival_time = ib_arrival_time,
-            number = ib_number,
-            notes = ib_notes,
+            arrival_time = ib_arrival_time
         )
+
+        ib.number = ib_number
+        ib.notes = ib_notes
+        ib.save()
         loc.intakebuses.add(ib)
         loc.save()
         # return to parent detail

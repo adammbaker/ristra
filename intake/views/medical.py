@@ -60,23 +60,24 @@ class MedicalCreateView(LoginRequiredMixin, CreateView):
         asylee = get_object_or_404(Asylee, id=self.kwargs.get('asy_id'))
         med = Medical.objects.create(
             provider = med_provider,
-            entered_by = med_entered_by,
-            temperature = med_temperature,
-            pulse = med_pulse,
-            blood_pressure = med_blood_pressure,
-            weight = med_weight,
-            height = med_height,
-            oxgyen_level = med_oxgyen_level,
-            vaccines_received = med_vaccines_received,
-            allergies = med_allergies,
-            medications = med_medications,
-            chronic_medical_problems = med_chronic_medical_problems,
             symptoms = med_symptoms,
-            diagnosis = med_diagnosis,
-            treatment = med_treatment,
-            follow_up_needed = med_follow_up_needed,
-            notes = med_notes,
+            entered_by = med_entered_by,
         )
+        med.temperature = med_temperature
+        med.pulse = med_pulse
+        med.blood_pressure = med_blood_pressure
+        med.weight = med_weight
+        med.height = med_height
+        med.oxgyen_level = med_oxgyen_level
+        med.vaccines_received = med_vaccines_received
+        med.allergies = med_allergies
+        med.medications = med_medications
+        med.chronic_medical_problems = med_chronic_medical_problems
+        med.diagnosis = med_diagnosis
+        med.treatment = med_treatment
+        med.follow_up_needed = med_follow_up_needed
+        med.notes = med_notes
+        med.save()
         asylee.medicals.add(med)
         asylee.save()
         # return to parent overview

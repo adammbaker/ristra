@@ -62,18 +62,18 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         ib = get_object_or_404(IntakeBus, id=self.kwargs.get('ib_id'))
         hoh, hoh_c = HeadOfHousehold.objects.get_or_create(
             name = hoh_name,
-            a_number = hoh_a_number,
             sex = hoh_sex,
             date_of_birth = hoh_date_of_birth,
-            phone_number = hoh_phone_number,
-            notes = hoh_notes,
-            lodging = hoh_lodging,
-            destination_city = hoh_destination_city,
-            state = hoh_state,
-            days_traveling = hoh_days_traveling,
-            days_detained = hoh_days_detained,
-            country_of_origin = hoh_country_of_origin,
         )
+        hoh.a_number = hoh_a_number
+        hoh.phone_number = hoh_phone_number
+        hoh.notes = hoh_notes
+        hoh.lodging = hoh_lodging
+        hoh.destination_city = hoh_destination_city
+        hoh.state = hoh_state
+        hoh.days_traveling = hoh_days_traveling
+        hoh.days_detained = hoh_days_detained
+        hoh.country_of_origin = hoh_country_of_origin
         hoh.languages.set(hoh_languages)
         hoh.intake_by = hoh_intake_by.profile
         hoh.notes = hoh_notes
@@ -83,6 +83,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             date_of_birth = hoh_date_of_birth,
         )
         hoh.asylees.add(asy)
+        hoh.save()
         ib.headsofhousehold.add(hoh)
         ib.save()
         hoh.save()
@@ -126,7 +127,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
     def get_success_url(self):
         hoh_id = self.kwargs.get('hoh_id')
         hoh_id = HeadOfHousehold.objects.get(id=hoh_id).householdhead
-        return redirect('headofhousehold:detail', hoh_id = hoh_id)
+        return redirect('headofhousehold:overview', hoh_id = hoh_id)
 
     def form_valid(self, vaccine_form_class, sick_form_class):
         hoh_id = self.kwargs.get('hoh_id')
@@ -136,7 +137,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
         hoh.sick_covid = sick_form_class.cleaned_data.get('sick_covid', False)
         hoh.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         hoh.save()
-        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+        return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
     def post(self, request, *args, **kwargs):
         vaccine_form = self.vaccine_form_class(request.POST)
@@ -150,7 +151,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
             hoh.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
             hoh.sick_other = sick_form.cleaned_data.get('sick_other', False)
         hoh.save()
-        return redirect('headofhousehold:detail', hoh_id = hoh.id)
+        return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
 
 
