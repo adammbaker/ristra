@@ -43,8 +43,9 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
         org = get_object_or_404(Organization, id=self.kwargs.get('org_id'))
         loc, loc_c = Location.objects.get_or_create(
             name = loc_name,
-            notes = loc_notes,
         )
+        loc.notes = loc_notes
+        loc.save()
         org.locations.add(loc)
         org.save()
         # return to parent detail
