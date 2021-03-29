@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from intake.decorators import sc_required
+from intake.decorators import sc_required, team_lead_required
 from intake.forms.location import LocationForm
 from intake.models import Location, Organization
 
@@ -18,8 +18,7 @@ class LocationListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.locations()
 
-@method_decorator([login_required, sc_required], name='dispatch')
-class LocationCreateView(LoginRequiredMixin, CreateView):
+class LocationCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
     model = Location
     parent = Organization
@@ -50,6 +49,10 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
         org.save()
         # return to parent detail
         return redirect('location:overview', loc_id = loc.id)
+
+    def test_func(self):
+        return self.request.user.profile.role in ('site_coordinator','team_lead')
+
 
 # class LocationDetailView(LoginRequiredMixin, DetailView):
 #     'Details an instance of the object'
