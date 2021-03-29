@@ -241,10 +241,11 @@ class Organization(models.Model):
     
     @property
     def is_active(self):
-        for loc in self.locations.all():
-            if loc.is_active:
-                return loc.is_active
-        return loc.is_active
+        if self.locations.exists():
+            for loc in self.locations.all():
+                if loc.is_active:
+                    return loc.is_active
+            return loc.is_active
 
     def breadcrumbs(self, bc=''):
         model = self.name
@@ -302,10 +303,11 @@ class Location(models.Model):
     
     @property
     def is_active(self):
-        for ib in self.intakebuses.all():
-            if ib.is_active:
-                return ib.is_active
-        return ib.is_active
+        if self.intakebuses.exists():
+            for ib in self.intakebuses.all():
+                if ib.is_active:
+                    return ib.is_active
+            return ib.is_active
 
     def breadcrumbs(self, bc=''):
         parent = self.organization

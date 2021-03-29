@@ -14,7 +14,7 @@
 {% else %}
   <a href="{% url 'location:overview' loc_id=location.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
 
-  {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
+  {% if user.profile.role == "site_coordinator" or user.profile.role == "team_lead" %}
   <br><br>
   <a href="{% url 'location:update' location.id %}">
     <button type="button" class="btn btn-warning">Update {{ location.name }}</button>

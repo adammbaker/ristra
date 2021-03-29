@@ -203,7 +203,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
     def get_success_url(self):
         asylee_id = self.kwargs.get('asy_id')
         hoh_id = Asylee.objects.get(id=asylee_id).householdhead
-        return redirect('headofhousehold:detail', hoh_id = hoh_id)
+        return redirect('headofhousehold:overview', hoh_id = hoh_id)
 
     def form_valid(self, vaccine_form_class, sick_form_class):
         asy_id = self.kwargs.get('asy_id')
@@ -213,7 +213,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         asylee.sick_covid = sick_form_class.cleaned_data.get('sick_covid', False)
         asylee.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         asylee.save()
-        return redirect('headofhousehold:detail', hoh_id = asylee.householdhead.id)
+        return redirect('headofhousehold:overview', hoh_id = asylee.householdhead.id)
 
     def post(self, request, *args, **kwargs):
         vaccine_form = self.vaccine_form_class(request.POST)
@@ -227,7 +227,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             asylee.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
             asylee.sick_other = sick_form.cleaned_data.get('sick_other', False)
         asylee.save()
-        return redirect('headofhousehold:detail', hoh_id = asylee.householdhead.id)
+        return redirect('headofhousehold:overview', hoh_id = asylee.householdhead.id)
 
 
 
