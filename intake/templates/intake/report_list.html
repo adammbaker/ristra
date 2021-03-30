@@ -89,7 +89,7 @@
       <tbody>
         {% for unit in asylee_list %}
           <tr>
-            <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">{{ unit.name }}</a></td>
+            <td>{% if unit.sick_covid %}<a href="{% url 'asylee:overview' asy_id=unit.id %}">{{ unit.name }}</a> ❗️{% elif unit.householdhead.is_sick_covid %}<a href="{% url 'asylee:overview' asy_id=unit.id %}">{{ unit.name }}</a> ⚠️{% else %}<a href="{% url 'asylee:overview' asy_id=unit.id %}">{{ unit.name }}</a>{% endif %}</td>
             <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
             <td class="text-center">{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
             <td>{{ unit.householdhead.destination }}</td>

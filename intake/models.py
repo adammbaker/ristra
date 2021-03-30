@@ -537,6 +537,14 @@ class HeadOfHousehold(Asylee):
             if self.travel_plan.eta:
                 return self.travel_plan.eta - timezone.now() > timedelta(-1)
         return True
+    
+    @property
+    def is_sick_covid(self):
+        if self.asylees.exists():
+            for asylee in self.asylees.all():
+                if asylee.sick_covid:
+                    return asylee.sick_covid
+        return False
 
     def breadcrumbs(self, bc=''):
         parent = self.intakebus

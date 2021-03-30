@@ -15,7 +15,7 @@
   <tbody>
     {% for unit in unit_list %}
     <tr>
-      <td>{{ unit.name }}</td>
+      <td>{% if unit.sick_covid %}<span class="text-danger">{{ unit.name }}</span>{% elif unit.householdhead.is_sick_covid %}<span class="text-warning">{{ unit.name }}</span>{% else %}{{ unit.name }}{% endif %}</td>
       <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
       <td>{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
       <td>{{ unit.householdhead.destination }}</td>
