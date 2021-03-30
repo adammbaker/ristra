@@ -132,6 +132,11 @@ class HouseholdsLackingTravelPlan(LoginRequiredMixin, DetailView):
             intakebus__location__organization=self.request.user.profile.affiliation,
         )
 
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
 
 class HouseholdsLackingSponsor(LoginRequiredMixin, DetailView):
     'Details an instance of the objet'
@@ -146,7 +151,7 @@ class HouseholdsLackingSponsor(LoginRequiredMixin, DetailView):
         )
 
     def get_context_data(self, **kwargs):
-        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['report_title'] = 'Households Lacking Sponsor'
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 
