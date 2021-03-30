@@ -17,7 +17,7 @@
     <tr>
       <td>{{ unit.name }}</td>
       <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
-      <td>{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
+      <td>{% if unit.householdhead.lodging %}<a href="{% url 'location:overview' unit.householdhead.intakebus.location.id %}">{{ unit.householdhead.intakebus.location.name }}</a> {{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
       <td>{{ unit.householdhead.destination }}</td>
       <td>{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
       <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}</td>

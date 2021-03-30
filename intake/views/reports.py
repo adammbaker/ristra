@@ -125,6 +125,11 @@ class HouseholdsLackingTravelPlan(LoginRequiredMixin, DetailView):
     model = HeadOfHousehold
     template_name = 'intake/report_generic_households.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
     def get_object(self, **kwargs):
         # HOUSEHOLDS LACKING
         return HeadOfHousehold.objects.filter(
@@ -146,7 +151,7 @@ class HouseholdsLackingSponsor(LoginRequiredMixin, DetailView):
         )
 
     def get_context_data(self, **kwargs):
-        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['report_title'] = 'Households Lacking Sponsor'
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 
