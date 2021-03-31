@@ -1,8 +1,5 @@
 # ristra
-A tool for facilitating the intake of refugees seeking asylum in Albuquerque.
-
-# Trello
-Join our Trello: https://trello.com/b/2WbNbMPk/ristra
+A tool for facilitating the intake of refugees seeking asylum and the administration of sites.
 
 # Setting up anew
 1. Clone this git repository.
