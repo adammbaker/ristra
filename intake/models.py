@@ -408,7 +408,7 @@ class Asylee(models.Model):
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True, blank=True)
-    had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease')
+    had_covid_disease = models.BooleanField(default=False, verbose_name='Has had COVID disease in the past')
     had_covid_vaccine = models.BooleanField(default=False, verbose_name='Has received the COVID vaccine')
     covid_vaccine_doses = models.PositiveSmallIntegerField(default=0, verbose_name="COVID vaccine doses received", validators=[MinValueValidator(0),MaxValueValidator(2)])
     vaccine_received = models.CharField(max_length=100, null=True, blank=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
@@ -734,3 +734,13 @@ class Message(models.Model):
 
     def __str__(self):
         return '%s' % (self.text[:100])
+
+
+class Donate(models.Model):
+    name = models.CharField(max_length=200, null=False, blank=False, verbose_name="Name")
+    location = models.CharField(max_length=200, null=True, blank=True, verbose_name="Location")
+    url = models.URLField(max_length=1000, null=True, blank=True, verbose_name="URL")
+    description = models.TextField(null=True)
+
+    def __str__(self):
+        return f'{self.name}'

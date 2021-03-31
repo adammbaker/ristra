@@ -1,7 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
 from intake.views import accounts, asylee, campaign, headofhousehold, intakebus
-from intake.views import location, medical, organization, reports, requestqueue, signup, sponsor, travelplan, users, views
+from intake.views import donate, location, medical, organization, reports, requestqueue, signup, sponsor, travelplan, users, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
@@ -161,6 +161,13 @@ urlpatterns = [
         # path('<tp_id>/delete', reports.TravelPlanDelete.as_view(), name='delete'),
         # path('followup/<tp_id>', reports.TravelModeFollowUpTemplateView.as_view(), name='travel follow up'),
     ], 'intake'), namespace='report')),
+
+    path('donate/', include(([
+        path('', donate.DonateList.as_view(), name='overview'),
+        path('add', donate.DonateCreate.as_view(), name='add'),
+        path('delete/<pk>', donate.DonateDelete.as_view(), name='delete'),
+        path('update/<pk>', donate.DonateUpdate.as_view(), name='update'),
+    ], 'intake'), namespace='donate')),
 
     # path('poc/', include(([
     #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),
