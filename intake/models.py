@@ -414,6 +414,7 @@ class Asylee(models.Model):
     vaccine_received = models.CharField(max_length=100, null=True, blank=True, verbose_name="Vaccine manufacturer", choices=COVID_VACCINE_CHOICES)
     sick_covid = models.BooleanField(default=False, verbose_name="Is currently sick from COVID")
     sick_other = models.BooleanField(default=False, verbose_name="Is currently sick but not from COVID")
+    needs_medical_attention = models.BooleanField(default=False, verbose_name="Needs medical attention")
     # tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
     # legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
