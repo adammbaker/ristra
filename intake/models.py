@@ -404,7 +404,7 @@ class Asylee(models.Model):
     id = HashidAutoField(primary_key=True)
     name = models.CharField(max_length=300, verbose_name="Asylee's name")
     a_number = models.CharField(max_length=20, default='A-', verbose_name='Alien number')
-    medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
+    # medicals = models.ManyToManyField('Medical', verbose_name='Medical Issues')
     sex = models.CharField(verbose_name="Sex of asylee", max_length=100, choices=SEX_CHOICES, default='other')
     date_of_birth = models.DateField(help_text="YYYY-MM-DD", verbose_name="Asylee's date of birth")
     phone_number = models.CharField(verbose_name="Asylee's phone number", max_length=300, null=True, blank=True)
@@ -669,49 +669,49 @@ class TravelPlan(models.Model):
             'conf': self.confirmation,
         }
 
-class Medical(models.Model):
-    id = HashidAutoField(primary_key=True)
-    provider = models.ForeignKey(Profile, related_name="medical_provider", on_delete=models.SET(get_sentinel_user))
-    entered_by = models.ForeignKey(Profile, related_name="data_entry_volunteer", on_delete=models.SET(get_sentinel_user))
-    temperature = encrypt(models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Temperature ºF"))
-    # temperature = encrypt(models.FloatField(null=True, blank=True, verbose_name="Temperature ºF"))
-    pulse = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Pulse"))
-    blood_pressure = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Blood pressure"))
-    weight = encrypt(models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, verbose_name="Weight (lbs)", validators=[MinValueValidator(0)]))
-    height = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Height"))
-    oxgyen_level = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Oxygen level"))
-    vaccines_received = encrypt(models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received"))
-    allergies = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
-    medications = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications"))
-    chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Chronic health issues"))
-    symptoms = encrypt(models.TextField(verbose_name="Symptoms observed", null=True, blank=True))
-    diagnosis = encrypt(models.TextField(verbose_name="Diagnosis", null=True, blank=True))
-    treatment = encrypt(models.TextField(verbose_name="Treatment", null=True, blank=True))
-    follow_up_needed = encrypt(models.TextField(verbose_name="Follow up needed", null=True, blank=True))
-    notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+# class Medical(models.Model):
+#     id = HashidAutoField(primary_key=True)
+#     provider = models.ForeignKey(Profile, related_name="medical_provider", on_delete=models.SET(get_sentinel_user))
+#     entered_by = models.ForeignKey(Profile, related_name="data_entry_volunteer", on_delete=models.SET(get_sentinel_user))
+#     temperature = encrypt(models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Temperature ºF"))
+#     # temperature = encrypt(models.FloatField(null=True, blank=True, verbose_name="Temperature ºF"))
+#     pulse = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Pulse"))
+#     blood_pressure = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Blood pressure"))
+#     weight = encrypt(models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, verbose_name="Weight (lbs)", validators=[MinValueValidator(0)]))
+#     height = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Height"))
+#     oxgyen_level = encrypt(models.CharField(max_length=20, null=True, blank=True, verbose_name="Oxygen level"))
+#     vaccines_received = encrypt(models.CharField(max_length=300, null=True, blank=True, verbose_name="Vaccines received"))
+#     allergies = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Allergies"))
+#     medications = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Medications"))
+#     chronic_medical_problems = encrypt(models.CharField(max_length=200, null=True, blank=True, verbose_name="Chronic health issues"))
+#     symptoms = encrypt(models.TextField(verbose_name="Symptoms observed", null=True, blank=True))
+#     diagnosis = encrypt(models.TextField(verbose_name="Diagnosis", null=True, blank=True))
+#     treatment = encrypt(models.TextField(verbose_name="Treatment", null=True, blank=True))
+#     follow_up_needed = encrypt(models.TextField(verbose_name="Follow up needed", null=True, blank=True))
+#     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
 
-    @property
-    def asylee(self):
-        return self.asylee_set.first()
+#     @property
+#     def asylee(self):
+#         return self.asylee_set.first()
 
-    def breadcrumbs(self, bc=''):
-        parent = self.asylee
-        model = 'Medical'
-        if bc != '':
-            return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/overview">%(model)s</a></li>""" % {
-                'model': model, 'id': self.id
-            } + bc)
-        if bc == '':
-            bc = []
-            bc.append('<nav aria-label="breadcrumb">')
-            bc.append('<ol class="breadcrumb">')
-            bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
-            bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
-                'model': model
-            }))
-            bc.append('</ol>')
-            bc.append('</nav>')
-        return mark_safe(''.join(bc))
+#     def breadcrumbs(self, bc=''):
+#         parent = self.asylee
+#         model = 'Medical'
+#         if bc != '':
+#             return parent.breadcrumbs("""<li class="breadcrumb-item"><a href="/medical/%(id)s/overview">%(model)s</a></li>""" % {
+#                 'model': model, 'id': self.id
+#             } + bc)
+#         if bc == '':
+#             bc = []
+#             bc.append('<nav aria-label="breadcrumb">')
+#             bc.append('<ol class="breadcrumb">')
+#             bc.append("""<li class="breadcrumb-item"><a href="/">Home</a></li>""")
+#             bc.append(parent.breadcrumbs('<li class="breadcrumb-item active" aria-current="page">%(model)s</li>' % {
+#                 'model': model
+#             }))
+#             bc.append('</ol>')
+#             bc.append('</nav>')
+#         return mark_safe(''.join(bc))
 
 class Message(models.Model):
     MESSAGE_TYPES = [

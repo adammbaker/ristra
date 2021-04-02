@@ -113,15 +113,15 @@ urlpatterns = [
         # path('add/<hoh_id>/', travelplan.TravelPlanCreationView.as_view(), name='add'),
     ], 'intake'), namespace='travelplan')),
 
-    path('medical/', include(([
-        path('list/<asy_id>', medical.MedicalListView.as_view(), name='list'),
-        path('add/<asy_id>', medical.MedicalCreateView.as_view(), name='add'),
-        path('<med_id>/detail', medical.MedicalDetailView.as_view(), name='detail'),
-        path('<med_id>/update', medical.MedicalUpdate.as_view(), name='update'),
-        path('<med_id>/delete', medical.MedicalDelete.as_view(), name='delete'),
-        # path('<med_id>/', medical.MedicalDetailView.as_view(), name='detail'),
-        # path('add/<asylee_id>/', medical.MedicalCreationView.as_view(), name='add'),
-    ], 'intake'), namespace='medical')),
+    # path('medical/', include(([
+    #     path('list/<asy_id>', medical.MedicalListView.as_view(), name='list'),
+    #     path('add/<asy_id>', medical.MedicalCreateView.as_view(), name='add'),
+    #     path('<med_id>/detail', medical.MedicalDetailView.as_view(), name='detail'),
+    #     path('<med_id>/update', medical.MedicalUpdate.as_view(), name='update'),
+    #     path('<med_id>/delete', medical.MedicalDelete.as_view(), name='delete'),
+    #     # path('<med_id>/', medical.MedicalDetailView.as_view(), name='detail'),
+    #     # path('add/<asylee_id>/', medical.MedicalCreationView.as_view(), name='add'),
+    # ], 'intake'), namespace='medical')),
 
     path('campaign/', include(([
         path('list/<user_id>', campaign.CampaignListView.as_view(), name='list'),

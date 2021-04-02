@@ -25,13 +25,13 @@
   <tbody>
     {% for unit in active_asylees %}
     <tr>
-      <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">{{ unit.name }}</a></td>
+      <td><a href="{% url 'asylee:detail' asy_id=unit.id %}">{{ unit.name }}</a></td>
       <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
       <td>{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
       <td>{{ unit.householdhead.destination }}</td>
       <td>{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
       <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}
-      <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">See more</a>
+      <td><a href="{% url 'asylee:detail' asy_id=unit.id %}">See more</a>
     </tr>
     {% endfor %}
   </tbody>

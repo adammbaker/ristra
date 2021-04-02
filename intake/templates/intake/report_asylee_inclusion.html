@@ -21,7 +21,7 @@
       <td>{{ unit.householdhead.destination }}</td>
       <td>{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
       <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}</td>
-      <td><a href="{% url 'asylee:overview' asy_id=unit.id %}">See more</a>
+      <td><a href="{% url 'asylee:detail' asy_id=unit.id %}">See more</a>
     </tr>
     {% endfor %}
   </tbody>
