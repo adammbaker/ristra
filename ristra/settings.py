@@ -35,6 +35,7 @@ SOFTWARE_CYCLE = env("SOFTWARE_CYCLE")
 
 if SOFTWARE_CYCLE == 'dev':
     ALLOWED_HOSTS = [
+        u'192.168.0.151',
         u'localhost',
         u'dev.ristrarefuge.org',
     ]

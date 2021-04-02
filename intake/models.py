@@ -517,6 +517,7 @@ class HeadOfHousehold(Asylee):
     lodging = models.CharField(verbose_name="Room assignment", max_length=300, null=True, blank=True)
     destination_city = models.CharField(verbose_name="Destination city", max_length=300, null=True, blank=True)
     state = models.CharField(verbose_name="Destination state", max_length=100, choices=STATE_CHOICES, default='other')
+    detention_type = models.CharField(max_length=100, choices=DETENTION_TYPE_CHOICES, default='other')
     days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
     days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
     country_of_origin = models.CharField(verbose_name="Country of origin", max_length=100, choices=COUNTRY_CHOICES, default='guatemala')

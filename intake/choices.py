@@ -239,8 +239,13 @@ COVID_VACCINE_CHOICES = [
     ('unknown', 'Unknown'),
     ('other', 'Other'),
 ]
-ROLE_CHOICES=[
+ROLE_CHOICES = [
     ('volunteer', 'Volunteer'),
     ('team_lead','Team Lead'),
     ('site_coordinator','Site Coordinator'),
+]
+DETENTION_TYPE_CHOICES = [
+    ('mpp', 'Migrant Protection Protocols (MPP)'),
+    ('cbp', 'Customs and Border Protection (CBP)'),
+    ('other', 'Other'),
 ]
