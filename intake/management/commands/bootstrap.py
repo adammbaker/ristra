@@ -66,7 +66,6 @@ class Command(BaseCommand):
     def initialize_household_needs(self):
         self.stdout.write(self.style.WARNING('Initializing model HouseholdNeeds'))
         needs = (
-            ('Clothes'),
             ('Diapers'),
             ('Feminine Hygiene'),
             ('Formula'),

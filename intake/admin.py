@@ -1,9 +1,10 @@
 from django.contrib import admin
 
-from intake.models import Language
+from intake.models import HouseholdNeed, Language
 
 # Register your models here.
 # admin.site.register(Capacity)
+admin.site.register(HouseholdNeed)
 admin.site.register(Language)
 # admin.site.register(LodgingTypes)
 # admin.site.register(Organization)

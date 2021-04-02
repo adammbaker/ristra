@@ -249,3 +249,7 @@ DETENTION_TYPE_CHOICES = [
     ('cbp', 'Customs and Border Protection (CBP)'),
     ('other', 'Other'),
 ]
+AIRPORT_CHOICES = [
+    ('abq', 'Albuquerque International Sunport (ABQ)'),
+    ('elp', 'El Paso International Airport'),
+]
