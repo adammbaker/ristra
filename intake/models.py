@@ -521,6 +521,7 @@ class HeadOfHousehold(Asylee):
     days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
     days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
     country_of_origin = models.CharField(verbose_name="Country of origin", max_length=100, choices=COUNTRY_CHOICES, default='guatemala')
+    departure_bag_made = models.BooleanField(default=False, verbose_name='Departure bags made')
 
     @property
     def intakebus(self):
