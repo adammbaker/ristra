@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from intake.choices import CAPACITY_CHOICES
-from intake.models import Capacity, Language
+from intake.models import Capacity, HouseholdNeed, Language
 
 
 class Command(BaseCommand):
@@ -16,6 +16,7 @@ class Command(BaseCommand):
         start = timezone.localtime()
         self.initialize_capacities()
         self.initialize_languages()
+        self.initialize_household_needs()
         # self.initialize_lodging_types()
         # self.initialize_states()
         done = timezone.localtime()
@@ -61,6 +62,20 @@ class Command(BaseCommand):
             lang, lang_c = Language.objects.get_or_create(language=lang)
             if lang_c:
                 self.stdout.write(self.style.SUCCESS('\tSuccessfully added %(lang)s to model Languages' % {'lang': lang}))
+
+    def initialize_household_needs(self):
+        self.stdout.write(self.style.WARNING('Initializing model HouseholdNeeds'))
+        needs = (
+            ('Clothes'),
+            ('Diapers'),
+            ('Feminine Hygiene'),
+            ('Formula'),
+            ('Toys'),
+        )
+        for need in needs:
+            need, need_c = HouseholdNeed.objects.get_or_create(need=need)
+            if need_c:
+                self.stdout.write(self.style.SUCCESS(f'\tSuccessfully added {need} to model HouseholdNeeds'))
 
     # def initialize_lodging_types(self):
     #     self.stdout.write(self.style.WARNING('Initializing model LodgingTypes'))

@@ -33,7 +33,7 @@ class Language(models.Model):
     language = models.CharField(max_length=100, verbose_name='Language Spoken')
 
     def __str__(self):
-        return '%(lang)s' % {'lang': self.language}
+        return f'{self.language}'
 
 # class User(AbstractUser):
 #     is_team_lead = models.BooleanField(default=False)
@@ -746,3 +746,10 @@ class Donate(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class HouseholdNeed(models.Model):
+    need = models.CharField(max_length=100, verbose_name="Household Need")
+
+    def __str__(self):
+        return f'{self.need}'
