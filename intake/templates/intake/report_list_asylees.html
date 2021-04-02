@@ -55,32 +55,32 @@
         <tr>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'asylee' %}-{% endif %}asylee">
               Asylee Name
-              {% if sorting.sorting == 'asylee' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'asylee' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'household' %}-{% endif %}household">
               Household of
-              {% if sorting.sorting == 'household' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'household' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'lodging' %}-{% endif %}lodging">
               Rm #
-              {% if sorting.sorting == 'lodging' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'lodging' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'destination' %}-{% endif %}destination">
               Dest.
-              {% if sorting.sorting == 'destination' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'destination' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'arrival_time' %}-{% endif %}arrival_time">
               Here Since
-              {% if sorting.sorting == 'arrival_time' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'arrival_time' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th class="text-wrap"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'departure' %}-{% endif %}departure">
               Departure
-              {% if sorting.sorting == 'departure' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'departure' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th>
             <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'bus' %}-{% endif %}bus">
               Bus
-              {% if sorting.sorting == 'bus' %}{% if sorting.ascending %}↑{% else %}↓{% endif %}{% else %}⇡{% endif %}</a>
+              {% if sorting.sorting == 'bus' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th>Trvl</th>
           <th>Spon</th>
@@ -122,6 +122,9 @@
   </div><br><br>
   <div class="jumbotron">
     <p class="lead">An Asylee is considered active if they have not yet left or are within 24 hours of arriving at their destination.</p>
+  <hr class="my-4">
+  <p class="lead">⚠️ - signifies that someone in the household is sick with COVID-19</p>
+  <p class="lead">❗️ - signifies that the asylee is sick with COVID-19</p>
   </div>
   <script  type="text/javascript">
     var $rows = $('.table > tbody tr');

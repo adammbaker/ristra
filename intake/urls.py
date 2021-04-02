@@ -155,6 +155,7 @@ urlpatterns = [
         path('households/leaving_tomorrow', reports.HouseholdsLeavingTomorrow.as_view(), name='hohs lvg tom'),
         path('households/leaving_today', reports.HouseholdsLeavingToday.as_view(), name='hohs lvg today'),
         path('asylees/search', reports.ReportSearch.as_view(), name='asylees search'),
+        path('volunteers/search', reports.VolunteerSearch.as_view(), name='volunteers search'),
         # path('add/<hoh_id>', reports.TravelPlanCreateView.as_view(), name='add'),
         # path('<tp_id>/detail', reports.TravelPlanDetailView.as_view(), name='detail'),
         # path('<tp_id>/update', reports.TravelPlanUpdate.as_view(), name='update'),

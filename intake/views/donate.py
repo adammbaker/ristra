@@ -14,6 +14,10 @@ class DonateList(ListView):
     model = Donate
     paginate_by = 0
 
+    def get_context_data(self, **kwargs):
+        kwargs['active_view'] = "donate"
+        return super().get_context_data(**kwargs)
+
 
 class DonateCreate(LoginRequiredMixin, CreateView):
     'Creates a new instance of the object and relates it to their parent'
@@ -26,6 +30,7 @@ class DonateCreate(LoginRequiredMixin, CreateView):
             'model': self.model.__name__
         }
         kwargs['title'] = 'Add a Recipient'
+        kwargs['active_view'] = "donate"
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
@@ -68,6 +73,7 @@ class DonateUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         kwargs['button_text'] = 'Update Donation Listing'
         kwargs['title'] = f"Edit Donation Listing"
+        kwargs['active_view'] = "donate"
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
