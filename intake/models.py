@@ -146,8 +146,8 @@ class Profile(models.Model):
         return 'Food' in self.capacities.values_list('name', flat=True)
 
     @property
-    def is_capable_hotelrunner(self):
-        return 'Hotel Runner' in self.capacities.values_list('name', flat=True)
+    def is_capable_concierge(self):
+        return 'Concierge' in self.capacities.values_list('name', flat=True)
 
     @property
     def is_capable_intake(self):
@@ -522,6 +522,7 @@ class HeadOfHousehold(Asylee):
     days_traveling = models.PositiveSmallIntegerField(verbose_name="Days spent traveling", default=0)
     days_detained = models.PositiveSmallIntegerField(verbose_name="Days spent in detention", default=0)
     country_of_origin = models.CharField(verbose_name="Country of origin", max_length=100, choices=COUNTRY_CHOICES, default='guatemala')
+    needs = models.ManyToManyField('HouseholdNeed', verbose_name="Household Needs", default=None)
     departure_bag_made = models.BooleanField(default=False, verbose_name='Departure bags made')
 
     @property

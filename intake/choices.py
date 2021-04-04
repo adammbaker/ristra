@@ -1,10 +1,9 @@
 CAPACITY_CHOICES = [
     ('clothes', 'Clothes'),
+    ('concierge', 'Concierge'),
     ('departurebags', 'Departure Bags'),
     ('food', 'Food'),
-    ('hotelrunner', 'Hotel Runner'),
     ('intake', 'Intake'),
-    ('medical', 'Medical'),
     ('travel', 'Travel'),
     ('transportation', 'Transportation'),
     ('volunteercoordinator', 'Volunteer Coordinator'),

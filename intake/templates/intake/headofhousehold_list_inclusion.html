@@ -127,3 +127,38 @@
 {% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
 </table>
 </div>
+
+<br><br>
+
+<!-- Household Needs -->
+<div class="card">
+<div class="card-header text-center">
+    HOUSEHOLD NEEDS
+</div>
+<table class="table mb-0">
+<thead>
+  <tr>
+    <th>Need</th>
+    <th>Need Satisfied?</th>
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+  {% for need in householdneeds %}
+    <tr>
+      <td>{{need.need}}</td>
+      <td>
+        {% if need in headofhousehold.needs %}
+          {% if user.profile.is_capable_concierge %}
+            Satisfy
+          {% endif %}
+        {% else %}
+          <a href="{% url 'headofhousehold:addneed' need.id %}" class="btn btn-primary">Add Need&nbsp;
+          <span class="badge badge-light">+</span></a>
+        {% endif %}
+      <td>
+  {% endfor %}
+</tbody>
+{% include 'intake/pagination.html' with is_paginated=is_paginated page_obj=page_obj %}
+</table>
+</div>

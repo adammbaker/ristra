@@ -9,7 +9,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 # from intake.decorators import is_affiliated
 from intake.forms.asylee import AsyleeForm, AsyleeVaccineForm, AsyleeSickForm
 from intake.forms.headofhousehold import HeadOfHouseholdForm
-from intake.models import Asylee, HeadOfHousehold, IntakeBus
+from intake.models import Asylee, HeadOfHousehold, HouseholdNeed, IntakeBus
 
 # Create your views here.
 class HeadOfHouseholdListView(LoginRequiredMixin, ListView):
@@ -161,6 +161,7 @@ class HeadOfHouseholdOverview(LoginRequiredMixin, DetailView):
     template_name = 'intake/headofhousehold_overview.html'
 
     def get_context_data(self, **kwargs):
+        kwargs['householdneeds'] = HouseholdNeed.objects.all()
         kwargs['lod'] = 'partial'
         return super().get_context_data(**kwargs)
 
@@ -215,3 +216,9 @@ class ItineraryDetail(LoginRequiredMixin, DetailView):
     model = HeadOfHousehold
     pk_url_kwarg = 'hoh_id'
     template_name = 'intake/itinerary.html'
+
+# @login_required
+# def AddNeedToHousehold(request, hoh_id, need_id):
+    # make sure user has proper permissions/capacities
+        # add need to hoh
+    # return user to hoh:overview

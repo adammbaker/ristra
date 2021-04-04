@@ -79,8 +79,8 @@ Volunteers who choose Food as a capacity are willing to contact local restaurant
 
 *Spanish level desired: minimal*
 
-### Hotel Runner
-A hotel runner works with coordinators inside the hotel to be with travelers, for meals, stuff for kids.
+### Concierge
+A concierge works with coordinators at a site to assist both volunteers and asylees in whatever capacity they need.
 
 *Spanish level desired: moderate*
 
