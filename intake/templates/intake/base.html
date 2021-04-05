@@ -83,12 +83,14 @@
 </nav>
 {% include 'intake/breadcrumbs.html' %}
 
-    <div class="container">
-      <br>
-        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+  {% include 'intake/messages.html' %}
 
-        {% block content %}(no content){% endblock %}
-    </div>
+  <div class="container">
+    <br>
+      <!-- {% autoescape off %}{% bootstrap_messages %}{% endautoescape %} -->
+
+      {% block content %}(no content){% endblock %}
+  </div>
 
 <br><br><br><br>
 
