@@ -43,6 +43,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         org_city = form.cleaned_data.get('city')
         org_state = form.cleaned_data.get('state')
         org_url = form.cleaned_data.get('url')
+        org_airport = form.cleaned_data.get('associated_airport')
         org_notes = form.cleaned_data.get('notes')
         org, org_c = Organization.objects.get_or_create(
             is_valid = False,
@@ -50,6 +51,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             city = org_city,
             state = org_state,
             url = org_url,
+            associated_airport = org_airport,
             notes = org_notes,
         )
         print('Setting up org', org.id, 'with sc as', sc)
