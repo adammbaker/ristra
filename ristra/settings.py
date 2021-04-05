@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'qr_code',
     'shortener',
     'bootstrap4',
+    'simple_history',
     'intake.apps.IntakeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 DATABASES = {

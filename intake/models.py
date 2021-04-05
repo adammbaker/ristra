@@ -13,6 +13,7 @@ from intake.choices import *
 from intake.generic_card import GenericCard
 from shortener import shortener
 from shortener.models import UrlMap
+from simple_history.models import HistoricalRecords
 
 import hashlib
 from datetime import timedelta
@@ -118,6 +119,8 @@ class Profile(models.Model):
     can_create_organization = models.BooleanField(default=False, verbose_name='Able to create organizations')
     organizations_created = models.ManyToManyField('Organization', verbose_name='Organizations created', related_name='organizations_created')
     # campaigns = models.ManyToManyField('Campaign', verbose_name="Active intake campaigns")
+    history = HistoricalRecords()
+
     notes = models.TextField(help_text="Additional notes", null=True, blank=True)
 
     def to_card(self):
@@ -232,6 +235,7 @@ class Organization(models.Model):
     associated_airport = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
     locations = models.ManyToManyField('Location', verbose_name='Locations')
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
+    history = HistoricalRecords()
 
     @property
     def location(self):
@@ -290,6 +294,7 @@ class RequestQueue(models.Model):
     # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.SET(get_sentinel_user), null=True)
     site_coordinator = models.ForeignKey('Profile', on_delete=models.SET(get_sentinel_user), null=True)
     organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
+    history = HistoricalRecords()
 
 class Location(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -297,6 +302,7 @@ class Location(models.Model):
     lodging_type = models.CharField(verbose_name="Type of lodging provided", max_length=100, choices=LODGING_CHOICES, default='other')
     name = models.CharField(verbose_name="Name of the staging location", max_length=300)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    history = HistoricalRecords()
 
     @property
     def organization(self):
@@ -345,6 +351,7 @@ class IntakeBus(models.Model):
     arrival_time = models.DateTimeField(verbose_name="Arrival time of bus", default=timezone.now)
     number = models.CharField(verbose_name="Descriptive bus name", max_length=300, null=True, blank=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    history = HistoricalRecords()
 
     @property
     def location(self):
@@ -419,6 +426,7 @@ class Asylee(models.Model):
     # tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
     # legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    history = HistoricalRecords()
 
     @property
     def householdhead(self):
@@ -524,6 +532,8 @@ class HeadOfHousehold(Asylee):
     country_of_origin = models.CharField(verbose_name="Country of origin", max_length=100, choices=COUNTRY_CHOICES, default='guatemala')
     needs = models.ManyToManyField('HouseholdNeed', verbose_name="Household Needs", default=None)
     departure_bag_made = models.BooleanField(default=False, verbose_name='Departure bags made')
+    food_made = models.BooleanField(default=False, verbose_name='Travel food made')
+    history = HistoricalRecords()
 
     @property
     def intakebus(self):
@@ -583,6 +593,7 @@ class Sponsor(models.Model):
     zip_code = models.CharField(verbose_name="Sponsor's ZIP code", max_length=10, null=True, blank=True)
     relation = models.CharField(max_length=300, verbose_name="Relation to head of household", null=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
+    history = HistoricalRecords()
 
     @property
     def location(self):
@@ -629,6 +640,7 @@ class TravelPlan(models.Model):
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)
     # Airline only
     flight_number = models.CharField(max_length=200, verbose_name='Flight #(s)', null=True)
+    history = HistoricalRecords()
 
     @property
     def destination(self):

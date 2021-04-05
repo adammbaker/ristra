@@ -148,12 +148,16 @@
     <tr>
       <td>{{need.need}}</td>
       <td>
-        {% if need in headofhousehold.needs %}
+        {% if need in headofhousehold.needs.all %}
           {% if user.profile.is_capable_concierge %}
-            Satisfy
+            <a href="{% url 'headofhousehold:satisfy need' headofhousehold.id need.id %}" class="btn btn-success">Satisfy Need&nbsp;
+            <span class="badge badge-light">-</span></a>
+          {% else %}
+            <a href="{% url 'headofhousehold:satisfy need' headofhousehold.id need.id %}" class="btn btn-success">Satisfy Need&nbsp;
+            <span class="badge badge-light">-</span></a>
           {% endif %}
         {% else %}
-          <a href="{% url 'headofhousehold:addneed' need.id %}" class="btn btn-primary">Add Need&nbsp;
+          <a href="{% url 'headofhousehold:add need' headofhousehold.id need.id %}" class="btn btn-primary">Add Need&nbsp;
           <span class="badge badge-light">+</span></a>
         {% endif %}
       <td>
