@@ -1,16 +1,16 @@
-from django import forms
-from intake.models import Capacity, Medical, Profile
+# from django import forms
+# from intake.models import Capacity, Medical, Profile
 
-# Create your forms here.
-class MedicalForm(forms.ModelForm):
+# # Create your forms here.
+# class MedicalForm(forms.ModelForm):
 
-    provider = forms.ModelChoiceField(
-        queryset = Profile.objects.filter(
-            capacities__in=Capacity.objects.filter(name='Medical'),
-        )
-    )
+#     provider = forms.ModelChoiceField(
+#         queryset = Profile.objects.filter(
+#             capacities__in=Capacity.objects.filter(name='Medical'),
+#         )
+#     )
     
-    class Meta:
-        model = Medical
-        fields = '__all__'
-        exclude = ['entered_by',]
+#     class Meta:
+#         model = Medical
+#         fields = '__all__'
+#         exclude = ['entered_by',]

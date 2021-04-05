@@ -1,23 +1,23 @@
 <br><br>
 <div class="card">
   <li class="list-group-item"><h4>Please affiliate yourself with an organization below</h4></li>
-      {% for unit in organization_list %}
-      <table class="table mb-0">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+    <table class="table mb-0 table-hover">
+      <thead>
         <tr>
-          <td class="align-middle">{{ unit.name }}</td>
-          <td class="align-middle">{{ unit.location }}</td>
-          <td class="text-right">
-            <a href="{% url 'user:affiliate' unit.id %}" class="card_link">Affiliate</a>
-          </td>
+          <th>Name</th>
+          <th>Location</th>
+          <th></th>
         </tr>
+      </thead>
+      {% for unit in organization_list %}
+      <tbody>
+      <tr>
+        <td class="align-middle">{{ unit.name }}</td>
+        <td class="align-middle">{{ unit.location }}</td>
+        <td class="text-right">
+          <a href="{% url 'user:affiliate' unit.id %}" class="card_link">Affiliate</a>
+        </td>
+      </tr>
       {% empty %}
       <table class="table mb-0">
         <thead>

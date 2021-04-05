@@ -1,7 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
 from intake.views import accounts, asylee, campaign, headofhousehold, intakebus
-from intake.views import location, medical, organization, reports, requestqueue, signup, sponsor, travelplan, users, views
+from intake.views import donate, location, medical, organization, reports, requestqueue, signup, sponsor, travelplan, users, views
 
 urlpatterns = [
     # path('', central_dispatch.dispatch, name='dispatch'),
@@ -74,6 +74,8 @@ urlpatterns = [
         path('<hoh_id>/delete', headofhousehold.HeadOfHouseholdDelete.as_view(), name='delete'),
         path('<hoh_id>/itinerary', headofhousehold.ItineraryDetail.as_view(), name='itinerary'),
         path('followup/health/<hoh_id>', headofhousehold.HeadOfHouseholdHealthFollowUpTemplateView.as_view(), name='health follow up'),
+        path('<hoh_id>/add/<need_id>', headofhousehold.AddNeedToHousehold, name='add need'),
+        path('<hoh_id>/satisfy/<need_id>', headofhousehold.SatisfyNeedForHousehold, name='satisfy need'),
         # path('<hoh_id>/', headofhousehold.HeadOfHouseholdDetailView.as_view(), name='detail'),
         # path('add/<ib_id>/', headofhousehold.HeadOfHouseholdCreationView.as_view(), name='add'),
     ], 'intake'), namespace='headofhousehold')),
@@ -113,15 +115,15 @@ urlpatterns = [
         # path('add/<hoh_id>/', travelplan.TravelPlanCreationView.as_view(), name='add'),
     ], 'intake'), namespace='travelplan')),
 
-    path('medical/', include(([
-        path('list/<asy_id>', medical.MedicalListView.as_view(), name='list'),
-        path('add/<asy_id>', medical.MedicalCreateView.as_view(), name='add'),
-        path('<med_id>/detail', medical.MedicalDetailView.as_view(), name='detail'),
-        path('<med_id>/update', medical.MedicalUpdate.as_view(), name='update'),
-        path('<med_id>/delete', medical.MedicalDelete.as_view(), name='delete'),
-        # path('<med_id>/', medical.MedicalDetailView.as_view(), name='detail'),
-        # path('add/<asylee_id>/', medical.MedicalCreationView.as_view(), name='add'),
-    ], 'intake'), namespace='medical')),
+    # path('medical/', include(([
+    #     path('list/<asy_id>', medical.MedicalListView.as_view(), name='list'),
+    #     path('add/<asy_id>', medical.MedicalCreateView.as_view(), name='add'),
+    #     path('<med_id>/detail', medical.MedicalDetailView.as_view(), name='detail'),
+    #     path('<med_id>/update', medical.MedicalUpdate.as_view(), name='update'),
+    #     path('<med_id>/delete', medical.MedicalDelete.as_view(), name='delete'),
+    #     # path('<med_id>/', medical.MedicalDetailView.as_view(), name='detail'),
+    #     # path('add/<asylee_id>/', medical.MedicalCreationView.as_view(), name='add'),
+    # ], 'intake'), namespace='medical')),
 
     path('campaign/', include(([
         path('list/<user_id>', campaign.CampaignListView.as_view(), name='list'),
@@ -155,12 +157,22 @@ urlpatterns = [
         path('households/leaving_tomorrow', reports.HouseholdsLeavingTomorrow.as_view(), name='hohs lvg tom'),
         path('households/leaving_today', reports.HouseholdsLeavingToday.as_view(), name='hohs lvg today'),
         path('asylees/search', reports.ReportSearch.as_view(), name='asylees search'),
+        path('volunteers/search', reports.VolunteerSearch.as_view(), name='volunteers search'),
+        path('households/lacking_departure_bags', reports.HouseholdsLackingDepartureBags.as_view(), name='hohs departurebags'),
+        path('households/lacking_travel_food', reports.HouseholdsLackingTravelFood.as_view(), name='hohs travelfood'),
         # path('add/<hoh_id>', reports.TravelPlanCreateView.as_view(), name='add'),
         # path('<tp_id>/detail', reports.TravelPlanDetailView.as_view(), name='detail'),
         # path('<tp_id>/update', reports.TravelPlanUpdate.as_view(), name='update'),
         # path('<tp_id>/delete', reports.TravelPlanDelete.as_view(), name='delete'),
         # path('followup/<tp_id>', reports.TravelModeFollowUpTemplateView.as_view(), name='travel follow up'),
     ], 'intake'), namespace='report')),
+
+    path('donate/', include(([
+        path('', donate.DonateList.as_view(), name='overview'),
+        path('add', donate.DonateCreate.as_view(), name='add'),
+        path('delete/<pk>', donate.DonateDelete.as_view(), name='delete'),
+        path('update/<pk>', donate.DonateUpdate.as_view(), name='update'),
+    ], 'intake'), namespace='donate')),
 
     # path('poc/', include(([
     #     path('', point_of_contact.QuizListView.as_view(), name='quiz_list'),

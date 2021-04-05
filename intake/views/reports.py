@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.models import Asylee, HeadOfHousehold, Organization
@@ -79,10 +80,20 @@ class AtAGlance(LoginRequiredMixin, DetailView):
             travel_plan__city_van_date__gte=tomorrow,
             travel_plan__city_van_date__lte=overmorrow,
         ).count()
+        hohs_departure_bags = hohs_all.filter(
+            departure_bag_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        ).count()
+        hohs_travel_food = hohs_all.filter(
+            food_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        ).count()
         kwargs['hohs_arr_yday'] = hoh_arr_yday
         kwargs['hohs_arr_today'] = hoh_arr_today
         kwargs['hohs_lvg_today'] = hoh_leaving_today
         kwargs['hohs_lvg_tom'] = hoh_leaving_tom
+        kwargs['hohs_departure_bags'] = hohs_departure_bags
+        kwargs['hohs_travel_food'] = hohs_travel_food
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 
@@ -136,6 +147,11 @@ class HouseholdsLackingTravelPlan(LoginRequiredMixin, DetailView):
             travel_plan=None,
             intakebus__location__organization=self.request.user.profile.affiliation,
         )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
 
 
 class HouseholdsLackingSponsor(LoginRequiredMixin, DetailView):
@@ -267,7 +283,7 @@ class HouseholdsLeavingTomorrow(LoginRequiredMixin, DetailView):
 
 class ReportSearch(LoginRequiredMixin, ListView):
     model = Asylee
-    template_name = 'intake/report_list.html'
+    template_name = 'intake/report_list_asylees.html'
 
     def get_queryset(self, *args, **kwargs):
         sort_by = self.request.GET.get('sort_by', ['name', 'head_of_household__name','head_of_household__lodging','head_of_household__destination_state','head_of_household__intakebus__arrival_time','head_of_household__travel_plan__city_van_date','head_of_household__intakebus__number'])
@@ -321,4 +337,89 @@ class ReportSearch(LoginRequiredMixin, ListView):
         kwargs['destinations'] = sorted(set([x.householdhead.destination for x in Asylee.objects.filter(head_of_household__intakebus__location__organization=self.request.user.profile.affiliation)]))
         kwargs['active_view'] = 'search'
         kwargs['report_title'] = 'Search'
+        return super().get_context_data(**kwargs)
+
+
+class VolunteerSearch(LoginRequiredMixin, ListView):
+    model = User
+    template_name = 'intake/report_list_volunteers.html'
+
+    def get_queryset(self, *args, **kwargs):
+        sort_by = self.request.GET.get('sort_by', ['first_name','last_login','profile__role'])
+        org = self.request.user.profile.affiliation
+        users = User.objects.filter(
+                profile__affiliation = org,
+        )
+        new_sort_by = sort_by
+        if isinstance(sort_by, str):
+            if sort_by == 'volunteer':
+                new_sort_by = ['first_name']
+            elif sort_by == '-volunteer':
+                new_sort_by = ['-first_name']
+            elif sort_by == 'lastlogin':
+                new_sort_by = ['last_login']
+            elif sort_by == '-lastlogin':
+                new_sort_by = ['-last_login']
+            elif sort_by == 'role':
+                new_sort_by = ['role']
+            elif sort_by == '-role':
+                new_sort_by = ['-role']
+            elif sort_by in ['clothing','concierge','departurebags','food','intake','medical','travel','transportation','volunteercoordinator']:
+                has_capacity = Q(profile__capacities__name__icontains=sort_by)
+                return users.filter(has_capacity)
+            elif sort_by in ['-clothing','-concierge','-departurebags','-food','-intake','-medical','-travel','-transportation','-volunteercoordinator']:
+                has_capacity = Q(profile__capacities__name__icontains=sort_by[1:])
+                return users.filter(~has_capacity)
+            else:
+                new_sort_by = [sort_by]
+        return users.order_by(*new_sort_by)
+
+    def get_context_data(self, **kwargs):
+        sort_by = self.request.GET.get('sort_by',None)
+        desc = sort_by.startswith('-') if sort_by else False
+        if desc:
+            sort_by = sort_by[1:]
+        fields = {'sorting': sort_by, 'ascending': not desc}
+        kwargs['sorting'] = fields
+        kwargs['active_view'] = 'search'
+        kwargs['report_title'] = 'Volunteer Search'
+        return super().get_context_data(**kwargs)
+
+    def test_func(self):
+        return self.request.user.profile.role in ('site_coordinator')
+
+
+class HouseholdsLackingDepartureBags(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return HeadOfHousehold.objects.filter(
+            departure_bag_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Departure Bags'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsLackingTravelFood(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return HeadOfHousehold.objects.filter(
+            food_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Food'
+        kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)

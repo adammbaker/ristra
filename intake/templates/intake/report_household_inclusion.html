@@ -6,7 +6,7 @@
       <th>Household of</th>
       <th>Room #</th>
       <th>Number in<br>Household</th>
-      <th>From</th>
+      <th>Members</th>
       <th>Destination</th>
       <th>Time Here</th>
       <th>Departure</th>
@@ -16,12 +16,12 @@
   <tbody>
     {% for unit in unit_list %}
     <tr>
-      <td>{{ unit.name }}</td>
+      <td>{% if unit.sick_covid %}<span class="text-danger">{{ unit.name }}</span>{% elif unit.householdhead.is_sick_covid %}<span class="text-warning">{{ unit.name }}</span>{% else %}{{ unit.name }}{% endif %}</td>
       <td>{% if unit.householdhead.lodging %}<a href="{% url 'location:overview' unit.householdhead.intakebus.location.id %}">{{ unit.householdhead.intakebus.location.name }}</a> {{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
       <td>{{ unit.asylees.count }}</td>
-      <td>{{ unit.country_of_origin|title }}</td>
+      <td class='text-center'>{{ unit.ages_and_sex }}</td>
       <td>{{ unit.destination }}</td>
-      <td>{{ unit.intakebus.arrival_time|time_to_now_abs:True }}</td>
+      <td class='text-right'>{{ unit.householdhead.time_at_location }}</td>
       <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}
       <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.id %}">See more</a>
     </tr>

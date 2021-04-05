@@ -1,5 +1,5 @@
 from django import forms
-from intake.choices import LANGUAGE_CHOICES
+from intake.choices import DETENTION_TYPE_CHOICES
 from intake.forms.forms import DateInput
 from intake.models import HeadOfHousehold, IntakeBus, Language
 
@@ -29,6 +29,10 @@ class HeadOfHouseholdForm(forms.ModelForm):
         required=True,
         label='Languages spoken'
     )
+    detention_type = forms.ChoiceField(
+        choices=DETENTION_TYPE_CHOICES,
+        required=True,
+    )
     is_currently_sick = forms.BooleanField(
         # help_text='Is sick now'
         required=False
@@ -51,11 +55,13 @@ class HeadOfHouseholdForm(forms.ModelForm):
             'lodging',
             'destination_city',
             'state',
+            'detention_type',
             'days_traveling',
             'days_detained',
             'country_of_origin',
             'had_covid_disease',
             'had_covid_vaccine',
             'is_currently_sick',
+            'needs_medical_attention',
             'notes',
         ]

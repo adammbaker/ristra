@@ -43,6 +43,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         org_city = form.cleaned_data.get('city')
         org_state = form.cleaned_data.get('state')
         org_url = form.cleaned_data.get('url')
+        org_airport = form.cleaned_data.get('associated_airport')
         org_notes = form.cleaned_data.get('notes')
         org, org_c = Organization.objects.get_or_create(
             is_valid = False,
@@ -50,6 +51,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             city = org_city,
             state = org_state,
             url = org_url,
+            associated_airport = org_airport,
             notes = org_notes,
         )
         print('Setting up org', org.id, 'with sc as', sc)
@@ -85,7 +87,8 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     template_name = "intake/organization_overview.html"
 
     def get_object(self, **kwargs):
-        # return self.model.objects.get(id=self.kwargs.get('org_id'))
+        print('OO', org_id)
+        return self.model.objects.get(id=self.kwargs.get('org_id'))
         return self.request.user.profile.affiliation
         return get_object_or_404(self.request.user.profile.affiliation)
         return get_object_or_404(self.model, id=self.kwargs.get('org_id'))
@@ -123,6 +126,7 @@ class OrganizationDetail(LoginRequiredMixin, DetailView):
     model = Organization
 
     def get_object(self, **kwargs):
+        return self.model.objects.get(id=self.kwargs.get('org_id'))
         return self.request.user.profile.affiliation
 
 

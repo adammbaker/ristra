@@ -64,7 +64,7 @@
 {% if lod == "partial" %}
   <a href="{% url 'asylee:detail' asy_id=asylee.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
 {% else %}
-  <a href="{% url 'asylee:overview' asy_id=asylee.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+  <a href="{% url 'asylee:detail' asy_id=asylee.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
 
   {% if user.profile.is_capable_intake or user.profile.is_capable_travel %}
   <br><br>
