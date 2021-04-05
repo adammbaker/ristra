@@ -3,17 +3,17 @@ A tool for facilitating the intake of refugees seeking asylum and the administra
 
 # Setting up anew
 1. Clone this git repository.
-1. Change directory to `ristra/`.
-1. Install virtualenv and create a python3 virtual environment; `virtualenv -p python3 venv`.
-1. Activate the virtual environment; `source venv/bin/activate`.
-1. Download the necessary libraries; `pip install -r requirements.txt`.
-1. Run `python manage.py migrate`.
-1. Run `python manage.py bootstrap` to initialize necessary tables.
-1. Run `python manage.py createsuperuser` and enter the credentials of a superuser.
+2. Change directory to `ristra/`.
+3. Install virtualenv and create a python3 virtual environment; `virtualenv -p python3 venv`.
+4. Activate the virtual environment; `source venv/bin/activate`.
+5. Download the necessary libraries; `pip install -r requirements.txt`.
+6. Run `python manage.py migrate`.
+7. Run `python manage.py bootstrap` to initialize necessary tables.
+8. Run `python manage.py createsuperuser` and enter the credentials of a superuser.
 
 # Requirements
 1. Nginx or Apache.
-1. Gunicorn.
+2. Gunicorn.
 
 # The format of Ristra
 Ristra is intended to be used by non-profit entities who are assisting individuals released by ICE and who need assistance traveling to their destination.
