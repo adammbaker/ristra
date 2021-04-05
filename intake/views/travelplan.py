@@ -49,7 +49,6 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         tp_destination_state = form.cleaned_data.get('destination_state')
         tp_travel_date = form.cleaned_data.get('travel_date')
         tp_city_van_date = form.cleaned_data.get('city_van_date')
-        tp_travel_food_prepared = form.cleaned_data.get('travel_food_prepared')
         tp_eta = form.cleaned_data.get('eta')
         tp_travel_mode = form.cleaned_data.get('travel_mode')
         tp_notes = form.cleaned_data.get('notes')
@@ -62,7 +61,6 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         )
         tp.confirmation = tp_confirmation
         tp.city_van_date = tp_city_van_date
-        tp.travel_food_prepared = tp_travel_food_prepared
         tp.eta = tp_eta
         tp.travel_mode = tp_travel_mode
         tp.notes = tp_notes

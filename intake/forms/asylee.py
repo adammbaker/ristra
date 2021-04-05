@@ -29,7 +29,7 @@ class AsyleeForm(forms.ModelForm):
     )
     class Meta:
         model = Asylee
-        fields = ['name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine', 'is_currently_sick','notes',]
+        fields = ['name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine', 'is_currently_sick', 'needs_medical_attention','notes',]
 
 class AsyleeHealthFollowUpForm(forms.ModelForm):
     VACCINATION_CHOICES = [

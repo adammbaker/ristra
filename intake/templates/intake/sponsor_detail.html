@@ -8,6 +8,16 @@
 
 {% block content %}
 
+{% for asylee in sponsor.headofhousehold.asylees.all %}
+  {% if asylee.sick_covid %}
+  <div class="alert alert-danger" role="alert">
+    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
+    <br><br>
+    Additionally, consider asking the Sponsor to plan for a travel date on or after {{ asylee.householdhead.intakebus.arrival_time|add_fortnight }} (2 weeks after arrival).
+  </div>
+  {% endif %}
+{% endfor %}
+
 <h1>{{ sponsor.name }}</h1>
 <h6 class="card-subtitle mb-2 text-muted">For the household of {{ sponsor.headofhousehold.name }}</h6>
 <h6 class="card-subtitle mb-2 text-muted">Sponsor lives in {{ sponsor.location }}</h6>

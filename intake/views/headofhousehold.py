@@ -1,7 +1,8 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
@@ -9,7 +10,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 # from intake.decorators import is_affiliated
 from intake.forms.asylee import AsyleeForm, AsyleeVaccineForm, AsyleeSickForm
 from intake.forms.headofhousehold import HeadOfHouseholdForm
-from intake.models import Asylee, HeadOfHousehold, IntakeBus
+from intake.models import Asylee, HeadOfHousehold, HouseholdNeed, IntakeBus
 
 # Create your views here.
 class HeadOfHouseholdListView(LoginRequiredMixin, ListView):
@@ -120,7 +121,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
         context = super(HeadOfHouseholdHealthFollowUpTemplateView, self).get_context_data(**kwargs)
         context['title'] = 'Follow Up Health Questions'
         context['asylee'] = self.kwargs.get('hoh_id')
-        context['vaccine_form_class'] = self.vaccine_form_class
+        context['vaccine_form_class'] = self.vaccine_form_class 
         context['sick_form_class'] = self.sick_form_class
         return context
 
@@ -161,6 +162,8 @@ class HeadOfHouseholdOverview(LoginRequiredMixin, DetailView):
     template_name = 'intake/headofhousehold_overview.html'
 
     def get_context_data(self, **kwargs):
+        print('BBBB')
+        kwargs['householdneeds'] = HouseholdNeed.objects.all()
         kwargs['lod'] = 'partial'
         return super().get_context_data(**kwargs)
 
@@ -215,3 +218,31 @@ class ItineraryDetail(LoginRequiredMixin, DetailView):
     model = HeadOfHousehold
     pk_url_kwarg = 'hoh_id'
     template_name = 'intake/itinerary.html'
+
+
+@login_required
+def AddNeedToHousehold(request, hoh_id, need_id):
+    if request.user.profile.is_capable_travel or request.user.profile.is_capable_intake:
+        need = HouseholdNeed.objects.get(id=need_id)
+        hoh = HeadOfHousehold.objects.get(id=hoh_id)
+        hoh.needs.add(need)
+        hoh.save()
+        messages.success(request, f'{need} was successfully added for {hoh}')
+    else:
+        messages.error(request, "Unable to add that need to that household.")
+    print('F')
+    return redirect('headofhousehold:overview', hoh_id=hoh_id)
+
+
+@login_required
+def SatisfyNeedForHousehold(request, hoh_id, need_id):
+    if request.user.profile.is_capable_travel or request.user.profile.is_capable_intake or request.user.profile.is_capable_concierge:
+        need = HouseholdNeed.objects.get(id=need_id)
+        hoh = HeadOfHousehold.objects.get(id=hoh_id)
+        hoh.needs.remove(need)
+        hoh.save()
+        messages.success(request, f'{need} was satisfied for {hoh}')
+    else:
+        messages.error(request, "Unable to satisfy that need to that household.")
+    print('F')
+    return redirect('headofhousehold:overview', hoh_id=hoh_id)

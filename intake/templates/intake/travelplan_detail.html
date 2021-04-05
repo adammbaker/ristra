@@ -8,6 +8,16 @@
 
 {% block content %}
 
+{% for asylee in travelplan.headofhousehold.asylees.all %}
+  {% if asylee.sick_covid %}
+  <div class="alert alert-danger" role="alert">
+    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
+    <br><br>
+    Additionally, consider delaying the travel date on or after {{ asylee.householdhead.intakebus.arrival_time|add_fortnight }} (2 weeks after arrival).
+  </div>
+  {% endif %}
+{% endfor %}
+
 <h1>For {{travelplan.headofhousehold.name}}</h1>
 <h6 class="card-subtitle mb-2 text-muted">Arranged by {{travelplan.arranged_by.name}}</h6>
 <h6 class="card-subtitle mb-2 text-muted">Household is heading to {{travelplan.headofhousehold.destination}}</h6>

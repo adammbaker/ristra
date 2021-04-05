@@ -107,3 +107,11 @@ def mdYIMp(obj):
     if isinstance(obj, datetime):
         return obj.strftime('%m/%d/%Y %I:%M %p')
     return obj
+
+
+@register.filter
+def add_fortnight(obj):
+    'Takes a datetime object and adds 2 weeks (COVID)'
+    if isinstance(obj, datetime):
+        return obj + timedelta(14)
+    return obj

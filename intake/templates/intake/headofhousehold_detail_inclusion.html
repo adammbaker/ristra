@@ -30,7 +30,7 @@
 <h6 class="card-subtitle mb-2 text-muted">From {{ headofhousehold.country_of_origin|title }}</h6>
 <h6 class="card-subtitle mb-2 text-muted">Language{% if headofhousehold.languages.count > 1 %}s{% endif %} spoken:
     {% for language in headofhousehold.languages.all %}
-        <span class="badge rounded-pill text-light bg-primary">{{ language|title }}</span>
+        <span class="badge rounded-pill text-light bg-primary">{{ language }}</span>
     {% endfor %}
 </h6>
 <h6 class="card-subtitle mb-2 text-muted">{{ headofhousehold.intakebus.location.name }} room {{ headofhousehold.lodging }}</h6>

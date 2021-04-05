@@ -15,13 +15,16 @@
 {% endif %}
 
 {% if lod == "partial" %}
-  <p class="card-text">{{organization.notes|shorten}}</p>
+  <p class="card-text">{{ organization.notes|shorten }}</p>
 {% else %}
+  <h6 class="card-subtitle mb-2 text-muted">Airport: {{ organization.associated_airport|upper }}</h6>
   <p class="card-text">{{organization.notes}}</p>
 {% endif %}
-  <a href="{{organization.url}}" class="card-link">{{organization.url}}</a><br><br>
+  <a href="{{organization.url}}" class="card-link">{{ organization.url }}</a><br><br>
 {% if lod == "partial" %}
   <a href="{% url 'organization:detail' org_id=organization.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
 {% else %}
+  {% if organization == user.profile.affiliation %}
   <a href="{% url 'organization:overview' org_id=organization.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+  {% endif %}
 {% endif %}

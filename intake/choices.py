@@ -1,10 +1,9 @@
 CAPACITY_CHOICES = [
     ('clothes', 'Clothes'),
+    ('concierge', 'Concierge'),
     ('departurebags', 'Departure Bags'),
     ('food', 'Food'),
-    ('hotelrunner', 'Hotel Runner'),
     ('intake', 'Intake'),
-    ('medical', 'Medical'),
     ('travel', 'Travel'),
     ('transportation', 'Transportation'),
     ('volunteercoordinator', 'Volunteer Coordinator'),
@@ -239,8 +238,17 @@ COVID_VACCINE_CHOICES = [
     ('unknown', 'Unknown'),
     ('other', 'Other'),
 ]
-ROLE_CHOICES=[
+ROLE_CHOICES = [
     ('volunteer', 'Volunteer'),
     ('team_lead','Team Lead'),
     ('site_coordinator','Site Coordinator'),
+]
+DETENTION_TYPE_CHOICES = [
+    ('mpp', 'Migrant Protection Protocols (MPP)'),
+    ('cbp', 'Customs and Border Protection (CBP)'),
+    ('other', 'Other'),
+]
+AIRPORT_CHOICES = [
+    ('abq', 'Albuquerque International Sunport (ABQ)'),
+    ('elp', 'El Paso International Airport'),
 ]
