@@ -80,10 +80,20 @@ class AtAGlance(LoginRequiredMixin, DetailView):
             travel_plan__city_van_date__gte=tomorrow,
             travel_plan__city_van_date__lte=overmorrow,
         ).count()
+        hohs_departure_bags = hohs_all.filter(
+            departure_bag_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        ).count()
+        hohs_travel_food = hohs_all.filter(
+            food_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        ).count()
         kwargs['hohs_arr_yday'] = hoh_arr_yday
         kwargs['hohs_arr_today'] = hoh_arr_today
         kwargs['hohs_lvg_today'] = hoh_leaving_today
         kwargs['hohs_lvg_tom'] = hoh_leaving_tom
+        kwargs['hohs_departure_bags'] = hohs_departure_bags
+        kwargs['hohs_travel_food'] = hohs_travel_food
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 

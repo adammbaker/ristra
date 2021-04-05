@@ -16,7 +16,7 @@ from shortener.models import UrlMap
 from simple_history.models import HistoricalRecords
 
 import hashlib
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django_cryptography.fields import encrypt
 from socket import gethostbyname, gethostname
 
@@ -560,6 +560,35 @@ class HeadOfHousehold(Asylee):
                 if asylee.sick_covid:
                     return asylee.sick_covid
         return False
+    
+    @property
+    def time_at_location(self, as_string=True):
+        time_of_departure = timezone.localtime(timezone.now())
+        if self.travel_plan:
+            time_of_departure = min(time_of_departure, self.travel_plan.departure_time)
+        td = time_of_departure - self.intakebus.arrival_time
+        if as_string:
+            string = ''
+            if td.days:
+                string += f'{abs(td.days)}d '
+            remaining_seconds = td.seconds % 86400
+            hours = remaining_seconds // 3600 
+            # remaining seconds
+            remaining_seconds -= hours * 3600
+            # minutes
+            minutes = remaining_seconds // 60
+            # remaining seconds
+            seconds = remaining_seconds - (minutes * 60)
+            # total time
+            string += f'{hours:02d}h'
+            return string
+        return False
+    
+    @property
+    def ages_and_sex(self):
+        ages_and_sex = sorted(self.asylees.all(), key=lambda asy: asy.age, reverse=True)
+        sexes = {'male': '♂︎', 'female': '♀︎', 'other': '⚧'}
+        return ' '.join([f"{x.age}{sexes[x.sex]}"  for x in ages_and_sex])
 
     def breadcrumbs(self, bc=''):
         parent = self.intakebus
