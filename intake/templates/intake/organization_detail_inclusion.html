@@ -24,5 +24,7 @@
 {% if lod == "partial" %}
   <a href="{% url 'organization:detail' org_id=organization.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">See more</button></a><br>
 {% else %}
+  {% if organization == user.profile.affiliation %}
   <a href="{% url 'organization:overview' org_id=organization.id %}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Go to Overview</button></a><br>
+  {% endif %}
 {% endif %}

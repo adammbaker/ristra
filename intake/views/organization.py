@@ -87,7 +87,8 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     template_name = "intake/organization_overview.html"
 
     def get_object(self, **kwargs):
-        # return self.model.objects.get(id=self.kwargs.get('org_id'))
+        print('OO', org_id)
+        return self.model.objects.get(id=self.kwargs.get('org_id'))
         return self.request.user.profile.affiliation
         return get_object_or_404(self.request.user.profile.affiliation)
         return get_object_or_404(self.model, id=self.kwargs.get('org_id'))
@@ -125,6 +126,7 @@ class OrganizationDetail(LoginRequiredMixin, DetailView):
     model = Organization
 
     def get_object(self, **kwargs):
+        return self.model.objects.get(id=self.kwargs.get('org_id'))
         return self.request.user.profile.affiliation
 
 
