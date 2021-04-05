@@ -8,7 +8,7 @@ A tool for facilitating the intake of refugees seeking asylum and the administra
 4. Activate the virtual environment; `source venv/bin/activate`.
 5. Download the necessary libraries; `pip install -r requirements.txt`.
 6. Run `python manage.py migrate`.
-7. Run `python manage.py bootstrap` to initialize necessary tables.
+7. Run `python manage.py bootstrap` to initialize the database tables.
 8. Run `python manage.py createsuperuser` and enter the credentials of a superuser.
 
 # Requirements
