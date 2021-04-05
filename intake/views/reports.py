@@ -372,3 +372,39 @@ class VolunteerSearch(LoginRequiredMixin, ListView):
 
     def test_func(self):
         return self.request.user.profile.role in ('site_coordinator')
+
+
+class HouseholdsLackingDepartureBags(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return HeadOfHousehold.objects.filter(
+            departure_bag_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Departure Bags'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
+
+class HouseholdsLackingTravelFood(LoginRequiredMixin, DetailView):
+    'Details an instance of the objet'
+    model = HeadOfHousehold
+    template_name = 'intake/report_generic_households.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return HeadOfHousehold.objects.filter(
+            food_made=False,
+            intakebus__location__organization=self.request.user.profile.affiliation,
+        )
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Food'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
