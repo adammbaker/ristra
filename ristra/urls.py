@@ -29,5 +29,4 @@ urlpatterns = [
     path('accounts/signup/volunteer/', volunteers.VolunteerSignUpView.as_view(), name='volunteer_signup'),
     path('accounts/signup/teamlead/', team_leads.TeamLeadSignUpView.as_view(), name='team_lead_signup'),
     path('accounts/signup/sitecoordinator/', site_coordinator.SiteCoordinatorSignUpView.as_view(), name='site_coordinator_signup'),
-    path('', include('intake.urls')),
 ]

@@ -235,6 +235,10 @@ class Organization(models.Model):
     associated_airport = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
     locations = models.ManyToManyField('Location', verbose_name='Locations')
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
+    historical_families_count = models.IntegerField(default=0)
+    historical_asylees_count = models.IntegerField(default=0)
+    historical_sex_count = models.JSONField(default='{}')
+
     history = HistoricalRecords()
 
     @property
@@ -434,7 +438,10 @@ class Asylee(models.Model):
 
     @property
     def age(self):
-        return (timezone.now().date() - self.date_of_birth).days//365
+        age_in_days = (timezone.now().date() - self.date_of_birth).days
+        if age_in_days // 365 > 0:
+            return f'{age_in_days //365}yo'
+        return f'{age_in_days // 30}mo'
     
     @property
     def is_active(self):
@@ -797,3 +804,29 @@ class HouseholdNeed(models.Model):
 
     def __str__(self):
         return f'{self.need}'
+
+
+class HistoricalAge(models.Model):
+    age = models.CharField(max_length=10, null=False)
+    count = models.IntegerField(default=0)
+
+class HistoricalData(models.Model):
+    organization = models.OneToOneField(Organization, on_delete=models.SET('deleted'))
+    families_count = models.IntegerField(default=0)
+    asylees_count = models.IntegerField(default=0)
+
+
+# Triggers for historical data
+@receiver(post_save, sender=HeadOfHousehold)
+def hear_signal(sender, instance, **kwargs):
+    if kwargs.get('created'):
+        print('TRIGG CREATED')
+        print(instance.name, instance.ages_and_sex)
+        return # if a new model object is created then return. You need to distinguish between a new object created and the one that just got updated.
+
+    #Do whatever you want. 
+    #Your trigger function content.
+    #Parameter "instance" will have access to all the attributes of the model being saved. To quote from docs : It's "The actual instance being saved."        
+    print('TRIGG SAVED')
+    print(instance.name, instance.ages_and_sex)
+    return
