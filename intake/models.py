@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, User
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.html import mark_safe
@@ -237,8 +237,18 @@ class Organization(models.Model):
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
     historical_families_count = models.IntegerField(default=0)
     historical_asylees_count = models.IntegerField(default=0)
-    historical_sex_count = models.JSONField(default='{}')
-
+    historical_sex_count = models.JSONField(default=dict)
+    historical_age_count = models.JSONField(default=dict)
+    historical_country_of_origin = models.JSONField(default=dict)
+    historical_days_traveling = models.IntegerField(default=0)
+    historical_days_in_detention = models.IntegerField(default=0)
+    historical_detention_type = models.JSONField(default=dict)
+    historical_sick_covid = models.IntegerField(default=0)
+    historical_sick_other = models.IntegerField(default=0)
+    historical_destinations = models.JSONField(default=dict)
+    historical_languages_spoken = models.JSONField(default=dict)
+    historical_travel_duration = models.JSONField(default={'train':[0,0], 'plane':[0,0], 'bus':[0,0], 'private_car':[0,0]})
+    historical_needs = models.JSONField(default=dict)
     history = HistoricalRecords()
 
     @property
@@ -255,6 +265,10 @@ class Organization(models.Model):
                 if loc.is_active:
                     return loc.is_active
             return loc.is_active
+    
+    @property
+    def historical_country_of_origin_sorted(self):
+        return sorted(self.historical_country_of_origin, key= self.historical_country_of_origin.get, reverse=True)
 
     def breadcrumbs(self, bc=''):
         model = self.name
@@ -806,27 +820,73 @@ class HouseholdNeed(models.Model):
         return f'{self.need}'
 
 
-class HistoricalAge(models.Model):
-    age = models.CharField(max_length=10, null=False)
-    count = models.IntegerField(default=0)
-
-class HistoricalData(models.Model):
-    organization = models.OneToOneField(Organization, on_delete=models.SET('deleted'))
-    families_count = models.IntegerField(default=0)
-    asylees_count = models.IntegerField(default=0)
-
-
 # Triggers for historical data
-@receiver(post_save, sender=HeadOfHousehold)
-def hear_signal(sender, instance, **kwargs):
-    if kwargs.get('created'):
-        print('TRIGG CREATED')
-        print(instance.name, instance.ages_and_sex)
-        return # if a new model object is created then return. You need to distinguish between a new object created and the one that just got updated.
+# @receiver(post_save, sender=HeadOfHousehold)
+# def hear_signal_headofhousehold(sender, instance, **kwargs):
+#     if kwargs.get('created'):
+#         print(instance.name, instance.ages_and_sex)
+#         print(instance, type(instance))
+#         return # if a new model object is created then return. You need to distinguish between a new object created and the one that just got updated.
 
-    #Do whatever you want. 
-    #Your trigger function content.
-    #Parameter "instance" will have access to all the attributes of the model being saved. To quote from docs : It's "The actual instance being saved."        
-    print('TRIGG SAVED')
-    print(instance.name, instance.ages_and_sex)
-    return
+#     #Do whatever you want. 
+#     #Your trigger function content.
+#     #Parameter "instance" will have access to all the attributes of the model being saved. To quote from docs : It's "The actual instance being saved."        
+#     print('HOH SAVED', kwargs.keys())
+#     print(instance.name, instance.ages_and_sex)
+#     print('H:', instance.history.count(), instance.history.all())
+#     # History increments on creation and then later save
+#     # Objects with 2 history count are new
+#     if instance.history.count() < 3:
+#         print('Org', instance.intakebus.location.organization)
+#         org = instance.intakebus.location.organization
+#         org.historical_families_count += 1
+#         print('Incrementing family count', )
+#         if instance.country_of_origin in org.historical_country_of_origin.keys():
+#             org.historical_country_of_origin[instance.country_of_origin] += 1
+#         else:
+#             org.historical_country_of_origin[instance.country_of_origin] = 1
+#         org.historical_days_traveling += instance.days_traveling
+#         org.historical_days_in_detention += instance.days_detained
+#         if instance.detention_type in org.historical_detention_type.keys():
+#             org.historical_detention_type[instance.detention_type] += 1
+#         else:
+#             org.historical_detention_type[instance.detention_type] = 1
+#         if instance.destination in org.historical_destinations.keys():
+#             org.historical_destinations[instance.destination] += 1
+#         else:
+#             org.historical_destinations[instance.destination] = 1
+#         languages = '&'.join(list(instance.languages.values_list('language',flat=True)))
+#         if languages in org.historical_languages_spoken.keys():
+#             org.historical_languages_spoken[languages] += 1
+#         else:
+#             org.historical_languages_spoken[languages] = 1
+#         # Asylee specific stuff but still associated with HoH
+#         org.historical_asylees_count += instance.asylees.count()
+#         if instance.sex in org.historical_sex_count.keys():
+#             org.historical_sex_count[instance.sex] += 1
+#         else:
+#             org.historical_sex_count[instance.sex] = 1
+#         if instance.age in org.historical_age_count.keys():
+#             org.historical_age_count[instance.age] += 1
+#         else:
+#             org.historical_age_count[instance.age] = 1
+#         for asy in instance.asylees.all():
+#             if asy.sick_covid:
+#                 org.historical_sick_covid += 1
+#             if asy.sick_other:
+#                 org.historical_sick_other += 1
+#         org.save()
+#         print('Org saved?')
+#     for key in kwargs.keys():
+#         print('Key:', key, 'Value:', kwargs[key])
+#     return
+
+
+# @receiver(pre_delete, sender=HeadOfHousehold)
+# def pre_delete_headofhousehold(sender, instance, **kwargs):
+#     print('HOH DELETED')
+#     # historical_travel_duration = models.JSONField(default={'train':[0,0], 'plane':[0,0], 'bus':[0,0], 'private_car':[0,0]})
+#     # historical_needs = models.JSONField(default=)
+#     print(instance.name, instance.ages_and_sex)
+#     return
+

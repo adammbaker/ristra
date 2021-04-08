@@ -160,6 +160,7 @@ urlpatterns = [
         path('volunteers/search', reports.VolunteerSearch.as_view(), name='volunteers search'),
         path('households/lacking_departure_bags', reports.HouseholdsLackingDepartureBags.as_view(), name='hohs departurebags'),
         path('households/lacking_travel_food', reports.HouseholdsLackingTravelFood.as_view(), name='hohs travelfood'),
+        path('households/historical', reports.HistoricalOrganization.as_view(), name='org historical'),
         # path('add/<hoh_id>', reports.TravelPlanCreateView.as_view(), name='add'),
         # path('<tp_id>/detail', reports.TravelPlanDetailView.as_view(), name='detail'),
         # path('<tp_id>/update', reports.TravelPlanUpdate.as_view(), name='update'),

@@ -58,6 +58,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         hoh_languages = form.cleaned_data.get('languages')
         hoh_days_traveling = form.cleaned_data.get('days_traveling')
         hoh_days_detained = form.cleaned_data.get('days_detained')
+        hoh_detention_type = form.cleaned_data.get('detention_type')
         hoh_country_of_origin = form.cleaned_data.get('country_of_origin')
         hoh_notes = form.cleaned_data.get('notes')
         ib = get_object_or_404(IntakeBus, id=self.kwargs.get('ib_id'))
@@ -74,6 +75,7 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         hoh.state = hoh_state
         hoh.days_traveling = hoh_days_traveling
         hoh.days_detained = hoh_days_detained
+        hoh.detention_type = hoh_detention_type
         hoh.country_of_origin = hoh_country_of_origin
         hoh.languages.set(hoh_languages)
         hoh.intake_by = hoh_intake_by.profile
@@ -84,16 +86,17 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             date_of_birth = hoh_date_of_birth,
         )
         hoh.asylees.add(asy)
-        hoh.save()
         ib.headsofhousehold.add(hoh)
         ib.save()
         hoh.save()
+        # Historical data
         if form.cleaned_data.get('had_covid_vaccine') == True or form.cleaned_data.get('is_currently_sick') == True:
             # return super().form_valid(form)
             self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
             self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
             return redirect('headofhousehold:health follow up', hoh_id = hoh.id)
         # return to parent detail
+        UpdateHistorical(hoh)
         return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
 # @method_decorator([is_affiliated], name='dispatch')
@@ -138,6 +141,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
         hoh.sick_covid = sick_form_class.cleaned_data.get('sick_covid', False)
         hoh.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         hoh.save()
+        UpdateHistorical(hoh)
         return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
     def post(self, request, *args, **kwargs):
@@ -246,3 +250,44 @@ def SatisfyNeedForHousehold(request, hoh_id, need_id):
         messages.error(request, "Unable to satisfy that need to that household.")
     print('F')
     return redirect('headofhousehold:overview', hoh_id=hoh_id)
+
+
+def UpdateHistorical(hoh):
+    'Updates historical data for the organization'
+    org = hoh.intakebus.location.organization
+    org.historical_families_count += 1
+    if hoh.country_of_origin in org.historical_country_of_origin.keys():
+        org.historical_country_of_origin[hoh.country_of_origin] += 1
+    else:
+        org.historical_country_of_origin[hoh.country_of_origin] = 1
+    org.historical_days_traveling += hoh.days_traveling
+    org.historical_days_in_detention += hoh.days_detained
+    if hoh.detention_type in org.historical_detention_type.keys():
+        org.historical_detention_type[hoh.detention_type] += 1
+    else:
+        org.historical_detention_type[hoh.detention_type] = 1
+    if hoh.destination in org.historical_destinations.keys():
+        org.historical_destinations[hoh.destination] += 1
+    else:
+        org.historical_destinations[hoh.destination] = 1
+    languages = ', '.join(list(hoh.languages.values_list('language',flat=True)))
+    if languages in org.historical_languages_spoken.keys():
+        org.historical_languages_spoken[languages] += 1
+    else:
+        org.historical_languages_spoken[languages] = 1
+    # Asylee specific stuff but still associated with HoH
+    org.historical_asylees_count += 1
+    if hoh.sex in org.historical_sex_count.keys():
+        org.historical_sex_count[hoh.sex] += 1
+    else:
+        org.historical_sex_count[hoh.sex] = 1
+    if hoh.age in org.historical_age_count.keys():
+        org.historical_age_count[hoh.age] += 1
+    else:
+        org.historical_age_count[hoh.age] = 1
+    for asy in hoh.asylees.all():
+        if asy.sick_covid:
+            org.historical_sick_covid += 1
+        if asy.sick_other:
+            org.historical_sick_other += 1
+    org.save()

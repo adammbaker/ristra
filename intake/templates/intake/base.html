@@ -30,6 +30,7 @@
           <a class="dropdown-item" href="{% url 'report:at a glance' %}">At-A-Glance</a>
           <a class="dropdown-item" href="{% url 'report:active households' %}">Active Households</a>
           <a class="dropdown-item" href="{% url 'report:active asylees' %}">Active Asylees</a>
+          <a class="dropdown-item" href="{% url 'report:org historical' %}">{{ user.profile.affiliation.name }} Historical</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{% url 'report:asylees search' %}">Search Asylees</a>
         </div>

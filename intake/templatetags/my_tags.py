@@ -115,3 +115,11 @@ def add_fortnight(obj):
     if isinstance(obj, datetime):
         return obj + timedelta(14)
     return obj
+
+
+@register.filter
+def divided_by(obj, num):
+    'Divides a number another number'
+    if isinstance(obj, int):
+        return obj // num
+    return obj
