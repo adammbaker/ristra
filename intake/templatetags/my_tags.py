@@ -123,3 +123,11 @@ def divided_by(obj, num):
     if isinstance(obj, int):
         return obj // num
     return obj
+
+
+@register.filter
+def dec_places(obj, dec_places):
+    'Divides a number another number'
+    if isinstance(obj, float):
+        return f'{obj:.2f}'
+    return obj

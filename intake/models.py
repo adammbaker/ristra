@@ -247,7 +247,7 @@ class Organization(models.Model):
     historical_sick_other = models.IntegerField(default=0)
     historical_destinations = models.JSONField(default=dict)
     historical_languages_spoken = models.JSONField(default=dict)
-    historical_travel_duration = models.JSONField(default={'train':[0,0], 'plane':[0,0], 'bus':[0,0], 'private_car':[0,0]})
+    historical_travel_duration = models.JSONField(default={'Air': [0,0], 'Bus': [0,0], 'Train': [0,0], 'Car': [0,0], 'other': [0,0]}) # time in days
     historical_needs = models.JSONField(default=dict)
     history = HistoricalRecords()
 

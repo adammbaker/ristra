@@ -75,6 +75,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         if travel_mode_category not in ('Air','Bus'):
             # return to parent overview
             print('Sending to faimly overview for', hoh.id)
+            UpdateHistorical(tp)
             return redirect('headofhousehold:overview', hoh_id = hoh.id)
         # if travel_mode_category == 'Air':
         #     self.request.session['travel_mode'] = 'Air'
@@ -85,6 +86,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         #     print('Sending to faimly detail for', hoh.id)
         #     return redirect('headofhousehold:detail', hoh_id = hoh.id)
         self.request.session['travel_mode_category'] = travel_mode_category
+        UpdateHistorical(tp)
         return redirect('travelplan:travel follow up', tp_id = tp.id)
 
 
@@ -133,6 +135,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             tp.layovers = airline_form_class.cleaned_data.get('layovers')
         tp.flight_number = airline_form_class.cleaned_data.get('flight_number')
         tp.save()
+        UpdateHistorical(tp)
         return redirect('headofhousehold:overview', hoh_id = tp.householdhead.id)
 
     def post(self, request, *args, **kwargs):
@@ -183,3 +186,19 @@ class TravelPlanDelete(LoginRequiredMixin, DeleteView):
         # TK get logging in here for user
         hoh_id = self.model.objects.get(id=self.kwargs.get('tp_id')).headofhousehold.id
         return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+
+
+def UpdateHistorical(tp):
+    'Updates historical data for the organization'
+    org = tp.headofhousehold.intakebus.location.organization
+    for mode, carriers in TRAVEL_MODE_CHOICES[:-1]:
+        for carrier in carriers:
+            if tp.travel_mode in carrier:
+                print('TM', tp.travel_mode)
+                if tp.travel_mode in org.historical_travel_duration.keys():
+                    org.historical_travel_duration[mode][0] += 1
+                    org.historical_travel_duration[mode][1] += tp.travel_time.seconds / 86400
+                else:
+                    org.historical_travel_duration[mode][0] = 1
+                    org.historical_travel_duration[mode][1] = tp.travel_time.seconds / 86400
+    org.save()

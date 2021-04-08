@@ -79,6 +79,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             return redirect('asylee:health sick', asy_id = asylee.id)
         # return to parent detail
         print('Sending to faimly detail for', hoh.id)
+        UpdateHistorical(asylee)
         return redirect('headofhousehold:overview', hoh_id = hoh.id)
 
 class AsyleeDetailView(LoginRequiredMixin, DetailView):
@@ -213,6 +214,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         asylee.sick_covid = sick_form_class.cleaned_data.get('sick_covid', False)
         asylee.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         asylee.save()
+        UpdateHistorical(asylee)
         return redirect('headofhousehold:overview', hoh_id = asylee.householdhead.id)
 
     def post(self, request, *args, **kwargs):
@@ -290,3 +292,22 @@ class AsyleeDelete(LoginRequiredMixin, DeleteView):
             return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
         # Else, if Asylee is also HeadOfHousehold, delete both and send to IntakeBus
         return reverse_lazy('intakebus:overview', kwargs={'ib_id': asy.householdhead.intakebus.id})
+
+
+def UpdateHistorical(asy):
+    'Updates historical data for the organization'
+    org = asy.householdhead.intakebus.location.organization
+    org.historical_asylees_count += 1
+    if asy.sex in org.historical_sex_count.keys():
+        org.historical_sex_count[asy.sex] += 1
+    else:
+        org.historical_sex_count[asy.sex] = 1
+    if asy.age in org.historical_age_count.keys():
+        org.historical_age_count[asy.age] += 1
+    else:
+        org.historical_age_count[asy.age] = 1
+    if asy.sick_covid:
+        org.historical_sick_covid += 1
+    if asy.sick_other:
+        org.historical_sick_other += 1
+    org.save()

@@ -232,6 +232,12 @@ def AddNeedToHousehold(request, hoh_id, need_id):
         hoh.needs.add(need)
         hoh.save()
         messages.success(request, f'{need} was successfully added for {hoh}')
+        org = hoh.intakebus.location.organization
+        if need.need in org.historical_needs.keys():
+            org.historical_needs[need.need] += 1
+        else:
+            org.historical_needs[need.need] = 1
+        org.save()
     else:
         messages.error(request, "Unable to add that need to that household.")
     print('F')
@@ -256,6 +262,14 @@ def UpdateHistorical(hoh):
     'Updates historical data for the organization'
     org = hoh.intakebus.location.organization
     org.historical_families_count += 1
+    if hoh.sex in org.historical_sex_count.keys():
+        org.historical_sex_count[hoh.sex] += 1
+    else:
+        org.historical_sex_count[hoh.sex] = 1
+    if hoh.age in org.historical_age_count.keys():
+        org.historical_age_count[hoh.age] += 1
+    else:
+        org.historical_age_count[hoh.age] = 1
     if hoh.country_of_origin in org.historical_country_of_origin.keys():
         org.historical_country_of_origin[hoh.country_of_origin] += 1
     else:

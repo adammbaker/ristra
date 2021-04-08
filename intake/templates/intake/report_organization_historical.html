@@ -51,7 +51,7 @@
     {% endfor %}
     <tr><td>Total Average Travel Time:</td><td></td></tr>
     {% for mode, count in organization.historical_travel_duration.items %}
-    <tr><td class="text-right">{{ mode|title }}</td><td>{{ count.0 }} people who have traveled {{ count.1 }} days</td></tr>
+    <tr><td class="text-right">{{ mode|title }}</td><td>{{ count.0 }} people who have traveled {{ count.1|dec_places:2 }} days</td></tr>
     {% endfor %}
     <tr><td>Total Needs:</td><td>{% for x in organization.historical_needs %}{% empty %}<small class="text-muted">none yet</small>{% endfor %}</td></tr>
     {% for need, count in organization.historical_needs.items %}
