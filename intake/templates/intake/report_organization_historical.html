@@ -23,7 +23,7 @@
     <tr><td>Total Number of Asylees:</td><td>{{ organization.historical_asylees_count }}</td></tr>
     <tr><td>Total Sex Count:</td><td></td></tr>
     {% for sex, count in organization.historical_sex_count.items %}
-    <tr><td class="text-right">{{ sex|title }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    <tr><td class="text-right">{{ sex|title }}</td><td>{{ count }}</td></tr>
     {% endfor %}
     <tr><td>Total Age Count:</td><td>{% for x in organization.historical_age_count %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
     {% for year, count in organization.historical_age_count.items %}
@@ -31,23 +31,23 @@
     {% endfor %}
     <tr><td>Total Countries of Origin:</td><td>{% for x in organization.historical_country_of_origin %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
     {% for country, count in organization.historical_country_of_origin.items %}
-    <tr><td class="text-right">{{ country|title }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    <tr><td class="text-right">{{ country|title }}</td><td>{{ count }}</td></tr>
     {% endfor %}
     <tr><td>Total Average Days Traveling:</td><td>{{ organization.historical_days_traveling|divided_by:organization.historical_asylees_count }}</td></tr>
     <tr><td>Total Average Days in Detention:</td><td>{{ organization.historical_days_in_detention|divided_by:organization.historical_asylees_count }}</td></tr>
     <tr><td>Total Detention Type:</td><td>{% for x in organization.historical_detention_type %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
     {% for type, count in organization.historical_detention_type.items %}
-    <tr><td class="text-right">{{ type|title }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    <tr><td class="text-right">{{ type|title }}</td><td>{{ count }}</td></tr>
     {% endfor %}
     <tr><td>Total Asylees Sick with COVID-19:</td><td>{{ organization.historical_sick_covid }}</td></tr>
     <tr><td>Total Sick (Other) Asylees:</td><td>{{ organization.historical_sick_other }}</td></tr>
     <tr><td>Total Destinations:</td><td>{% for x in organization.historical_destinations %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
     {% for destination, count in organization.historical_destinations.items %}
-    <tr><td class="text-right">{{ destination }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    <tr><td class="text-right">{{ destination }}</td><td>{{ count }}</td></tr>
     {% endfor %}
     <tr><td>Total Languages Spoken:</td><td>{% for x in organization.historical_languages_spoken %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
     {% for language, count in organization.historical_languages_spoken.items %}
-    <tr><td class="text-right">{{ language }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    <tr><td class="text-right">{{ language }}</td><td>{{ count }}</td></tr>
     {% endfor %}
     <tr><td>Total Average Travel Time:</td><td></td></tr>
     {% for mode, count in organization.historical_travel_duration.items %}
@@ -55,7 +55,7 @@
     {% endfor %}
     <tr><td>Total Needs:</td><td>{% for x in organization.historical_needs %}{% empty %}<small class="text-muted">none yet</small>{% endfor %}</td></tr>
     {% for need, count in organization.historical_needs.items %}
-    <tr><td class="text-right">{{ need|title }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    <tr><td class="text-right">{{ need|title }}</td><td>{{ count }}</td></tr>
     {% endfor %}
   </tbody>
 </table><br><br>
