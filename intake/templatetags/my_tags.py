@@ -120,7 +120,7 @@ def add_fortnight(obj):
 @register.filter
 def divided_by(obj, num):
     'Divides a number another number'
-    if isinstance(obj, int):
+    if isinstance(obj, int) and num != 0:
         return obj // num
     return obj
 
