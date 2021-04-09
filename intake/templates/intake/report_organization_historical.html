@@ -21,13 +21,15 @@
   <tbody>
     <tr><td>Total Number of Households:</td><td>{{ organization.historical_families_count }}</td></tr>
     <tr><td>Total Number of Asylees:</td><td>{{ organization.historical_asylees_count }}</td></tr>
-    <tr><td>Total Sex Count:</td><td></td></tr>
+    <tr><td colspan="2">Total Sex Count:</td><td></td></tr>
     {% for sex, count in organization.historical_sex_count.items %}
     <tr><td class="text-right">{{ sex|title }}</td><td>{{ count }}</td></tr>
     {% endfor %}
     <tr><td>Total Age Count:</td><td>{% for x in organization.historical_age_count %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
-    {% for year, count in organization.historical_age_count.items %}
-    <tr><td class="text-right">{{ year }}</td><td>{% with ''|center:count as range %}{% for _ in range %}*{% endfor %}{% endwith %}</td></tr>
+    {% for age, count in organization.historical_age_count_sorted %}
+      {% if count > 0 %}
+      <tr><td class="text-right">{{ age }}</td><td>{{ count }}</td></tr>
+      {% endif %}
     {% endfor %}
     <tr><td>Total Countries of Origin:</td><td>{% for x in organization.historical_country_of_origin %}{% empty %}<small class="text-muted">empty</small>{% endfor %}</td></tr>
     {% for country, count in organization.historical_country_of_origin.items %}
@@ -49,7 +51,7 @@
     {% for language, count in organization.historical_languages_spoken.items %}
     <tr><td class="text-right">{{ language }}</td><td>{{ count }}</td></tr>
     {% endfor %}
-    <tr><td>Total Average Travel Time:</td><td></td></tr>
+    <tr><td colspan="2">Total Average Travel Time:</td><td></td></tr>
     {% for mode, count in organization.historical_travel_duration.items %}
     <tr><td class="text-right">{{ mode|title }}</td><td>{{ count.0 }} people who have traveled {{ count.1|dec_places:2 }} days</td></tr>
     {% endfor %}

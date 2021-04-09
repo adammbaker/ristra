@@ -269,6 +269,54 @@ class Organization(models.Model):
     @property
     def historical_country_of_origin_sorted(self):
         return sorted(self.historical_country_of_origin, key= self.historical_country_of_origin.get, reverse=True)
+    
+    @property
+    def historical_age_count_sorted(self):
+        ages_0_3 = ('0mo','1mo','2mo','3mo','4mo','5mo','6mo','7mo','8mo','9mo','10mo','11mo','12mo','1yo','2yo','3yo',)
+        ages_4_8 = ('4yo','5yo','6yo','7yo','8yo',)
+        ages_9_12 = ('9yo','10yo','11yo','12yo',)
+        ages_13_17 = ('13yo','14yo','15yo','16yo','17yo',)
+        ages_18_24 = ('18yo','19yo','20yo','21yo','22yo','23yo','24yo',)
+        ages_25_29 = ('25yo','26yo','27yo','28yo','29yo',)
+        ages_30_34 = ('30yo','31yo','32yo','33yo','34yo',)
+        ages_35_39 = ('35yo','36yo','37yo','38yo','39yo',)
+        ages_40_44 = ('40yo','41yo','42yo','43yo','44yo',)
+        ages_45_49 = ('45yo','46yo','47yo','48yo','49yo',)
+        ages_50_59 = ('50yo','51yo','52yo','53yo','54yo','55yo','56yo','57yo','58yo','59yo',)
+        ages_60_69 = ('60yo','61yo','62yo','63yo','64yo','65yo','66yo','67yo','68yo','69yo',)
+        ages_70_79 = ('70yo','71yo','72yo','73yo','74yo','75yo','76yo','77yo','78yo','79yo',)
+        ages_80_89 = ('80yo','81yo','82yo','83yo','84yo','85yo','86yo','87yo','88yo','89yo',)
+        ages_90_99 = ('90yo','91yo','92yo','93yo','94yo','95yo','96yo','97yo','98yo','99yo',)
+        ages_100_plus = ('100yo','101yo','102yo','103yo','104yo','105yo','106yo','107yo','108yo','109yo',)
+        count_0_3 = sum([v for k,v in self.historical_age_count.items() if k in ages_0_3])
+        count_4_8 = sum([v for k,v in self.historical_age_count.items() if k in ages_4_8])
+        count_9_12 = sum([v for k,v in self.historical_age_count.items() if k in ages_9_12])
+        count_13_17 = sum([v for k,v in self.historical_age_count.items() if k in ages_13_17])
+        count_18_24 = sum([v for k,v in self.historical_age_count.items() if k in ages_18_24])
+        count_25_29 = sum([v for k,v in self.historical_age_count.items() if k in ages_25_29])
+        count_30_34 = sum([v for k,v in self.historical_age_count.items() if k in ages_30_34])
+        count_35_39 = sum([v for k,v in self.historical_age_count.items() if k in ages_35_39])
+        count_40_44 = sum([v for k,v in self.historical_age_count.items() if k in ages_40_44])
+        count_45_49 = sum([v for k,v in self.historical_age_count.items() if k in ages_45_49])
+        count_50_59 = sum([v for k,v in self.historical_age_count.items() if k in ages_50_59])
+        count_60_69 = sum([v for k,v in self.historical_age_count.items() if k in ages_60_69])
+        count_70_79 = sum([v for k,v in self.historical_age_count.items() if k in ages_70_79])
+        count_80_89 = sum([v for k,v in self.historical_age_count.items() if k in ages_80_89])
+        count_90_99 = sum([v for k,v in self.historical_age_count.items() if k in ages_90_99])
+        count_100_plus = sum([v for k,v in self.historical_age_count.items() if k in ages_100_plus])
+        return (('Ages 0 - 3', count_0_3),('Ages 4 - 8', count_4_8),('Ages 9 - 12', count_9_12),('Ages 13 - 17', count_13_17),('Ages 18 - 24', count_18_24),('Ages 25 - 29', count_25_29),('Ages 30 - 34', count_30_34),('Ages 35 - 39', count_35_39),('Ages 40 - 44', count_40_44),('Ages 45 - 49', count_45_49),('Ages 50 - 59', count_50_59),('Ages 60 - 69', count_60_69),('Ages 70 - 79', count_70_79),('Ages 80 - 89', count_80_89),('Ages 90 - 99', count_90_99),('Ages 100 +', count_100_plus))
+    
+    @property
+    def historical_travel_duration_sorted(self):
+        my_list = []
+        for mode, nums in self.historical_travel_duration.items():
+            mode_string = ''
+            count, total_hrs = nums
+            mode_string += f"{count} {'person' if count == 1 else 'people'} who {'has' if count == 1 else 'have'} traveled {total_hrs:.1f} total hours"
+            if count > 1:
+                mode_string += f" ({total_hrs / count:.1f} hours on average)"
+            my_list.append((mode, mode_string))
+        return my_list
 
     def breadcrumbs(self, bc=''):
         model = self.name
