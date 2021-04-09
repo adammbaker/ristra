@@ -311,10 +311,10 @@ class Organization(models.Model):
         my_list = []
         for mode, nums in self.historical_travel_duration.items():
             mode_string = ''
-            count, total_hrs = nums
-            mode_string += f"{count} {'person' if count == 1 else 'people'} who {'has' if count == 1 else 'have'} traveled {total_hrs:.1f} total hours"
+            count, total_days = nums
+            mode_string += f"{count} {'person' if count == 1 else 'people'} who {'has' if count == 1 else 'have'} traveled {total_days:.1f} total days"
             if count > 1:
-                mode_string += f" ({total_hrs / count:.1f} hours on average)"
+                mode_string += f" ({total_days / 24.0 / count:.1f} hours on average)"
             my_list.append((mode, mode_string))
         return my_list
 
