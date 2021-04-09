@@ -19,27 +19,18 @@ class AtAGlance(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         org = self.request.user.profile.affiliation
         # TOTAL EVER and TOTAL ACTIVE
-        ib_count = 0
-        hoh_count = 0
-        asy_count = 0
         loc_active_count = 0
         ib_active_count = 0
         hoh_active_count = 0
         asy_active_count = 0
         for location in org.locations.all():
             loc_active_count += location.is_active
-            ib_count += location.intakebuses.count()
             for bus in location.intakebuses.all():
                 ib_active_count += bus.is_active
-                hoh_count += bus.headsofhousehold.count()
                 for hoh in bus.headsofhousehold.all():
                     hoh_active_count += hoh.is_active
-                    asy_count += hoh.asylees.count()
                     for asy in hoh.asylees.all():
                         asy_active_count += asy.is_active
-        kwargs['ib_count'] = ib_count
-        kwargs['hoh_count'] = hoh_count
-        kwargs['asy_count'] = asy_count
         kwargs['loc_active_count'] = loc_active_count
         kwargs['ib_active_count'] = ib_active_count
         kwargs['hoh_active_count'] = hoh_active_count
@@ -418,3 +409,19 @@ class HouseholdsLackingTravelFood(LoginRequiredMixin, DetailView):
         kwargs['report_title'] = 'Households Lacking Travel Food'
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
+
+
+class HistoricalOrganization(LoginRequiredMixin, DetailView):
+    'Details the historical statistics of the users organization'
+    model = Organization
+    template_name = 'intake/report_organization_historical.html'
+
+    def get_object(self, **kwargs):
+        # HOUSEHOLDS LACKING
+        return self.request.user.profile.affiliation
+
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = f'{self.request.user.profile.affiliation.name} Historical'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+

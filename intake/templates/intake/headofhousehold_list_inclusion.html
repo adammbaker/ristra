@@ -17,7 +17,7 @@
     <tbody>
       {% for unit in headofhousehold.asylees.all %}
         <tr>
-          <td class="align-middle">{{ unit.name }}</td>
+          <td class="align-middle">{% if unit.sick_covid %}<span class="text-danger">{{ unit.name }}</span>{% elif unit.householdhead.is_sick_covid %}<span class="text-warning">{{ unit.name }}</span>{% else %}{{ unit.name }}{% endif %}</td>
           <td class="align-middle">{{ unit.sex }}</td>
           <td class="align-middle">{{ unit.age }}</td>
           <td class="text-right">

@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, User
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.html import mark_safe
@@ -235,6 +235,20 @@ class Organization(models.Model):
     associated_airport = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
     locations = models.ManyToManyField('Location', verbose_name='Locations')
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
+    historical_families_count = models.IntegerField(default=0)
+    historical_asylees_count = models.IntegerField(default=0)
+    historical_sex_count = models.JSONField(default=dict)
+    historical_age_count = models.JSONField(default=dict)
+    historical_country_of_origin = models.JSONField(default=dict)
+    historical_days_traveling = models.IntegerField(default=0)
+    historical_days_in_detention = models.IntegerField(default=0)
+    historical_detention_type = models.JSONField(default=dict)
+    historical_sick_covid = models.IntegerField(default=0)
+    historical_sick_other = models.IntegerField(default=0)
+    historical_destinations = models.JSONField(default=dict)
+    historical_languages_spoken = models.JSONField(default=dict)
+    historical_travel_duration = models.JSONField(default={'Air': [0,0], 'Bus': [0,0], 'Train': [0,0], 'Car': [0,0], 'other': [0,0]}) # time in hours
+    historical_needs = models.JSONField(default=dict)
     history = HistoricalRecords()
 
     @property
@@ -251,6 +265,58 @@ class Organization(models.Model):
                 if loc.is_active:
                     return loc.is_active
             return loc.is_active
+    
+    @property
+    def historical_country_of_origin_sorted(self):
+        return sorted(self.historical_country_of_origin, key= self.historical_country_of_origin.get, reverse=True)
+    
+    @property
+    def historical_age_count_sorted(self):
+        ages_0_3 = ('0mo','1mo','2mo','3mo','4mo','5mo','6mo','7mo','8mo','9mo','10mo','11mo','12mo','1yo','2yo','3yo',)
+        ages_4_8 = ('4yo','5yo','6yo','7yo','8yo',)
+        ages_9_12 = ('9yo','10yo','11yo','12yo',)
+        ages_13_17 = ('13yo','14yo','15yo','16yo','17yo',)
+        ages_18_24 = ('18yo','19yo','20yo','21yo','22yo','23yo','24yo',)
+        ages_25_29 = ('25yo','26yo','27yo','28yo','29yo',)
+        ages_30_34 = ('30yo','31yo','32yo','33yo','34yo',)
+        ages_35_39 = ('35yo','36yo','37yo','38yo','39yo',)
+        ages_40_44 = ('40yo','41yo','42yo','43yo','44yo',)
+        ages_45_49 = ('45yo','46yo','47yo','48yo','49yo',)
+        ages_50_59 = ('50yo','51yo','52yo','53yo','54yo','55yo','56yo','57yo','58yo','59yo',)
+        ages_60_69 = ('60yo','61yo','62yo','63yo','64yo','65yo','66yo','67yo','68yo','69yo',)
+        ages_70_79 = ('70yo','71yo','72yo','73yo','74yo','75yo','76yo','77yo','78yo','79yo',)
+        ages_80_89 = ('80yo','81yo','82yo','83yo','84yo','85yo','86yo','87yo','88yo','89yo',)
+        ages_90_99 = ('90yo','91yo','92yo','93yo','94yo','95yo','96yo','97yo','98yo','99yo',)
+        ages_100_plus = ('100yo','101yo','102yo','103yo','104yo','105yo','106yo','107yo','108yo','109yo',)
+        count_0_3 = sum([v for k,v in self.historical_age_count.items() if k in ages_0_3])
+        count_4_8 = sum([v for k,v in self.historical_age_count.items() if k in ages_4_8])
+        count_9_12 = sum([v for k,v in self.historical_age_count.items() if k in ages_9_12])
+        count_13_17 = sum([v for k,v in self.historical_age_count.items() if k in ages_13_17])
+        count_18_24 = sum([v for k,v in self.historical_age_count.items() if k in ages_18_24])
+        count_25_29 = sum([v for k,v in self.historical_age_count.items() if k in ages_25_29])
+        count_30_34 = sum([v for k,v in self.historical_age_count.items() if k in ages_30_34])
+        count_35_39 = sum([v for k,v in self.historical_age_count.items() if k in ages_35_39])
+        count_40_44 = sum([v for k,v in self.historical_age_count.items() if k in ages_40_44])
+        count_45_49 = sum([v for k,v in self.historical_age_count.items() if k in ages_45_49])
+        count_50_59 = sum([v for k,v in self.historical_age_count.items() if k in ages_50_59])
+        count_60_69 = sum([v for k,v in self.historical_age_count.items() if k in ages_60_69])
+        count_70_79 = sum([v for k,v in self.historical_age_count.items() if k in ages_70_79])
+        count_80_89 = sum([v for k,v in self.historical_age_count.items() if k in ages_80_89])
+        count_90_99 = sum([v for k,v in self.historical_age_count.items() if k in ages_90_99])
+        count_100_plus = sum([v for k,v in self.historical_age_count.items() if k in ages_100_plus])
+        return (('Ages 0 - 3', count_0_3),('Ages 4 - 8', count_4_8),('Ages 9 - 12', count_9_12),('Ages 13 - 17', count_13_17),('Ages 18 - 24', count_18_24),('Ages 25 - 29', count_25_29),('Ages 30 - 34', count_30_34),('Ages 35 - 39', count_35_39),('Ages 40 - 44', count_40_44),('Ages 45 - 49', count_45_49),('Ages 50 - 59', count_50_59),('Ages 60 - 69', count_60_69),('Ages 70 - 79', count_70_79),('Ages 80 - 89', count_80_89),('Ages 90 - 99', count_90_99),('Ages 100 +', count_100_plus))
+    
+    @property
+    def historical_travel_duration_sorted(self):
+        my_list = []
+        for mode, nums in self.historical_travel_duration.items():
+            mode_string = ''
+            count, total_hrs = nums
+            mode_string += f"{count} {'person' if count == 1 else 'people'} who {'has' if count == 1 else 'have'} traveled {total_hrs:.1f} total hours"
+            if count > 1:
+                mode_string += f" ({total_hrs / count:.1f} hours on average)"
+            my_list.append((mode, mode_string))
+        return my_list
 
     def breadcrumbs(self, bc=''):
         model = self.name
@@ -434,7 +500,10 @@ class Asylee(models.Model):
 
     @property
     def age(self):
-        return (timezone.now().date() - self.date_of_birth).days//365
+        age_in_days = (timezone.now().date() - self.date_of_birth).days
+        if age_in_days // 365 > 0:
+            return f'{age_in_days //365}yo'
+        return f'{age_in_days // 30}mo'
     
     @property
     def is_active(self):
@@ -797,3 +866,75 @@ class HouseholdNeed(models.Model):
 
     def __str__(self):
         return f'{self.need}'
+
+
+# Triggers for historical data
+# @receiver(post_save, sender=HeadOfHousehold)
+# def hear_signal_headofhousehold(sender, instance, **kwargs):
+#     if kwargs.get('created'):
+#         print(instance.name, instance.ages_and_sex)
+#         print(instance, type(instance))
+#         return # if a new model object is created then return. You need to distinguish between a new object created and the one that just got updated.
+
+#     #Do whatever you want. 
+#     #Your trigger function content.
+#     #Parameter "instance" will have access to all the attributes of the model being saved. To quote from docs : It's "The actual instance being saved."        
+#     print('HOH SAVED', kwargs.keys())
+#     print(instance.name, instance.ages_and_sex)
+#     print('H:', instance.history.count(), instance.history.all())
+#     # History increments on creation and then later save
+#     # Objects with 2 history count are new
+#     if instance.history.count() < 3:
+#         print('Org', instance.intakebus.location.organization)
+#         org = instance.intakebus.location.organization
+#         org.historical_families_count += 1
+#         print('Incrementing family count', )
+#         if instance.country_of_origin in org.historical_country_of_origin.keys():
+#             org.historical_country_of_origin[instance.country_of_origin] += 1
+#         else:
+#             org.historical_country_of_origin[instance.country_of_origin] = 1
+#         org.historical_days_traveling += instance.days_traveling
+#         org.historical_days_in_detention += instance.days_detained
+#         if instance.detention_type in org.historical_detention_type.keys():
+#             org.historical_detention_type[instance.detention_type] += 1
+#         else:
+#             org.historical_detention_type[instance.detention_type] = 1
+#         if instance.destination in org.historical_destinations.keys():
+#             org.historical_destinations[instance.destination] += 1
+#         else:
+#             org.historical_destinations[instance.destination] = 1
+#         languages = '&'.join(list(instance.languages.values_list('language',flat=True)))
+#         if languages in org.historical_languages_spoken.keys():
+#             org.historical_languages_spoken[languages] += 1
+#         else:
+#             org.historical_languages_spoken[languages] = 1
+#         # Asylee specific stuff but still associated with HoH
+#         org.historical_asylees_count += instance.asylees.count()
+#         if instance.sex in org.historical_sex_count.keys():
+#             org.historical_sex_count[instance.sex] += 1
+#         else:
+#             org.historical_sex_count[instance.sex] = 1
+#         if instance.age in org.historical_age_count.keys():
+#             org.historical_age_count[instance.age] += 1
+#         else:
+#             org.historical_age_count[instance.age] = 1
+#         for asy in instance.asylees.all():
+#             if asy.sick_covid:
+#                 org.historical_sick_covid += 1
+#             if asy.sick_other:
+#                 org.historical_sick_other += 1
+#         org.save()
+#         print('Org saved?')
+#     for key in kwargs.keys():
+#         print('Key:', key, 'Value:', kwargs[key])
+#     return
+
+
+# @receiver(pre_delete, sender=HeadOfHousehold)
+# def pre_delete_headofhousehold(sender, instance, **kwargs):
+#     print('HOH DELETED')
+#     # historical_travel_duration = models.JSONField(default={'train':[0,0], 'plane':[0,0], 'bus':[0,0], 'private_car':[0,0]})
+#     # historical_needs = models.JSONField(default=)
+#     print(instance.name, instance.ages_and_sex)
+#     return
+

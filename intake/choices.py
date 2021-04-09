@@ -235,6 +235,7 @@ COVID_VACCINE_CHOICES = [
     ('moderna', 'Moderna'),
     ('j_and_j', 'Johnson & Johnson'),
     ('astra_zeneca', 'AstraZeneca'),
+    ('sinovac', 'Sinovac'),
     ('unknown', 'Unknown'),
     ('other', 'Other'),
 ]
