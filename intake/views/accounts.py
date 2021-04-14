@@ -190,7 +190,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
         return self.model.objects.get(user__id=user_id)
 
 class ProfileFormView(LoginRequiredMixin, FormView):
-    template_name = 'intake/generic-form.html'
+    template_name = 'intake/user_profile.html'
     form_class = ProfileForm
 
     def get_success_url(self):

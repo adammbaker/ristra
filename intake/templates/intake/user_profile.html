@@ -1,0 +1,29 @@
+{% extends 'intake/base.html' %}
+
+{% load bootstrap4 %}
+{% bootstrap_css %}         {# Embed Bootstrap CSS #}
+{% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
+
+{% block title %}{{button_text}}{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+  <p class="lead">You are currently affiliated to <strong>{{ user.profile.affiliation.name }}.</strong></p>
+  <hr class="my-4">
+  <p class="lead"><a href="{% url 'user:unaffiliate' %}">Remove affiliation</a></p>
+</div>
+
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+<div class="row">
+    <div class="col-md-8 col-sm-10 col-12">
+        <h2>{{title}}</h2>
+        <form role="form" class="form-horizontal" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            {% buttons submit=button_text reset='Reset' layout='horizontal' %}{% endbuttons %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
