@@ -6,7 +6,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.models import Asylee, HeadOfHousehold, Organization
 
 
-from datetime import timedelta
+from datetime import date, timedelta
 
 
 # Create your views here.
@@ -53,7 +53,8 @@ class AtAGlance(LoginRequiredMixin, DetailView):
                 no_a_num & affd_org
             ).count()
             # HOUSEHOLDS IN MOTION
-            today = timezone.localtime(timezone.now()).date()
+            # today = timezone.localtime(timezone.now()).date()
+            today = date.today()
             yesterday = today - timedelta(1)
             tomorrow = today + timedelta(1)
             overmorrow = today + timedelta(2)
@@ -130,6 +131,11 @@ class HouseholdsLackingTravelPlan(LoginRequiredMixin, DetailView):
     model = HeadOfHousehold
     template_name = 'intake/report_generic_households.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['report_title'] = 'Households Lacking Travel Plan'
+        kwargs['active_view'] = 'reports'
+        return super().get_context_data(**kwargs)
+
     def get_object(self, **kwargs):
         # HOUSEHOLDS LACKING
         return HeadOfHousehold.objects.filter(
@@ -188,7 +194,8 @@ class HouseholdsArrivedYesterday(LoginRequiredMixin, DetailView):
 
     def get_object(self, **kwargs):
         # HOUSEHOLDS IN MOTION
-        today = timezone.localtime(timezone.now()).date()
+        # today = timezone.localtime(timezone.now()).date()
+        today = date.today()
         yesterday = today - timedelta(1)
         hohs = HeadOfHousehold.objects.filter(
             intakebus__location__organization=self.request.user.profile.affiliation,
@@ -210,7 +217,8 @@ class HouseholdsArrivedToday(LoginRequiredMixin, DetailView):
 
     def get_object(self, **kwargs):
         # HOUSEHOLDS IN MOTION
-        today = timezone.localtime(timezone.now()).date()
+        # today = timezone.localtime(timezone.now()).date()
+        today = date.today()
         tomorrow = today + timedelta(1)
         hohs = HeadOfHousehold.objects.filter(
             intakebus__location__organization=self.request.user.profile.affiliation,
@@ -232,7 +240,8 @@ class HouseholdsLeavingToday(LoginRequiredMixin, DetailView):
 
     def get_object(self, **kwargs):
         # HOUSEHOLDS IN MOTION
-        today = timezone.localtime(timezone.now()).date()
+        # today = timezone.localtime(timezone.now()).date()
+        today = date.today()
         tomorrow = today + timedelta(1)
         hohs = HeadOfHousehold.objects.filter(
             intakebus__location__organization=self.request.user.profile.affiliation,
@@ -254,7 +263,8 @@ class HouseholdsLeavingTomorrow(LoginRequiredMixin, DetailView):
 
     def get_object(self, **kwargs):
         # HOUSEHOLDS IN MOTION
-        today = timezone.localtime(timezone.now()).date()
+        # today = timezone.localtime(timezone.now()).date()
+        today = date.today()
         tomorrow = today + timedelta(1)
         overmorrow = today + timedelta(2)
         hohs = HeadOfHousehold.objects.filter(
