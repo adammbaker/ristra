@@ -237,18 +237,18 @@ class Organization(models.Model):
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
     historical_families_count = models.IntegerField(default=0)
     historical_asylees_count = models.IntegerField(default=0)
-    historical_sex_count = models.JSONField(default=dict)
-    historical_age_count = models.JSONField(default=dict)
-    historical_country_of_origin = models.JSONField(default=dict)
+    historical_sex_count = models.JSONField(default=dict())
+    historical_age_count = models.JSONField(default=dict())
+    historical_country_of_origin = models.JSONField(default=dict())
     historical_days_traveling = models.IntegerField(default=0)
     historical_days_in_detention = models.IntegerField(default=0)
-    historical_detention_type = models.JSONField(default=dict)
+    historical_detention_type = models.JSONField(default=dict())
     historical_sick_covid = models.IntegerField(default=0)
     historical_sick_other = models.IntegerField(default=0)
-    historical_destinations = models.JSONField(default=dict)
-    historical_languages_spoken = models.JSONField(default=dict)
+    historical_destinations = models.JSONField(default=dict())
+    historical_languages_spoken = models.JSONField(default=dict())
     historical_travel_duration = models.JSONField(default={'Air': [0,0], 'Bus': [0,0], 'Train': [0,0], 'Car': [0,0], 'other': [0,0]}) # time in hours
-    historical_needs = models.JSONField(default=dict)
+    historical_needs = models.JSONField(default=dict())
     history = HistoricalRecords()
 
     @property
@@ -632,7 +632,8 @@ class HeadOfHousehold(Asylee):
     
     @property
     def time_at_location(self, as_string=True):
-        time_of_departure = timezone.localtime(timezone.now())
+        # time_of_departure = timezone.localtime(timezone.now())
+        time_of_departure = datetime.now()
         if self.travel_plan:
             time_of_departure = min(time_of_departure, self.travel_plan.departure_time)
         td = time_of_departure - self.intakebus.arrival_time

@@ -4,6 +4,8 @@ from intake.models import TravelPlan
 
 from datetime import datetime, timedelta
 
+tomorrow_dt = (datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M')
+
 # Create your forms here.
 class TravelPlanForm(forms.ModelForm):
     travel_date = forms.DateTimeField(
@@ -15,7 +17,7 @@ class TravelPlanForm(forms.ModelForm):
                 'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}',
             }
         ),
-        initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
+        initial=tomorrow_dt,
     )
     city_van_date = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
@@ -26,7 +28,7 @@ class TravelPlanForm(forms.ModelForm):
                 'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}',
             }
         ),
-        initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
+        initial=tomorrow_dt,
     )
     eta = forms.DateTimeField(
         help_text="Format MM/DD/YYYY HH:MM",
@@ -38,7 +40,7 @@ class TravelPlanForm(forms.ModelForm):
                 'pattern':'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}',
             }
         ),
-        initial=(datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M'),
+        initial=tomorrow_dt,
     )
 
     class Meta:

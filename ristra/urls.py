@@ -25,8 +25,8 @@ urlpatterns = [
     path('s/', include('shortener.urls')),
     path('accounts/password_change/', accounts.change_password, name='change_password'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/signup/', signup.SignUpView.as_view(), name='signup'),
-    path('accounts/signup/volunteer/', volunteers.VolunteerSignUpView.as_view(), name='volunteer_signup'),
-    path('accounts/signup/teamlead/', team_leads.TeamLeadSignUpView.as_view(), name='team_lead_signup'),
-    path('accounts/signup/sitecoordinator/', site_coordinator.SiteCoordinatorSignUpView.as_view(), name='site_coordinator_signup'),
+    # path('accounts/signup/', signup.SignUpView.as_view(), name='signup'),
+    # path('accounts/signup/volunteer/', volunteers.VolunteerSignUpView.as_view(), name='volunteer_signup'),
+    # path('accounts/signup/teamlead/', team_leads.TeamLeadSignUpView.as_view(), name='team_lead_signup'),
+    # path('accounts/signup/sitecoordinator/', site_coordinator.SiteCoordinatorSignUpView.as_view(), name='site_coordinator_signup'),
 ]

@@ -12,6 +12,10 @@ from django.views.generic.base import TemplateView
 from intake.decorators import site_admin_required
 from intake.models import Organization, RequestQueue
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Create your views here.
 @login_required # TK SC perms required
 def request_permission_to_create_organization(request):
@@ -44,4 +48,31 @@ def affiliate_user_to_organization(request, org_id):
     user = request.user
     user.profile.affiliation = org
     user.save()
+    logger.info(f"Affiliating {user.username} to {org.name}")
+    messages.success(request, f'You are now affiliated with {org.name}!')
+    return redirect('home')
+
+@login_required
+def unaffiliate_user_from_organization(request):
+    "Removes the user's affiliation to any organization"
+    user = request.user
+    org = user.profile.affiliation
+    user.profile.affiliation = None
+    user.save()
+    logger.info(f"Removing {user.username}'s affiliation from {org.name}")
+    messages.success(request, f"Your affiliation to {org.name} has been removed.")
+    return redirect('home')
+
+@login_required
+def affiliate_to_other_organization(request, org_id):
+    "Removes the user's affiliation and affiliates the user to another org"
+    user = request.user
+    old_org = user.profile.affiliation
+    user.profile.affiliation = None
+    user.save()
+    org = Organization.objects.get(id=org_id)
+    user.profile.affiliation = org
+    user.save()
+    logger.info(f"Removing {user.username}'s affiliation from {old_org.name} and affiliating {user.username} to {org.name}")
+    messages.success(request, f"Your affiliation with {old_org.name} has been removed and replaced by an affiliation with {org.name}!")
     return redirect('home')

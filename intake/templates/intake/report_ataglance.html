@@ -4,6 +4,7 @@
 
 {% block content %}
 
+{% if user.profile.affiliation %}
 <div class="container">
 <h1 class="text-center">{{organization.name}} At-A-Glance</h1>
 <div class="row">
@@ -61,5 +62,12 @@
 </table><br><br>
 </div>
 </div></div>
+{% else %}
+
+<div class="jumbotron">
+  <p class="lead">You are not affiliated with any organization. Please <a href="{% url 'home' %}">affiliate yourself</a>.</p>
+</div>
+
+{% endif %}
 
 {% endblock %}
