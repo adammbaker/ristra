@@ -3,6 +3,7 @@ from django.utils import timezone
 from intake.choices import CAPACITY_CHOICES
 from intake.models import Capacity, HouseholdNeed, Language
 
+from datetime import datetime
 
 class Command(BaseCommand):
     help = '''
@@ -13,13 +14,13 @@ class Command(BaseCommand):
     #     parser.add_argument('action', nargs='+', type=str)
 
     def handle(self, *args, **options):
-        start = timezone.localtime()
+        start = datetime.now()
         self.initialize_capacities()
         self.initialize_languages()
         self.initialize_household_needs()
         # self.initialize_lodging_types()
         # self.initialize_states()
-        done = timezone.localtime()
+        done = datetime.now()
 
     def initialize_capacities(self):
         self.stdout.write(self.style.WARNING('Initializing model Capacities'))
