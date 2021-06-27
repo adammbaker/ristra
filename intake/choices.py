@@ -246,7 +246,10 @@ ROLE_CHOICES = [
 ]
 DETENTION_TYPE_CHOICES = [
     ('mpp', 'Migrant Protection Protocols (MPP)'),
+    ('t42', 'Title 42'),
+    ('t42e', 'Title 42 Exemption'),
     ('cbp', 'Customs and Border Protection (CBP)'),
+    ('icee', 'Immigration and Customes Enforcement (ICE) & Endeavors'),
     ('other', 'Other'),
 ]
 AIRPORT_CHOICES = [
