@@ -187,7 +187,6 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Campaign(models.Model):
     id = HashidAutoField(primary_key=True)
-    # campaign = models.OneToOneField('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.SET_NULL, null=True)
     organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
 
     @property

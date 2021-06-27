@@ -1,0 +1,9 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}{{ location.name }} Detail{% endblock %}
+
+{% block content %}
+
+{% include 'intake/location_detail_inclusion.html' with lod=lod %}
+
+{% endblock %}

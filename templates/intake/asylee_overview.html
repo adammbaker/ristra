@@ -1,0 +1,13 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}{{ asylee.name }} Overview{% endblock %}
+
+{% block content %}
+
+{% include "intake/asylee_detail_inclusion.html" with lod=lod %}
+
+<br><br>
+
+{% include "intake/asylee_list_inclusion.html" %}
+
+{% endblock %}

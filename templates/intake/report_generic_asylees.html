@@ -1,0 +1,18 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}{{ report_title }} Report{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<h1 class="text-center">{{user.profile.affiliation.name}} {{ report_title }}</h1>
+<div class="row">
+<div class="col-md">
+
+{% include 'intake/report_asylee_inclusion.html' with unit_list=object %}
+
+</div class="col-sm-6">
+</div class="row">
+</div class="container">
+
+{% endblock %}

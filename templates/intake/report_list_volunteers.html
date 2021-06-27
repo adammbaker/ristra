@@ -1,0 +1,221 @@
+{% extends 'intake/base.html' %}
+{% load bootstrap5 %}
+
+{% load my_tags %}
+
+{% block title %}{{ report_title}} :: {% endblock %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<style>
+#myInput {
+  background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+</style>
+
+<h1 class="text-center">{{user.profile.affiliation.name}} {{ report_title }}</h1><br>
+  <div class="card">
+    <table id="user_list" class="table-sm table table-striped mb-0">
+      <thead>
+        <tr>
+            <div class="container" style="padding: 10px 0px">
+            <div class="row">
+            <div class="col-sm-3">
+                <!-- <input type="text" id="search_asylees" list="asylees" placeholder="Filter by asylee"> -->
+                <input type="text" id="asylees_search" onkeyup="AsyleeSearch()" placeholder="Search by asylee…" title="Type in a name">
+            </div>
+            <div class="col-sm-3">
+                <!-- <input type="text" id="search_households" placeholder="Filter by household"> -->
+                <input type="text" id="households_search" onkeyup="HouseholdSearch()" placeholder="Search by household…" title="Type in a name">
+            </div>
+            <div class="col-sm-3">
+                <!-- <input type="text" id="search_intakebuses" list="intakebuses" placeholder="Bus search"> -->
+                <input type="text" id="destination_search" onkeyup="DestinationSearch()" placeholder="Search by destination…" title="Type in a name">
+            </div>
+            <div class="col-sm-3">
+                <input type="text" id="search" placeholder="Overall search">
+            </div>
+            </div>
+            </div>
+        </tr>
+        <tr>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'volunteer' %}-{% endif %}volunteer">
+              Volunteer Name
+              {% if sorting.sorting == 'volunteer' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'lastlogin' %}-{% endif %}lastlogin">
+              Last Login
+              {% if sorting.sorting == 'lastlogin' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'clothing' %}-{% endif %}clothing">
+              Clothing
+              {% if sorting.sorting == 'clothing' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'concierge' %}-{% endif %}concierge">
+              Concierge
+              {% if sorting.sorting == 'concierge' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'departurebags' %}-{% endif %}departurebags">
+              Depart. Bags
+              {% if sorting.sorting == 'departurebags' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'food' %}-{% endif %}food">
+              Food
+              {% if sorting.sorting == 'food' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'intake' %}-{% endif %}intake">
+              Intake
+              {% if sorting.sorting == 'intake' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center">
+            <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'medical' %}-{% endif %}medical">
+              Medical
+              {% if sorting.sorting == 'medical' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center">
+            <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'travel' %}-{% endif %}travel">
+              Travel
+              {% if sorting.sorting == 'travel' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center">
+            <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'transportation' %}-{% endif %}transportation">
+              Transpo.
+              {% if sorting.sorting == 'transportation' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-center">
+            <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'volunteercoordinator' %}-{% endif %}volunteercoordinator">
+              Vol. Coord.
+              {% if sorting.sorting == 'volunteercoordinator' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th>
+            <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'role' %}-{% endif %}role">
+              Role
+              {% if sorting.sorting == 'role' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for unit in user_list %}
+          <tr>
+            <td>{% if unit.get_full_name %}{{ unit.get_full_name }}{% else %}{{ unit.username }}{% endif %}</td>
+            <td>{{ unit.last_login }}</td>
+            <td class="text-center">{% if unit.profile.is_capable_clothes%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_concierge%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_departurebags%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_food%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_intake%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_medical%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_travel%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_transportation%}✅{% else %}❌{% endif %}</td>
+            <td class="text-center">{% if unit.profile.is_capable_volunteercoordinator%}✅{% else %}❌{% endif %}</td>
+            <td>{% if unit.is_superuser %}superuser{% else %}{{ unit.profile.role }}{% endif %}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="bg-light text-center font-italic" colspan="100">No results found matching your query.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+        <tfoot>
+          <tr>
+            <th>Volunteer Name</th>
+            <th>Last Login</th>
+            <th>Clothing</th>
+            <th>Concierge</th>
+            <th class="text-wrap">Depart. Bags</th>
+            <th>Food</th>
+            <th>Intake</th>
+            <th>Medical</th>
+            <th>Travel</th>
+            <th>Transpo.</th>
+            <th>Vol. Coord.</th>
+            <th>Role</th>
+          </tr>
+        </tfoot>
+    </table><br><br>
+  </div><br><br>
+  <div class="jumbotron">
+    <p class="lead"><em>Last Login</em> is the last time a Volunteer had to log in, not when they were last active.</p>
+  </div>
+  <script  type="text/javascript">
+    var $rows = $('.table > tbody tr');
+    $('#search').keyup(function() {
+      var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase().split(' ');
+
+      $rows.hide().filter(function() {
+        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+        var matchesSearch = true;
+        $(val).each(function(index, value) {
+          matchesSearch = (!matchesSearch) ? false : ~text.indexOf(value);
+        });
+        return matchesSearch;
+      }).show();
+    });
+
+    function AsyleeSearch() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("asylees_search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("user_list");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+    
+    function HouseholdSearch() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("households_search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("user_list");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+    
+    function DestinationSearch() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("destination_search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("user_list");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[3];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+  </script>
+  <br><br>
+{% endblock %}
