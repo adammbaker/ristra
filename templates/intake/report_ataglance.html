@@ -18,7 +18,7 @@
     <tr><td></td><td>Active locations:</td><td>{{ loc_active_count }}</td></tr>
     <tr><td></td><td>Active intake buses:</td><td>{{ ib_active_count }}</td></tr>
     <tr><td><a href="{% url 'report:active households' %}">📋</a></td><td>Active households:</td><td>{{ hoh_active_count }}</td></tr>
-    <tr><td><a href="{% url 'report:active asylees' %}">📋</a></td><td>Active asylees:</td><td>{{ asy_active_count }}</td></tr>
+    <tr><td><a href="{% url 'report:active asylees' %}">📋</a></td><td>Active members of a household:</td><td>{{ asy_active_count }}</td></tr>
   </tbody>
 </table><br><br>
 </div>
@@ -31,7 +31,7 @@
   <tbody>
     <tr><td><a href="{% url 'report:hohs lack tp' %}">📋</a></td><td>Households lacking travel:</td><td>{{ hoh_no_tp }}</td></tr>
     <tr><td><a href="{% url 'report:hohs lack spon' %}">📋</a></td><td>Households lacking sponsor:</td><td>{{ hoh_no_spon }}</td></tr>
-    <tr><td><a href="{% url 'report:asys lack anum' %}">📋</a></td><td>Asylees lacking A-number:</td><td>{{ asy_no_a_anum }}</td></tr>
+    <tr><td><a href="{% url 'report:asys lack anum' %}">📋</a></td><td>Members of a household lacking A-number:</td><td>{{ asy_no_a_anum }}</td></tr>
   </tbody>
 </table><br><br>
 </div>

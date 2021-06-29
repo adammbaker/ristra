@@ -3,7 +3,7 @@
 
 {% load my_tags %}
 
-{% block title %}{{ report_title}}{% endblock %}
+{% block title %}{{ report_title}} :: {% endblock %}
 
 {% block content %}
 
@@ -52,7 +52,7 @@
         </tr>
         <tr>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'asylee' %}-{% endif %}asylee">
-              Asylee Name
+              Household Member Name
               {% if sorting.sorting == 'asylee' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
           </th>
           <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'household' %}-{% endif %}household">
@@ -105,7 +105,7 @@
       </tbody>
         <tfoot>
           <tr>
-            <th>Asylee Name</th>
+            <th>Name</th>
             <th>Household of</th>
             <th>Rm #</th>
             <th>Dest.</th>
@@ -119,7 +119,7 @@
     </table><br><br>
   </div><br><br>
   <div class="jumbotron">
-    <p class="lead">An Asylee is considered active if they have not yet left or are within 24 hours of arriving at their destination.</p>
+    <p class="lead">An Member of the household is considered active if they have not yet left or are within 24 hours of arriving at their destination.</p>
   <hr class="my-4">
   <p class="lead">⚠️ - signifies that someone in the household is sick with COVID-19</p>
   <p class="lead">❗️ - signifies that the asylee is sick with COVID-19</p>

@@ -125,7 +125,7 @@ class ActiveAsylees(LoginRequiredMixin, DetailView):
         return sorted(unit_list, key=lambda x: x.householdhead.intakebus.arrival_time)
 
     def get_context_data(self, **kwargs):
-        kwargs['report_title'] = 'Active Asylees'
+        kwargs['report_title'] = 'Active Members of a Household'
         kwargs['active_view'] = 'reports'
         return super().get_context_data(**kwargs)
 
