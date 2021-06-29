@@ -1,16 +1,16 @@
-{% if messages %}
-<br>
-<div class="container">
-<!-- Comment - the message at the top -->
-    {% for message in messages %}
-    <div class="alert alert-{{message.message_type}} {% if message.dismissible %}alert-dismissible {% endif %}fade show" role="alert">
-        {{message.text|safe}}
 
-        {% if message.dismissible %}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        {% endif %}
+
+{% if custom_messages %}
+<br>
+<div class="container messages">
+    {% for message in custom_messages %}
+    <div class="alert alert-{{ message.message_type}} {% if message.dismissible %}alert-dismissible {% endif %}fade show {% if message.tags %}{{ message.tags}}{% endif %}" role="alert">
+    {{ message.text|safe }}
+
+    {% if message.dismissible %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    {% endif %}
     </div>
     {% endfor %}
 </div>
-
 {% endif %}
