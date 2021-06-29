@@ -27,7 +27,11 @@ class AtAGlance(LoginRequiredMixin, DetailView):
         asy_active_count = 0
         if self.request.user.profile.affiliation:
             for location in org.locations.all():
-                loc_active_count += location.is_active
+                try:
+                    loc_active_count += location.is_active
+                except TypeError:
+                    # No active locations
+                    pass
                 for bus in location.intakebuses.all():
                     ib_active_count += bus.is_active
                     for hoh in bus.headsofhousehold.all():
