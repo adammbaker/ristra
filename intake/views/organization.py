@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.decorators import sc_required
@@ -63,7 +64,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             sc.can_create_organization = False
             sc.save()
         else:
-            return redirect('user:request permission')
+            return reverse_lazy('user:request permission')
         rq, rq_c = RequestQueue.objects.get_or_create(
             site_coordinator = sc,
             organization = org,
@@ -79,7 +80,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         body.append('%(org_loc)s' % {'org_loc': org.location})
         body.append(f'\nPlease visit {get_current_site(self.request)}/requestqueue/')
         send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com'], fail_silently=False)
-        return redirect('organization:overview', org_id = org.id)
+        return reverse_lazy('organization:overview', org_id = org.id)
 
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

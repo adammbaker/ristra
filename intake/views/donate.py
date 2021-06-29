@@ -46,7 +46,7 @@ class DonateCreate(LoginRequiredMixin, CreateView):
         d.description = d_description
         d.save()
         # return to parent detail
-        return redirect('donate:overview')
+        return reverse_lazy('donate:overview')
 
     def test_func(self):
         return self.request.user.is_superuser

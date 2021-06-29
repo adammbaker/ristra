@@ -48,7 +48,7 @@ class LocationCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         org.locations.add(loc)
         org.save()
         # return to parent detail
-        return redirect('location:overview', loc_id = loc.id)
+        return reverse_lazy('location:overview', loc_id = loc.id)
 
     def test_func(self):
         return self.request.user.profile.role in ('site_coordinator','team_lead')
@@ -108,7 +108,7 @@ class LocationUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('location:detail', kwargs={'loc_id': self.kwargs.get('loc_id')})
+        return reverse_lazy('location:detail', kwargs={'loc_id': self.kwargs.get('loc_id')})
 
 
 class LocationDelete(LoginRequiredMixin, DeleteView):
@@ -119,4 +119,4 @@ class LocationDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         org_id = self.model.objects.get(id=self.kwargs.get('loc_id')).organization.id
-        return redirect('organization:overview', kwargs={'org_id': org_id})
+        return reverse_lazy('organization:overview', kwargs={'org_id': org_id})
