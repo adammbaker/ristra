@@ -166,7 +166,6 @@ class HeadOfHouseholdOverview(LoginRequiredMixin, DetailView):
     template_name = 'intake/headofhousehold_overview.html'
 
     def get_context_data(self, **kwargs):
-        print('BBBB')
         kwargs['householdneeds'] = HouseholdNeed.objects.all()
         kwargs['lod'] = 'partial'
         return super().get_context_data(**kwargs)
@@ -204,7 +203,7 @@ class HeadOfHouseholdUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('headofhousehold:detail', kwargs={'hoh_id': self.kwargs.get('hoh_id')})
+        return redirect('headofhousehold:detail', kwargs={'hoh_id': self.kwargs.get('hoh_id')})
 
 
 class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):
@@ -215,7 +214,7 @@ class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         ib_id = self.model.objects.get(id=self.kwargs.get('hoh_id')).intakebus.id
-        return reverse_lazy('intakebus:overview', kwargs={'ib_id': ib_id})
+        return redirect('intakebus:overview', kwargs={'ib_id': ib_id})
 
 
 class ItineraryDetail(LoginRequiredMixin, DetailView):

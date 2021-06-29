@@ -99,7 +99,7 @@ class SponsorUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('sponsor:detail', kwargs={'spon_id': self.kwargs.get('spon_id')})
+        return redirect('sponsor:detail', kwargs={'spon_id': self.kwargs.get('spon_id')})
 
 
 class SponsorDelete(LoginRequiredMixin, DeleteView):
@@ -110,4 +110,4 @@ class SponsorDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         hoh_id = self.model.objects.get(id=self.kwargs.get('spon_id')).headofhousehold.id
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        return redirect('headofhousehold:overview', kwargs={'hoh_id': hoh_id})

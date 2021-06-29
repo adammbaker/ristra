@@ -275,7 +275,7 @@ class AsyleeUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('asylee:detail', kwargs={'asy_id': self.kwargs.get('asy_id')})
+        return redirect('asylee:detail', kwargs={'asy_id': self.kwargs.get('asy_id')})
 
 
 class AsyleeDelete(LoginRequiredMixin, DeleteView):
@@ -289,9 +289,9 @@ class AsyleeDelete(LoginRequiredMixin, DeleteView):
         # If the Asylee is not a HeadOfHousehold, delete Asylee and send to HoH
         if asy != asy.householdhead.asylee_ptr:
             hoh_id = asy.householdhead.id
-            return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+            return redirect('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
         # Else, if Asylee is also HeadOfHousehold, delete both and send to IntakeBus
-        return reverse_lazy('intakebus:overview', kwargs={'ib_id': asy.householdhead.intakebus.id})
+        return redirect('intakebus:overview', kwargs={'ib_id': asy.householdhead.intakebus.id})
 
 
 def UpdateHistorical(asy):
