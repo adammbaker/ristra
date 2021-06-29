@@ -64,7 +64,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             sc.can_create_organization = False
             sc.save()
         else:
-            return reverse_lazy('user:request permission')
+            return redirect('user:request permission')
         rq, rq_c = RequestQueue.objects.get_or_create(
             site_coordinator = sc,
             organization = org,
@@ -80,7 +80,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         body.append('%(org_loc)s' % {'org_loc': org.location})
         body.append(f'\nPlease visit {get_current_site(self.request)}/requestqueue/')
         send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com'], fail_silently=False)
-        return reverse_lazy('organization:overview', org_id = org.id)
+        return reverse_lazy('organization:overview', kwargs={'org_id': org.id})
 
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -88,7 +88,6 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     template_name = "intake/organization_overview.html"
 
     def get_object(self, **kwargs):
-        print('OO', org_id)
         return self.model.objects.get(id=self.kwargs.get('org_id'))
         return self.request.user.profile.affiliation
         return get_object_or_404(self.request.user.profile.affiliation)

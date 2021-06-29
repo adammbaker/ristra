@@ -70,17 +70,17 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             # return super().form_valid(form)
             self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
             self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
-            return reverse_lazy('asylee:health follow up', asy_id = asylee.id)
+            return reverse_lazy('asylee:health follow up', kwargs={'asy_id': asylee.id})
         if form.cleaned_data.get('had_covid_vaccine') == True and form.cleaned_data.get('is_currently_sick') == True:
-            return reverse_lazy('asylee:health follow up', asy_id = asylee.id)
+            return reverse_lazy('asylee:health follow up', kwargs={'asy_id': asylee.id})
         elif form.cleaned_data.get('had_covid_vaccine') == True:
-            return reverse_lazy('asylee:health vaccine', asy_id = asylee.id)
+            return reverse_lazy('asylee:health vaccine', kwargs={'asy_id': asylee.id})
         elif form.cleaned_data.get('is_currently_sick') == True:
-            return reverse_lazy('asylee:health sick', asy_id = asylee.id)
+            return reverse_lazy('asylee:health sick', kwargs={'asy_id': asylee.id})
         # return to parent detail
         print('Sending to faimly detail for', hoh.id)
         UpdateHistorical(asylee)
-        return reverse_lazy('headofhousehold:overview', hoh_id = hoh.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
 
 class AsyleeDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -204,7 +204,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
     def get_success_url(self):
         asylee_id = self.kwargs.get('asy_id')
         hoh_id = Asylee.objects.get(id=asylee_id).householdhead
-        return reverse_lazy('headofhousehold:overview', hoh_id = hoh_id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
 
     def form_valid(self, vaccine_form_class, sick_form_class):
         asy_id = self.kwargs.get('asy_id')
@@ -215,7 +215,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         asylee.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         asylee.save()
         UpdateHistorical(asylee)
-        return reverse_lazy('headofhousehold:overview', hoh_id = asylee.householdhead.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': asylee.householdhead.id})
 
     def post(self, request, *args, **kwargs):
         vaccine_form = self.vaccine_form_class(request.POST)
@@ -229,7 +229,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             asylee.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
             asylee.sick_other = sick_form.cleaned_data.get('sick_other', False)
         asylee.save()
-        return reverse_lazy('headofhousehold:overview', hoh_id = asylee.householdhead.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': asylee.householdhead.id})
 
 
 

@@ -60,7 +60,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         hoh.save()
         # return to parent overview
         print('Sending to faimly overview for', hoh.id)
-        return reverse_lazy('headofhousehold:overview', hoh_id = hoh.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
 
 class SponsorDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

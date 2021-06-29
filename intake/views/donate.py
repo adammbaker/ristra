@@ -46,7 +46,7 @@ class DonateCreate(LoginRequiredMixin, CreateView):
         d.description = d_description
         d.save()
         # return to parent detail
-        return reverse_lazy('donate:overview')
+        return redirect('donate:overview')
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -57,7 +57,7 @@ class DonateDelete(LoginRequiredMixin, DeleteView):
     template_name = 'intake/confirm_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy('donate:overview')
+        return redirect('donate:overview')
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -78,7 +78,7 @@ class DonateUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('donate:overview')
+        return redirect('donate:overview')
 
     def test_func(self):
         return self.request.user.is_superuser
