@@ -7,9 +7,8 @@
 {% block content %}
 
 <div class="jumbotron">
-  <p class="lead">You are currently affiliated to <strong>{{ user.profile.affiliation.name }}.</strong></p>
+  <p class="lead">You are currently affiliated to <strong>{{ user.profile.affiliation.name }}.</strong> <a href="{% url 'user:unaffiliate' %}">Remove affiliation</a></p>
   <hr class="my-4">
-  <p class="lead"><a href="{% url 'user:unaffiliate' %}">Remove affiliation</a></p>
 </div>
 
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">

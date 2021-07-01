@@ -85,7 +85,6 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
 class AsyleeDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
     model = Asylee
-    print('\n\nTRIP\n\n')
 
     def get_object(self, **kwargs):
         return self.model.objects.get(id=self.kwargs.get('asy_id'))

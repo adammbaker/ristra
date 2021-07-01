@@ -44,7 +44,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         org_city = form.cleaned_data.get('city')
         org_state = form.cleaned_data.get('state')
         org_url = form.cleaned_data.get('url')
-        org_airport = form.cleaned_data.get('associated_airport')
+        org_airport = form.cleaned_data.get('airport_of_record')
         org_notes = form.cleaned_data.get('notes')
         org, org_c = Organization.objects.get_or_create(
             is_valid = False,
@@ -52,7 +52,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             city = org_city,
             state = org_state,
             url = org_url,
-            associated_airport = org_airport,
+            airport_of_record = org_airport,
             notes = org_notes,
         )
         print('Setting up org', org.id, 'with sc as', sc)
@@ -79,8 +79,9 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         body.append('%(org_name)s' % {'org_name': org.name})
         body.append('%(org_loc)s' % {'org_loc': org.location})
         body.append(f'\nPlease visit {get_current_site(self.request)}/requestqueue/')
-        send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com'], fail_silently=False)
-        return reverse_lazy('organization:overview', kwargs={'org_id': org.id})
+        send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com','ristrarefuge@gmail.com'], fail_silently=False)
+        # return reverse_lazy('organization:overview', kwargs={'org_id': org.id})
+        return redirect('organization:overview', org_id = org.id)
 
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

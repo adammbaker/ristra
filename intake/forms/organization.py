@@ -6,7 +6,7 @@ from intake.models import Organization
 class OrganizationForm(forms.ModelForm):
     class Meta:
         model = Organization
-        fields = ['name', 'city', 'state', 'url', 'associated_airport', 'notes']
+        fields = ['name', 'city', 'state', 'url', 'airport_of_record', 'notes']
 
 #
 # class OrganizationValidateForm(forms.ModelForm):

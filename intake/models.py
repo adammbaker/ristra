@@ -232,7 +232,7 @@ class Organization(models.Model):
     city = models.CharField(verbose_name='City', max_length=500, null=True)
     state = models.CharField(verbose_name="State", max_length=100, choices=STATE_CHOICES, default='nm')
     url = models.CharField(verbose_name='Website', max_length=500, null=True)
-    associated_airport = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
+    airport_of_record = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
     locations = models.ManyToManyField('Location', verbose_name='Locations')
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
     historical_families_count = models.IntegerField(default=0)

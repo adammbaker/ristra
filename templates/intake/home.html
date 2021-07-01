@@ -31,7 +31,7 @@
       <br>
       {% if user.profile.affiliation %}
         {% for org in organizations %}
-        <li class="list-group-item"><h4>Organizations you can also affiliate yourself with</h4></li>
+        <li class="list-group-item"><h4>Organizations you can change your affiliation to</h4></li>
         <a href="{% url 'organization:detail' org.id %}" class="list-group-item list-group-item-action">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{ org.name }}</h5>

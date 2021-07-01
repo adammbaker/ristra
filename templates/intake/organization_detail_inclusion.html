@@ -2,9 +2,9 @@
 
 {% if organization.is_valid == False %}
   <!-- Warning Alert -->
-  <div class="alert alert-warning alert-dismissible fade show">
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Please wait</strong> while our site admin approves your organization.
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 {% endif %}
 
@@ -17,7 +17,7 @@
 {% if lod == "partial" %}
   <p class="card-text">{{ organization.notes|shorten }}</p>
 {% else %}
-  <h6 class="card-subtitle mb-2 text-muted">Airport: {{ organization.associated_airport|upper }}</h6>
+  <h6 class="card-subtitle mb-2 text-muted">Airport: {{ organization.airport_of_record|upper }}</h6>
   <p class="card-text">{{organization.notes}}</p>
 {% endif %}
   <a href="{{organization.url}}" class="card-link">{{ organization.url }}</a><br><br>
