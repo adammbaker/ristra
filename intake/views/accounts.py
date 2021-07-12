@@ -5,6 +5,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.db import transaction
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
@@ -78,7 +79,7 @@ class SignUpView(CreateView):
 
             messages.success(request, ('Please confirm your email address by visiting the link we sent.'))
 
-            return redirect('login')
+            return HttpResponseRedirect(reverse('login'))
 
         return render(request, self.template_name, {'form': form})
         # return render(request, self.template_name, {'form': form, 'profile_form': profile_form})

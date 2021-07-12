@@ -94,10 +94,10 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             # return super().form_valid(form)
             self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
             self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
-            return redirect('headofhousehold:health follow up', hoh_id = hoh.id)
+            return reverse_lazy('headofhousehold:health follow up', kwargs={'hoh_id': hoh.id})
         # return to parent detail
         UpdateHistorical(hoh)
-        return redirect('headofhousehold:overview', hoh_id = hoh.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
 
 # @method_decorator([is_affiliated], name='dispatch')
 class HeadOfHouseholdDetailView(LoginRequiredMixin, DetailView):
@@ -131,7 +131,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
     def get_success_url(self):
         hoh_id = self.kwargs.get('hoh_id')
         hoh_id = HeadOfHousehold.objects.get(id=hoh_id).householdhead
-        return redirect('headofhousehold:overview', hoh_id = hoh_id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
 
     def form_valid(self, vaccine_form_class, sick_form_class):
         hoh_id = self.kwargs.get('hoh_id')
@@ -142,7 +142,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
         hoh.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         hoh.save()
         UpdateHistorical(hoh)
-        return redirect('headofhousehold:overview', hoh_id = hoh.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
 
     def post(self, request, *args, **kwargs):
         vaccine_form = self.vaccine_form_class(request.POST)
@@ -156,7 +156,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
             hoh.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
             hoh.sick_other = sick_form.cleaned_data.get('sick_other', False)
         hoh.save()
-        return redirect('headofhousehold:overview', hoh_id = hoh.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
 
 
 
@@ -166,7 +166,6 @@ class HeadOfHouseholdOverview(LoginRequiredMixin, DetailView):
     template_name = 'intake/headofhousehold_overview.html'
 
     def get_context_data(self, **kwargs):
-        print('BBBB')
         kwargs['householdneeds'] = HouseholdNeed.objects.all()
         kwargs['lod'] = 'partial'
         return super().get_context_data(**kwargs)
@@ -240,7 +239,6 @@ def AddNeedToHousehold(request, hoh_id, need_id):
         org.save()
     else:
         messages.error(request, "Unable to add that need to that household.")
-    print('F')
     return redirect('headofhousehold:overview', hoh_id=hoh_id)
 
 
@@ -254,7 +252,6 @@ def SatisfyNeedForHousehold(request, hoh_id, need_id):
         messages.success(request, f'{need} was satisfied for {hoh}')
     else:
         messages.error(request, "Unable to satisfy that need to that household.")
-    print('F')
     return redirect('headofhousehold:overview', hoh_id=hoh_id)
 
 

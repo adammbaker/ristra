@@ -1,5 +1,5 @@
 Django>=2.2.1
-django-bootstrap4>=0.0.8
+django-bootstrap-v5>=1.0.4
 django-cryptography>=1.0
 django-environ
 django-hashid-field>=2.1.6

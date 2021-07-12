@@ -1,0 +1,13 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}{{ headofhousehold.name }} Overview{% endblock %}
+
+{% block content %}
+
+{% include "intake/headofhousehold_detail_inclusion.html" with lod=lod %}
+
+<br><br>
+
+{% include "intake/headofhousehold_list_inclusion.html" %}
+
+{% endblock %}

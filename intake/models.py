@@ -11,8 +11,6 @@ from django.utils.html import mark_safe
 from hashid_field import HashidAutoField, HashidField
 from intake.choices import *
 from intake.generic_card import GenericCard
-from shortener import shortener
-from shortener.models import UrlMap
 from simple_history.models import HistoricalRecords
 
 import hashlib
@@ -23,6 +21,9 @@ from socket import gethostbyname, gethostname
 # Create your models here.
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(username='deleted')[0]
+
+def get_default_travel_duration():
+    return {'Air': [0,0], 'Bus': [0,0], 'Train': [0,0], 'Car': [0,0], 'other': [0,0]}
 
 class Capacity(models.Model):
     name = models.CharField(max_length=100, verbose_name='Capacity')
@@ -186,7 +187,6 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Campaign(models.Model):
     id = HashidAutoField(primary_key=True)
-    # campaign = models.OneToOneField('shortener.UrlMap', verbose_name="Active intake campaigns", on_delete=models.SET_NULL, null=True)
     organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True)
 
     @property
@@ -217,7 +217,7 @@ class Lead(models.Model):
 class SiteCoordinator(models.Model):
     user = models.OneToOneField(Profile, on_delete=models.SET(get_sentinel_user), primary_key=True)
     # organization = models.OneToOneField('Organization', on_delete=models.SET(get_sentinel_user), null=True)
-    organization = models.ManyToManyField('Organization', null=True)
+    organization = models.ManyToManyField('Organization')
 
     def to_card(self):
         return self.user.to_card()
@@ -232,23 +232,23 @@ class Organization(models.Model):
     city = models.CharField(verbose_name='City', max_length=500, null=True)
     state = models.CharField(verbose_name="State", max_length=100, choices=STATE_CHOICES, default='nm')
     url = models.CharField(verbose_name='Website', max_length=500, null=True)
-    associated_airport = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
+    airport_of_record = models.CharField(max_length=150, choices=AIRPORT_CHOICES, default='abq')
     locations = models.ManyToManyField('Location', verbose_name='Locations')
     notes = models.TextField(verbose_name='Additional notes', null=True, blank=True)
     historical_families_count = models.IntegerField(default=0)
     historical_asylees_count = models.IntegerField(default=0)
-    historical_sex_count = models.JSONField(default=dict())
-    historical_age_count = models.JSONField(default=dict())
-    historical_country_of_origin = models.JSONField(default=dict())
+    historical_sex_count = models.JSONField(default=dict)
+    historical_age_count = models.JSONField(default=dict)
+    historical_country_of_origin = models.JSONField(default=dict)
     historical_days_traveling = models.IntegerField(default=0)
     historical_days_in_detention = models.IntegerField(default=0)
-    historical_detention_type = models.JSONField(default=dict())
+    historical_detention_type = models.JSONField(default=dict)
     historical_sick_covid = models.IntegerField(default=0)
     historical_sick_other = models.IntegerField(default=0)
-    historical_destinations = models.JSONField(default=dict())
-    historical_languages_spoken = models.JSONField(default=dict())
-    historical_travel_duration = models.JSONField(default={'Air': [0,0], 'Bus': [0,0], 'Train': [0,0], 'Car': [0,0], 'other': [0,0]}) # time in hours
-    historical_needs = models.JSONField(default=dict())
+    historical_destinations = models.JSONField(default=dict)
+    historical_languages_spoken = models.JSONField(default=dict)
+    historical_travel_duration = models.JSONField(default=get_default_travel_duration) # time in hours
+    historical_needs = models.JSONField(default=dict)
     history = HistoricalRecords()
 
     @property

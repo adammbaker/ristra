@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from intake.decorators import sc_required
@@ -43,7 +44,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         org_city = form.cleaned_data.get('city')
         org_state = form.cleaned_data.get('state')
         org_url = form.cleaned_data.get('url')
-        org_airport = form.cleaned_data.get('associated_airport')
+        org_airport = form.cleaned_data.get('airport_of_record')
         org_notes = form.cleaned_data.get('notes')
         org, org_c = Organization.objects.get_or_create(
             is_valid = False,
@@ -51,7 +52,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
             city = org_city,
             state = org_state,
             url = org_url,
-            associated_airport = org_airport,
+            airport_of_record = org_airport,
             notes = org_notes,
         )
         print('Setting up org', org.id, 'with sc as', sc)
@@ -78,7 +79,8 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         body.append('%(org_name)s' % {'org_name': org.name})
         body.append('%(org_loc)s' % {'org_loc': org.location})
         body.append(f'\nPlease visit {get_current_site(self.request)}/requestqueue/')
-        send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com'], fail_silently=False)
+        send_mail(subject_line, '\n'.join(body), settings.EMAIL_FROM, ['adam.m.baker@gmail.com','ristrarefuge@gmail.com'], fail_silently=False)
+        # return reverse_lazy('organization:overview', kwargs={'org_id': org.id})
         return redirect('organization:overview', org_id = org.id)
 
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
@@ -87,7 +89,6 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     template_name = "intake/organization_overview.html"
 
     def get_object(self, **kwargs):
-        print('OO', org_id)
         return self.model.objects.get(id=self.kwargs.get('org_id'))
         return self.request.user.profile.affiliation
         return get_object_or_404(self.request.user.profile.affiliation)

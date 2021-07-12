@@ -35,7 +35,7 @@ SOFTWARE_CYCLE = env("SOFTWARE_CYCLE")
 
 if SOFTWARE_CYCLE == 'dev':
     ALLOWED_HOSTS = [
-        u'192.168.0.151',
+        u'192.168.0.229',
         u'localhost',
         u'dev.ristrarefuge.org',
     ]
@@ -58,8 +58,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
     'qr_code',
+    'bootstrap5',
     'shortener',
-    'bootstrap4',
     'simple_history',
     'intake.apps.IntakeConfig',
     'django.contrib.admin',
@@ -97,7 +97,7 @@ ROOT_URLCONF = 'ristra.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -195,9 +195,7 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-BOOTSTRAP4 = {
-    'include_jquery': True,
-}
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATABASE_REGIME = 'postgresql'
 if SOFTWARE_CYCLE == 'dev':
