@@ -41,6 +41,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         sponsor_address = form.cleaned_data.get('address')
         sponsor_city = form.cleaned_data.get('city')
         sponsor_state = form.cleaned_data.get('state')
+        sponsor_zip_code = form.cleaned_data.get('zip_code')
         sponsor_relation = form.cleaned_data.get('relation')
         sponsor_notes = form.cleaned_data.get('notes')
         hoh = get_object_or_404(HeadOfHousehold, id=self.kwargs.get('hoh_id'))
@@ -51,6 +52,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
             city = sponsor_city,
         )
         sponsor.state = sponsor_state
+        sponsor.zip_code = sponsor_zip_code
         sponsor.relation = sponsor_relation
         sponsor.notes = sponsor_notes
         sponsor.save()
@@ -58,7 +60,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         hoh.save()
         # return to parent overview
         print('Sending to faimly overview for', hoh.id)
-        return redirect('headofhousehold:overview', hoh_id = hoh.id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
 
 class SponsorDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'

@@ -1,0 +1,199 @@
+{% extends 'intake/base.html' %}
+{% load bootstrap5 %}
+
+{% load my_tags %}
+
+{% block title %}{{ report_title}} :: {% endblock %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<style>
+#myInput {
+  background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+</style>
+
+<!--<div class="telmon2-outlier warning red" style="text-align:center;">
+    {{message}}
+</div>-->
+
+<h1 class="text-center">{{user.profile.affiliation.name}} {{ report_title }}</h1><br>
+  <div class="card">
+    <table id="asylee_list" class="table-sm table table-striped mb-0">
+      <thead>
+        <tr>
+            <div class="container" style="padding: 10px 0px">
+            <div class="row">
+            <div class="col-sm-3">
+                <!-- <input type="text" id="search_asylees" list="asylees" placeholder="Filter by asylee"> -->
+                <input type="text" id="asylees_search" onkeyup="AsyleeSearch()" placeholder="Search by asylee…" title="Type in a name">
+            </div>
+            <div class="col-sm-3">
+                <!-- <input type="text" id="search_households" placeholder="Filter by household"> -->
+                <input type="text" id="households_search" onkeyup="HouseholdSearch()" placeholder="Search by household…" title="Type in a name">
+            </div>
+            <div class="col-sm-3">
+                <!-- <input type="text" id="search_intakebuses" list="intakebuses" placeholder="Bus search"> -->
+                <input type="text" id="destination_search" onkeyup="DestinationSearch()" placeholder="Search by destination…" title="Type in a name">
+            </div>
+            <div class="col-sm-3">
+                <input type="text" id="search" placeholder="Overall search">
+            </div>
+            </div>
+            </div>
+        </tr>
+        <tr>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'asylee' %}-{% endif %}asylee">
+              Household Member Name
+              {% if sorting.sorting == 'asylee' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'household' %}-{% endif %}household">
+              Household of
+              {% if sorting.sorting == 'household' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'lodging' %}-{% endif %}lodging">
+              Rm #
+              {% if sorting.sorting == 'lodging' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'destination' %}-{% endif %}destination">
+              Dest.
+              {% if sorting.sorting == 'destination' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'arrival_time' %}-{% endif %}arrival_time">
+              Here Since
+              {% if sorting.sorting == 'arrival_time' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th class="text-wrap"><a href="?sort_by={% if sorting.ascending and sorting.sorting == 'departure' %}-{% endif %}departure">
+              Departure
+              {% if sorting.sorting == 'departure' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th>
+            <a href="?sort_by={% if sorting.ascending and sorting.sorting == 'bus' %}-{% endif %}bus">
+              Bus
+              {% if sorting.sorting == 'bus' %}{% if sorting.ascending %}▲{% else %}▼{% endif %}{% else %}▵{% endif %}</a>
+          </th>
+          <th>Trvl</th>
+          <th>Spon</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for unit in asylee_list %}
+          <tr>
+            <td>{% if unit.sick_covid %}<a href="{% url 'asylee:detail' asy_id=unit.id %}">{{ unit.name }}</a> ❗️{% elif unit.householdhead.is_sick_covid %}<a href="{% url 'asylee:detail' asy_id=unit.id %}">{{ unit.name }}</a> ⚠️{% else %}<a href="{% url 'asylee:detail' asy_id=unit.id %}">{{ unit.name }}</a>{% endif %}</td>
+            <td><a href="{% url 'headofhousehold:overview' hoh_id=unit.householdhead.id %}">{{ unit.householdhead.name }}</a></td>
+            <td class="text-center">{% if unit.householdhead.lodging %}{{ unit.householdhead.lodging }}{% else %}<small>n/a</small>{% endif %}</td>
+            <td>{{ unit.householdhead.destination }}</td>
+            <td class="text-right">{{ unit.householdhead.intakebus.arrival_time|time_to_now_abs:True }}</td>
+            <td class="text-center">{% if unit.householdhead.travel_plan %}{{ unit.householdhead.travel_plan.departure_time|mdYIMp }}{% else %}<a href="{% url 'travelplan:add' hoh_id=unit.householdhead.id %}"><span class="text-danger">✛</span></a>{% endif %}</td>
+            <td><a href="{% url 'intakebus:overview' ib_id=unit.householdhead.intakebus.id %}">{{ unit.householdhead.intakebus.number }}</a></td>
+            <td>{% if unit.householdhead.travel_plan %}<a href="{% url 'travelplan:detail' tp_id=unit.householdhead.travel_plan.id %}"><span class="text-success">✓</span></a>{% else %}<a href="{% url 'travelplan:add' hoh_id=unit.householdhead.id %}"><span class="text-danger">✛</span></a>{% endif %}</td>
+            <td>{% if unit.householdhead.sponsor %}<a href="{% url 'sponsor:detail' spon_id=unit.householdhead.sponsor.id %}"><span class="text-success">✓</span></a>{% else %}<a href="{% url 'sponsor:add' hoh_id=unit.householdhead.id %}"><span class="text-danger">✛</span></a>{% endif %}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="bg-light text-center font-italic" colspan="4">No results found matching your query.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+        <tfoot>
+          <tr>
+            <th>Name</th>
+            <th>Household of</th>
+            <th>Rm #</th>
+            <th>Dest.</th>
+            <th> Here Since</th>
+            <th class="text-wrap">Departure</th>
+            <th>Bus</th>
+            <th>Trvl</th>
+            <th>Spon</th>
+          </tr>
+        </tfoot>
+    </table><br><br>
+  </div><br><br>
+  <div class="jumbotron">
+    <p class="lead">An Member of the household is considered active if they have not yet left or are within 24 hours of arriving at their destination.</p>
+    <p class="lead">⚠️ - signifies that someone in the household is sick with COVID-19</p>
+    <p class="lead">❗️ - signifies that the asylee is sick with COVID-19</p>
+  </div>
+  <script  type="text/javascript">
+    var $rows = $('.table > tbody tr');
+    $('#search').keyup(function() {
+      var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase().split(' ');
+
+      $rows.hide().filter(function() {
+        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+        var matchesSearch = true;
+        $(val).each(function(index, value) {
+          matchesSearch = (!matchesSearch) ? false : ~text.indexOf(value);
+        });
+        return matchesSearch;
+      }).show();
+    });
+
+    function AsyleeSearch() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("asylees_search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("asylee_list");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+    
+    function HouseholdSearch() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("households_search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("asylee_list");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+    
+    function DestinationSearch() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("destination_search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("asylee_list");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[3];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+  </script>
+  <br><br>
+{% endblock %}

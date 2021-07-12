@@ -1,0 +1,27 @@
+{% extends 'intake/base.html' %}
+
+{% load bootstrap5 %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-sm-10 col-12">
+        <h2>Generate a token for</h2>
+
+        <!-- SITE COORDINATOR FOR ORG -->
+        <div class="card-group">
+        <div class="card bg-light mb-3">
+        <div class="card-header">SITE COORDINATOR</div>
+            <div class="card-group">
+                {{sc.to_card|safe}}
+            </div>
+        </div>
+        </div>
+
+        <form role="form" class="form-horizontal" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            {% buttons submit='Email' reset='Reset' layout='horizontal' %}{% endbuttons %}
+        </form>
+    </div>
+</div>
+{% endblock %}

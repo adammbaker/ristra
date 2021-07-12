@@ -1,0 +1,23 @@
+{% extends 'intake/base.html' %}
+
+{% load bootstrap5 %}
+
+{% block title %}Follow Up Health Questionnaire{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-sm-10 col-12">
+        <h2>{{title}}</h2>
+        <form role="form" class="form-horizontal" method="post">
+            {% csrf_token %}
+            {% if request.session.had_covid_vaccine %}
+                {% bootstrap_form vaccine_form_class layout="horizontal" %}
+            {% endif %}
+            {% if request.session.is_currently_sick %}
+                {% bootstrap_form sick_form_class layout="horizontal" %}
+            {% endif %}
+            {% buttons submit='Submit' reset='Reset' layout='horizontal' %}{% endbuttons %}
+        </form>
+    </div>
+</div>
+{% endblock %}

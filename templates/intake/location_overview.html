@@ -1,0 +1,13 @@
+{% extends 'intake/base.html' %}
+
+{% block title %}{{ location.name }} Overview{% endblock %}
+
+{% block content %}
+
+{% include "intake/location_detail_inclusion.html" with lod=lod %}
+
+<br><br>
+
+{% include "intake/location_list_inclusion.html" %}
+
+{% endblock %}

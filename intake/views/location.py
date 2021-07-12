@@ -48,7 +48,7 @@ class LocationCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         org.locations.add(loc)
         org.save()
         # return to parent detail
-        return redirect('location:overview', loc_id = loc.id)
+        return reverse_lazy('location:overview', kwargs={'loc_id': loc.id})
 
     def test_func(self):
         return self.request.user.profile.role in ('site_coordinator','team_lead')
