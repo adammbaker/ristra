@@ -61,9 +61,24 @@
 <div class="col-sm-6">
 <table class="table-sm table-striped table-borderless mb-0">
   <tbody>
-    <thead><tr><td>MEMBERS OF THE HOUSEHOLD</td></tr></thead>
+    <thead><tr><td colspan="100">MEMBERS OF THE HOUSEHOLD</td></tr></thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Shirt</th>
+      <th>Pants</th>
+      <th>Shoe</th>
+      <th>&nbsp;</th>
+    </tr>
     {% for asylee in headofhousehold.asylees.all %}
-      <tr><td>{{ asylee.name }}</td><td>{{ asylee.age }} years old</td><td><a href="{% url 'asylee:detail' asy_id=asylee.id %}">See more</a></td></tr>
+      <tr>
+        <td>{{ asylee.name }}</td>
+        <td>{{ asylee.age }}</td>
+        <td>{% if asylee.shirt_size %}{{ asylee.shirt_size }}{% else %}--{% endif %}</td>
+        <td>{% if asylee.pant_size %}{{ asylee.pant_size }}{% else %}--{% endif %}</td>
+        <td>{% if asylee.shoe_size %}{{ asylee.shoe_size }}{% else %}--{% endif %}</td>
+        <td><a href="{% url 'asylee:detail' asy_id=asylee.id %}">See more</a></td>
+      </tr>
     {% endfor %}
   </tbody>
 </table><br><br>
