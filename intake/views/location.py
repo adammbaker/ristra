@@ -26,31 +26,42 @@ class LocationCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'intake/generic-form.html'
 
     def get_context_data(self, **kwargs):
+        print('GCD 1')
         kwargs['button_text'] = 'Add %(model)s' % {
             'model': self.model.__name__
         }
+        print('GCD 2')
         kwargs['title'] = 'Add a%(article_n)s %(model)s to %(target)s' % {
             'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
             'model': self.model.__name__,
             'target': self.parent.__name__
         }
+        print('GCD 3')
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
+        print('FV 1')
         loc_name = form.cleaned_data.get('name')
         loc_notes = form.cleaned_data.get('notes')
+        print('FV 2')
         org = get_object_or_404(Organization, id=self.kwargs.get('org_id'))
+        print('FV 3')
         loc, loc_c = Location.objects.get_or_create(
             name = loc_name,
         )
         loc.notes = loc_notes
+        print('FV 4')
         loc.save()
+        print('FV 5')
         org.locations.add(loc)
+        print('FV 6')
         org.save()
+        print('FV 7')
         # return to parent detail
-        return reverse_lazy('location:overview', kwargs={'loc_id': loc.id})
+        return redirect('location:overview', loc_id=loc.id)
 
     def test_func(self):
+        print('TF 1')
         return self.request.user.profile.role in ('site_coordinator','team_lead')
 
 
@@ -108,7 +119,7 @@ class LocationUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('location:detail', kwargs={'loc_id': self.kwargs.get('loc_id')})
+        return redirect('location:detail', loc_id=self.kwargs.get('loc_id'))
 
 
 class LocationDelete(LoginRequiredMixin, DeleteView):
@@ -119,4 +130,4 @@ class LocationDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         org_id = self.model.objects.get(id=self.kwargs.get('loc_id')).organization.id
-        return reverse_lazy('organization:overview', kwargs={'org_id': org_id})
+        return redirect('organization:overview', org_id=org_id)

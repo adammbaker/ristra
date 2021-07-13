@@ -70,17 +70,17 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
             # return super().form_valid(form)
             self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
             self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
-            return reverse_lazy('asylee:health follow up', kwargs={'asy_id': asylee.id})
+            return redirect('asylee:health follow up', asy_id=asylee.id)
         if form.cleaned_data.get('had_covid_vaccine') == True and form.cleaned_data.get('is_currently_sick') == True:
-            return reverse_lazy('asylee:health follow up', kwargs={'asy_id': asylee.id})
+            return redirect('asylee:health follow up', asy_id=asylee.id)
         elif form.cleaned_data.get('had_covid_vaccine') == True:
-            return reverse_lazy('asylee:health vaccine', kwargs={'asy_id': asylee.id})
+            return redirect('asylee:health vaccine', asy_id=asylee.id)
         elif form.cleaned_data.get('is_currently_sick') == True:
-            return reverse_lazy('asylee:health sick', kwargs={'asy_id': asylee.id})
+            return redirect('asylee:health sick', asy_id=asylee.id)
         # return to parent detail
         print('Sending to faimly detail for', hoh.id)
         UpdateHistorical(asylee)
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
+        return redirect('headofhousehold:overview', hoh_id=hoh.id)
 
 class AsyleeDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -203,7 +203,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
     def get_success_url(self):
         asylee_id = self.kwargs.get('asy_id')
         hoh_id = Asylee.objects.get(id=asylee_id).householdhead
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        return redirect('headofhousehold:overview', hoh_id=hoh_id)
 
     def form_valid(self, vaccine_form_class, sick_form_class):
         asy_id = self.kwargs.get('asy_id')
@@ -214,7 +214,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         asylee.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         asylee.save()
         UpdateHistorical(asylee)
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': asylee.householdhead.id})
+        return redirect('headofhousehold:overview', hoh_id=asylee.householdhead.id)
 
     def post(self, request, *args, **kwargs):
         vaccine_form = self.vaccine_form_class(request.POST)
@@ -228,7 +228,7 @@ class AsyleeHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView):
             asylee.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
             asylee.sick_other = sick_form.cleaned_data.get('sick_other', False)
         asylee.save()
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': asylee.householdhead.id})
+        return redirect('headofhousehold:overview', hoh_id=asylee.householdhead.id)
 
 
 
@@ -274,7 +274,7 @@ class AsyleeUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('asylee:detail', kwargs={'asy_id': self.kwargs.get('asy_id')})
+        return redirect('asylee:detail', asy_id=self.kwargs.get('asy_id'))
 
 
 class AsyleeDelete(LoginRequiredMixin, DeleteView):
@@ -288,9 +288,9 @@ class AsyleeDelete(LoginRequiredMixin, DeleteView):
         # If the Asylee is not a HeadOfHousehold, delete Asylee and send to HoH
         if asy != asy.householdhead.asylee_ptr:
             hoh_id = asy.householdhead.id
-            return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+            return redirect('headofhousehold:overview', hoh_id=hoh_id)
         # Else, if Asylee is also HeadOfHousehold, delete both and send to IntakeBus
-        return reverse_lazy('intakebus:overview', kwargs={'ib_id': asy.householdhead.intakebus.id})
+        return redirect('intakebus:overview', ib_id=asy.householdhead.intakebus.id)
 
 
 def UpdateHistorical(asy):

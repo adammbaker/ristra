@@ -76,7 +76,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
             # return to parent overview
             print('Sending to faimly overview for', hoh.id)
             UpdateHistorical(tp)
-            return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
+            return redirect('headofhousehold:overview', hoh_id=hoh.id)
         # if travel_mode_category == 'Air':
         #     self.request.session['travel_mode'] = 'Air'
         # elif travel_mode_category == 'Bus':
@@ -87,7 +87,7 @@ class TravelPlanCreateView(LoginRequiredMixin, CreateView):
         #     return reverse_lazy('headofhousehold:detail', hoh_id = hoh.id)
         self.request.session['travel_mode_category'] = travel_mode_category
         UpdateHistorical(tp)
-        return reverse_lazy('travelplan:travel follow up', kwargs={'tp_id': tp.id})
+        return redirect('travelplan:travel follow up', tp_id=tp.id)
 
 
 class TravelPlanDetailView(LoginRequiredMixin, DetailView):
@@ -122,7 +122,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
     def get_success_url(self):
         tp_id = self.kwargs.get('tp_id')
         hoh_id = TravelPlan.objects.get(id=tp_id).headofhousehold
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        return redirect('headofhousehold:overview', hoh_id=hoh_id)
 
     def form_valid(self, airline_form_class, busline_form_class):
         tp_id = self.kwargs.get('tp_id')
@@ -136,7 +136,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         tp.flight_number = airline_form_class.cleaned_data.get('flight_number')
         tp.save()
         UpdateHistorical(tp)
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': tp.householdhead.id})
+        return redirect('headofhousehold:overview', hoh_id=tp.householdhead.id)
 
     def post(self, request, *args, **kwargs):
         airline_form = self.airline_form_class(request.POST)
@@ -149,7 +149,7 @@ class TravelModeFollowUpTemplateView(LoginRequiredMixin, TemplateView):
         if busline_form.is_valid():
             tp.layovers = busline_form.cleaned_data.get('layovers')
         tp.save()
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': tp.headofhousehold.id})
+        return redirect('headofhousehold:overview', hoh_id=tp.headofhousehold.id)
 
 
 class TravelPlanUpdate(LoginRequiredMixin, UpdateView):
@@ -174,7 +174,7 @@ class TravelPlanUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('travelplan:detail', kwargs={'tp_id': self.kwargs.get('tp_id')})
+        return redirect('travelplan:detail', tp_id=self.kwargs.get('tp_id'))
 
 
 class TravelPlanDelete(LoginRequiredMixin, DeleteView):
@@ -185,7 +185,7 @@ class TravelPlanDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         hoh_id = self.model.objects.get(id=self.kwargs.get('tp_id')).headofhousehold.id
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        return redirect('headofhousehold:overview', hoh_id=hoh_id)
 
 
 def UpdateHistorical(tp):
