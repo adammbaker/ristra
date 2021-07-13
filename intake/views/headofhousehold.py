@@ -203,7 +203,7 @@ class HeadOfHouseholdUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('headofhousehold:detail', hoh_id=self.kwargs.get('hoh_id'))
+        return reverse_lazy('headofhousehold:detail', kwargs={'hoh_id': self.kwargs.get('hoh_id')})
 
 
 class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):

@@ -174,7 +174,7 @@ class TravelPlanUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('travelplan:detail', tp_id=self.kwargs.get('tp_id'))
+        return reverse_lazy('travelplan:detail', kwargs={'tp_id': self.kwargs.get('tp_id')})
 
 
 class TravelPlanDelete(LoginRequiredMixin, DeleteView):

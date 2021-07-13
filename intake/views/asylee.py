@@ -274,7 +274,7 @@ class AsyleeUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('asylee:detail', asy_id=self.kwargs.get('asy_id'))
+        return reverse_lazy('asylee:detail', kwargs={'asy_id': self.kwargs.get('asy_id')})
 
 
 class AsyleeDelete(LoginRequiredMixin, DeleteView):
