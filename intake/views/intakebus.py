@@ -60,7 +60,7 @@ class IntakeBusCreateView(LoginRequiredMixin, CreateView):
         loc.intakebuses.add(ib)
         loc.save()
         # return to parent detail
-        return reverse_lazy('intakebus:overview', kwargs={'ib_id': ib.id})
+        return redirect('intakebus:overview', ib_id=ib.id)
 
 class IntakeBusDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -121,7 +121,7 @@ class IntakeBusUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('intakebus:detail', kwargs={'ib_id': self.kwargs.get('ib_id')})
+        return redirect('intakebus:detail', ib_id=self.kwargs.get('ib_id'))
 
 
 class IntakeBusDelete(LoginRequiredMixin, DeleteView):

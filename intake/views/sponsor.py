@@ -60,7 +60,7 @@ class SponsorCreateView(LoginRequiredMixin, CreateView):
         hoh.save()
         # return to parent overview
         print('Sending to faimly overview for', hoh.id)
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
+        return redirect('headofhousehold:overview', hoh_id=hoh.id)
 
 class SponsorDetailView(LoginRequiredMixin, DetailView):
     'Details an instance of the object'
@@ -101,7 +101,7 @@ class SponsorUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return reverse_lazy('sponsor:detail', kwargs={'spon_id': self.kwargs.get('spon_id')})
+        return redirect('sponsor:detail', spon_id=self.kwargs.get('spon_id'))
 
 
 class SponsorDelete(LoginRequiredMixin, DeleteView):
