@@ -288,9 +288,9 @@ class AsyleeDelete(LoginRequiredMixin, DeleteView):
         # If the Asylee is not a HeadOfHousehold, delete Asylee and send to HoH
         if asy != asy.householdhead.asylee_ptr:
             hoh_id = asy.householdhead.id
-            return redirect('headofhousehold:overview', hoh_id=hoh_id)
+            return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
         # Else, if Asylee is also HeadOfHousehold, delete both and send to IntakeBus
-        return redirect('intakebus:overview', ib_id=asy.householdhead.intakebus.id)
+        return reverse_lazy('intakebus:overview', kwargs={'ib_id': asy.householdhead.intakebus.id})
 
 
 def UpdateHistorical(asy):

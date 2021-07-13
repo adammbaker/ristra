@@ -214,7 +214,7 @@ class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         ib_id = self.model.objects.get(id=self.kwargs.get('hoh_id')).intakebus.id
-        return redirect('intakebus:overview', ib_id=ib_id)
+        return reverse_lazy('intakebus:overview', kwargs={'ib_id': ib_id})
 
 
 class ItineraryDetail(LoginRequiredMixin, DetailView):

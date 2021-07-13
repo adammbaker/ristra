@@ -130,4 +130,4 @@ class LocationDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         org_id = self.model.objects.get(id=self.kwargs.get('loc_id')).organization.id
-        return redirect('organization:overview', org_id=org_id)
+        return reverse_lazy('organization:overview', kwargs={'org_id': org_id})

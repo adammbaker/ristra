@@ -112,4 +112,4 @@ class SponsorDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         hoh_id = self.model.objects.get(id=self.kwargs.get('spon_id')).headofhousehold.id
-        return redirect('headofhousehold:overview', hoh_id=hoh_id)
+        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})

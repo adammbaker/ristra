@@ -132,4 +132,4 @@ class IntakeBusDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # TK get logging in here for user
         loc_id = self.model.objects.get(id=self.kwargs.get('ib_id')).location.id
-        return redirect('location:overview', loc_id=loc_id)
+        return reverse_lazy('location:overview', kwargs={'loc_id': loc_id})
