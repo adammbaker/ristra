@@ -4,6 +4,10 @@ from intake.models import Organization
 # from intake.models import Organization
 
 class OrganizationForm(forms.ModelForm):
+    url = forms.CharField(
+        required=False
+    )
+
     class Meta:
         model = Organization
         fields = ['name', 'city', 'state', 'url', 'airport_of_record', 'notes']
