@@ -70,6 +70,7 @@ class Command(BaseCommand):
             ('Diapers'),
             ('Feminine Hygiene Products'),
             ('Formula'),
+            ('Electrolytes'),
             ('Toys'),
         )
         for need in needs:

@@ -119,7 +119,7 @@ class LocationUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('location:detail', loc_id=self.kwargs.get('loc_id'))
+        return reverse_lazy('location:detail', kwargs={'loc_id': self.kwargs.get('loc_id')})
 
 
 class LocationDelete(LoginRequiredMixin, DeleteView):

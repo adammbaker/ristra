@@ -185,7 +185,7 @@ class HeadOfHouseholdUpdate(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit/update the instance of an object'
     model = HeadOfHousehold
     parent = IntakeBus
-    fields = ('languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','notes',)
+    fields = ('languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','shirt_size','pant_size','shoe_size','notes',)
     # form_class = HeadOfHouseholdForm
     pk_url_kwarg = 'hoh_id'
     template_name = 'intake/generic-form.html'
@@ -203,7 +203,7 @@ class HeadOfHouseholdUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('headofhousehold:detail', hoh_id=self.kwargs.get('hoh_id'))
+        return reverse_lazy('headofhousehold:detail', kwargs={'hoh_id': self.kwargs.get('hoh_id')})
 
 
 class HeadOfHouseholdDelete(LoginRequiredMixin, DeleteView):

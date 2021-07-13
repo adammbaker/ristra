@@ -121,7 +121,7 @@ class IntakeBusUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('intakebus:detail', ib_id=self.kwargs.get('ib_id'))
+        return reverse_lazy('intakebus:detail', kwargs={'ib_id': self.kwargs.get('ib_id')})
 
 
 class IntakeBusDelete(LoginRequiredMixin, DeleteView):

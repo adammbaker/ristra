@@ -47,6 +47,9 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee_phone_number = form.cleaned_data.get('phone_number')
         asylee_had_covid_disease = form.cleaned_data.get('had_covid_disease')
         asylee_had_covid_vaccine = form.cleaned_data.get('had_covid_vaccine')
+        asylee_shirt_size = form.cleaned_data.get('shirt_size')
+        asylee_pant_size = form.cleaned_data.get('pant_size')
+        asylee_shoe_size = form.cleaned_data.get('shoe_size')
         asylee_notes = form.cleaned_data.get('notes')
         hoh = HeadOfHousehold.objects.get(id=self.kwargs.get('hoh_id'))
         asylee, asylee_c = Asylee.objects.get_or_create(
@@ -59,13 +62,14 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee.had_covid_disease = asylee_had_covid_disease
         asylee.had_covid_vaccine = asylee_had_covid_vaccine
         asylee.notes = asylee_notes
+        asylee.shirt_size = asylee_shirt_size
+        asylee.pant_size = asylee_pant_size
+        asylee.shoe_size = asylee_shoe_size
         asylee.save()
         hoh.asylees.add(asylee)
         hoh.save()
         # if Asylee is currently sick or has received a COVID vaccine
         # send to a different form to capture this info
-        print(form.cleaned_data.get('had_covid_vaccine'), type(form.cleaned_data.get('had_covid_vaccine')))
-        print(form.cleaned_data.get('is_currently_sick'), type(form.cleaned_data.get('is_currently_sick')))
         if form.cleaned_data.get('had_covid_vaccine') == True or form.cleaned_data.get('is_currently_sick') == True:
             # return super().form_valid(form)
             self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
@@ -256,7 +260,7 @@ class AsyleeUpdate(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit/update the instance of an object'
     model = Asylee
     parent = HeadOfHousehold
-    fields = ('name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','notes',)
+    fields = ('name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','shirt_size','pant_size','shoe_size','notes',)
     # form_class = AsyleeForm
     pk_url_kwarg = 'asy_id'
     template_name = 'intake/generic-form.html'
@@ -265,16 +269,15 @@ class AsyleeUpdate(LoginRequiredMixin, UpdateView):
         kwargs['button_text'] = 'Update %(model)s' % {
             'model': self.model.__name__
         }
-        kwargs['title'] = 'Edit a%(article_n)s %(model)s to %(target)s' % {
+        kwargs['title'] = 'Edit a%(article_n)s %(model)s' % {
             'article_n': 'n' if max([self.model.__name__.lower().startswith(x) for x in list('aeiou')]) else '',
             'model': self.model.__name__,
-            'target': self.parent.__name__
         }
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('asylee:detail', asy_id=self.kwargs.get('asy_id'))
+        return reverse_lazy('asylee:detail', kwargs={'asy_id': self.kwargs.get('asy_id')})
 
 
 class AsyleeDelete(LoginRequiredMixin, DeleteView):

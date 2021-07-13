@@ -101,7 +101,7 @@ class SponsorUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         # TK get logging in here for user
-        return redirect('sponsor:detail', spon_id=self.kwargs.get('spon_id'))
+        return reverse_lazy('sponsor:detail', kwargs={'spon_id': self.kwargs.get('spon_id')})
 
 
 class SponsorDelete(LoginRequiredMixin, DeleteView):

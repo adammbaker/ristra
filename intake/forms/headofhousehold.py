@@ -37,6 +37,9 @@ class HeadOfHouseholdForm(forms.ModelForm):
         # help_text='Is sick now'
         required=False
     )
+    shirt_size = forms.CharField(
+        help_text="E.g. infant, 2T, children's large, medium, extra large",
+    )
 
     # def __init__(self, *args, **kwargs):
     #     vol_avails = kwargs.pop('vol_avail')
@@ -63,5 +66,8 @@ class HeadOfHouseholdForm(forms.ModelForm):
             'had_covid_vaccine',
             'is_currently_sick',
             'needs_medical_attention',
+            'shirt_size',
+            'pant_size',
+            'shoe_size',
             'notes',
         ]
