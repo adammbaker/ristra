@@ -492,6 +492,7 @@ class Asylee(models.Model):
     shirt_size = models.CharField(max_length=100, null=True, blank=True, verbose_name="Shirt size")
     pant_size = models.CharField(max_length=100, null=True, blank=True, verbose_name="Pant size")
     shoe_size = models.CharField(max_length=100, null=True, blank=True, verbose_name="Shoe size")
+    underwear_size = models.CharField(max_length=100, null=True, blank=True, verbose_name="Underwear size")
     # tsa_done = models.BooleanField(verbose_name="TSA paperwork is done", default=True)
     # legal_done = models.BooleanField(verbose_name="Legal paperwork is done", default=True)
     notes = models.TextField(verbose_name="Additional notes", null=True, blank=True)

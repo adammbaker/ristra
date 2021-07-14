@@ -51,6 +51,10 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         hoh_sex = form.cleaned_data.get('sex')
         hoh_date_of_birth = form.cleaned_data.get('date_of_birth')
         hoh_phone_number = form.cleaned_data.get('phone_number')
+        hoh_shirt_size = form.cleaned_data.get('shirt_size')
+        hoh_pant_size = form.cleaned_data.get('pant_size')
+        hoh_shoe_size = form.cleaned_data.get('shoe_size')
+        hoh_underwear_size = form.cleaned_data.get('underwear_size')
         hoh_notes = form.cleaned_data.get('notes')
         hoh_lodging = form.cleaned_data.get('lodging')
         hoh_destination_city = form.cleaned_data.get('destination_city')
@@ -69,6 +73,10 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         )
         hoh.a_number = hoh_a_number
         hoh.phone_number = hoh_phone_number
+        hoh.shirt_size  = hoh_shirt_size
+        hoh.pant_size = hoh_pant_size
+        hoh.shoe_size = hoh_shoe_size
+        hoh.underwear_size = fo = hoh_underwear_size
         hoh.notes = hoh_notes
         hoh.lodging = hoh_lodging
         hoh.destination_city = hoh_destination_city
