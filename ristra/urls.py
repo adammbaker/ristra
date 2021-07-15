@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from intake.views import accounts, signup, site_coordinator, team_leads, volunteers
 
@@ -25,6 +26,7 @@ urlpatterns = [
     path('s/', include('shortener.urls')),
     path('accounts/password_change/', accounts.change_password, name='change_password'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('favicon.ico',RedirectView.as_view(url='/static/images/favicon.ico')),
     # path('accounts/signup/', signup.SignUpView.as_view(), name='signup'),
     # path('accounts/signup/volunteer/', volunteers.VolunteerSignUpView.as_view(), name='volunteer_signup'),
     # path('accounts/signup/teamlead/', team_leads.TeamLeadSignUpView.as_view(), name='team_lead_signup'),
