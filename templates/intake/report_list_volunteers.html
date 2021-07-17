@@ -116,7 +116,15 @@
             <td class="text-center">{% if unit.profile.is_capable_travel%}✅{% else %}❌{% endif %}</td>
             <td class="text-center">{% if unit.profile.is_capable_transportation%}✅{% else %}❌{% endif %}</td>
             <td class="text-center">{% if unit.profile.is_capable_volunteercoordinator%}✅{% else %}❌{% endif %}</td>
-            <td>{% if unit.is_superuser %}superuser{% else %}{{ unit.profile.role }}{% endif %}</td>
+            <td>{% if unit.is_superuser %}
+              <span class="badge rounded-pill bg-dark">superuser</span>
+              {% elif unit.profile.role == 'site_coordinator' %}
+              <span class="badge rounded-pill bg-primary">site coord</span>
+              {% elif unit.profile.role == 'team_lead' %}
+              <span class="badge rounded-pill bg-info">team lead</span>
+              {% else %}
+              <span class="badge rounded-pill bg-secondary">{{ unit.profile.role }}</span>
+              {% endif %}</td>
           </tr>
         {% empty %}
           <tr>
