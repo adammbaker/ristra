@@ -11,7 +11,11 @@
         <form role="form" class="form-horizontal" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="horizontal" %}
-            {% buttons submit=button_text reset='Reset' layout='horizontal' %}{% endbuttons %}
+            {% if 'Update' in button_text %}
+                {% buttons submit=button_text layout='horizontal' %}{% endbuttons %}
+            {% else %}
+                {% buttons submit=button_text reset='Reset' layout='horizontal' %}{% endbuttons %}
+            {% endif %}
         </form>
     </div>
 </div>
