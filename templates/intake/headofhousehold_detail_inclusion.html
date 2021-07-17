@@ -68,6 +68,7 @@
       <th>Shirt</th>
       <th>Pants</th>
       <th>Shoe</th>
+      <th>Underwear</th>
       <th>&nbsp;</th>
     </tr>
     {% for asylee in headofhousehold.asylees.all %}
@@ -77,6 +78,7 @@
         <td>{% if asylee.shirt_size %}{{ asylee.shirt_size }}{% else %}--{% endif %}</td>
         <td>{% if asylee.pant_size %}{{ asylee.pant_size }}{% else %}--{% endif %}</td>
         <td>{% if asylee.shoe_size %}{{ asylee.shoe_size }}{% else %}--{% endif %}</td>
+        <td>{% if asylee.underwear_size %}{{ asylee.underwear_size }}{% else %}--{% endif %}</td>
         <td><a href="{% url 'asylee:detail' asy_id=asylee.id %}">See more</a></td>
       </tr>
     {% endfor %}

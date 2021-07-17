@@ -50,6 +50,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee_shirt_size = form.cleaned_data.get('shirt_size')
         asylee_pant_size = form.cleaned_data.get('pant_size')
         asylee_shoe_size = form.cleaned_data.get('shoe_size')
+        asylee_underwear_size = form.cleaned_data.get('underwear_size')
         asylee_notes = form.cleaned_data.get('notes')
         hoh = HeadOfHousehold.objects.get(id=self.kwargs.get('hoh_id'))
         asylee, asylee_c = Asylee.objects.get_or_create(
@@ -65,6 +66,7 @@ class AsyleeCreateView(LoginRequiredMixin, CreateView):
         asylee.shirt_size = asylee_shirt_size
         asylee.pant_size = asylee_pant_size
         asylee.shoe_size = asylee_shoe_size
+        asylee.underwear_size = asylee_underwear_size
         asylee.save()
         hoh.asylees.add(asylee)
         hoh.save()

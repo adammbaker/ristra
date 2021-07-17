@@ -69,5 +69,6 @@ class HeadOfHouseholdForm(forms.ModelForm):
             'shirt_size',
             'pant_size',
             'shoe_size',
+            'underwear_size',
             'notes',
         ]

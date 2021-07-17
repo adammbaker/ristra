@@ -57,6 +57,14 @@ class Command(BaseCommand):
             ("Maya - Tektitek"),
             ("Maya - Tz\'utujil"),
             ("Maya - Upsantek"),
+            ("Arabic"),
+            ("Chinese - Mandarin"),
+            ("Chinese - Cantonese"),
+            ("Haitian Creole"),
+            ("Hungarian"),
+            ("Romanian"),
+            ("Russian"),
+            ("Turkish"),
             ('Other')
         )
         for lang in languages:
