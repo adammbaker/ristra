@@ -32,7 +32,7 @@
       <tr>
           <td colspan="10">
               <a href="{% url 'asylee:add' headofhousehold.id %}" class="btn btn-primary">Add New Member of Household&nbsp;
-              <span class="badge badge-light">+</span></a>
+              <span class="badge text-dark bg-light">+</span></a>
           </td>
       </tr>
     </tbody>
@@ -73,7 +73,7 @@
     <tr>
         <td colspan="10">
             <a href="{% url 'sponsor:add' headofhousehold.id %}" class="btn btn-primary">Add New Sponsor&nbsp;
-            <span class="badge badge-light">+</span></a>
+            <span class="badge text-dark bg-light">+</span></a>
         </td>
     </tr>
   {% endif %}
@@ -119,7 +119,7 @@
     <tr>
         <td colspan="10">
             <a href="{% url 'travelplan:add' headofhousehold.id %}" class="btn btn-primary">Add New Travel Plan&nbsp;
-            <span class="badge badge-light">+</span></a>
+            <span class="badge text-dark bg-light">+</span></a>
         </td>
     </tr>
   {% endif %}
@@ -158,7 +158,7 @@
           {% endif %}
         {% else %}
           <a href="{% url 'headofhousehold:add need' headofhousehold.id need.id %}" class="btn btn-primary">Add Need&nbsp;
-          <span class="badge badge-light">+</span></a>
+          <span class="badge text-dark bg-light">+</span></a>
         {% endif %}
       <td>
   {% endfor %}
