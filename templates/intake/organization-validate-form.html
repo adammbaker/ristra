@@ -1,16 +1,20 @@
 {% extends 'intake/base.html' %}
 
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
+
+{% block title %}Validate Organization :: {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-8 col-sm-10 col-12">
         <h2>Validate {{user.sitecoordinator.organization.name}} as an Organization</h2>
         <h5>You will soon receive an email with a 6-digit token</h5>
+        <br>
         <form role="form" class="form-horizontal" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="horizontal" %}
-            {% buttons submit='Validate Organization' reset='Reset' layout='horizontal' %}{% endbuttons %}
+            {% bootstrap_button button_type="submit" content="Validate Organization" %}
+            {% bootstrap_button button_type="reset" content="Reset" %}
         </form>
     </div>
 </div>

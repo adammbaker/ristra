@@ -1,6 +1,6 @@
 {% extends 'intake/base.html' %}
 
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 
 {% block title %}{{button_text}}{% endblock %}
 
@@ -8,13 +8,15 @@
 <div class="row">
     <div class="col-md-8 col-sm-10 col-12">
         <h2>{{title}}</h2>
+        <br>
         <form role="form" class="form-horizontal" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="horizontal" %}
             {% if 'Update' in button_text %}
-                {% buttons submit=button_text layout='horizontal' %}{% endbuttons %}
+                {% bootstrap_button button_type="submit" content=button_text %}
             {% else %}
-                {% buttons submit=button_text reset='Reset' layout='horizontal' %}{% endbuttons %}
+                {% bootstrap_button button_type="submit" content=button_text %}
+                {% bootstrap_button button_type="reset" content="Reset" %}
             {% endif %}
         </form>
     </div>

@@ -1,7 +1,46 @@
-{% extends 'bootstrap5/bootstrap5.html' %}
+<!DOCTYPE html>
+{% load django_bootstrap5 %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE|default:'en_us' }}">
 
-{% block bootstrap5_title %}{% block title %}{% endblock %}Ristra Refuge{% endblock %}
+<head>
 
-{% load bootstrap5 %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{% include 'intake/footer.html' %}
+    <!-- Page title -->
+    <title>{% block bootstrap5_title %}{% block title %}{% endblock %} :: Ristra Refuge{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    {% bootstrap_css %}
+
+    <!-- Bootstrap JavaScript if it is in head -->
+    {% if 'javascript_in_head'|bootstrap_setting %}
+        {% bootstrap_javascript %}
+    {% endif %}
+
+    {% block bootstrap5_extra_head %}{% endblock %}
+
+    {% load static %}
+    <!-- reference your installed Font Awesome Free package's files here -->
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+{% block bootstrap5_before_content %}{% endblock %}
+{% block bootstrap5_content %} CONTENT {% endblock %}
+{% block bootstrap5_after_content %}{% endblock %}
+
+<!-- Bootstrap JavaScript if it is in body -->
+{% if not 'javascript_in_head'|bootstrap_setting %}
+    {% bootstrap_javascript %}
+{% endif %}
+
+{% block bootstrap5_extra_script %}{% endblock %}
+
+</body>
+
+</html>

@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from intake.choices import CAPACITY_CHOICES
 from intake.models import Capacity, HouseholdNeed, Language
 
 import logging
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +16,9 @@ class Command(BaseCommand):
     #     parser.add_argument('action', nargs='+', type=str)
 
     def handle(self, *args, **options):
-        start = timezone.localtime()
+        start = datetime.now()
         self.test_logger()
-        done = timezone.localtime()
+        done = datetime.now()
         print('Done')
 
     def test_logger(self):
