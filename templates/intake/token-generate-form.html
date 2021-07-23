@@ -1,6 +1,6 @@
 {% extends 'intake/base.html' %}
 
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 
 {% block content %}
 <div class="row">
@@ -20,7 +20,8 @@
         <form role="form" class="form-horizontal" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="horizontal" %}
-            {% buttons submit='Email' reset='Reset' layout='horizontal' %}{% endbuttons %}
+            {% bootstrap_button button_type="submit" content="Email" %}
+            {% bootstrap_button button_type="reset" content="Reset" %}
         </form>
     </div>
 </div>

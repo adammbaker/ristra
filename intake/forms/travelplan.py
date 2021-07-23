@@ -9,7 +9,7 @@ tomorrow_dt = (datetime.now() + timedelta(1)).strftime('%Y-%m-%dT%H:%M')
 # Create your forms here.
 class TravelPlanForm(forms.ModelForm):
     travel_date = forms.DateTimeField(
-        help_text="Format MM/DD/YYYY HH:MM",
+        help_text="Time of flight/bus",
         widget=DateTimeInput(
             attrs={
                 'min':'2020-01-01T00:00:00',
@@ -20,7 +20,7 @@ class TravelPlanForm(forms.ModelForm):
         initial=tomorrow_dt,
     )
     city_van_date = forms.DateTimeField(
-        help_text="Format MM/DD/YYYY HH:MM",
+        help_text="Time of transportation to airport/bus terminal via city bus or similar",
         widget=DateTimeInput(
             attrs={
                 'min':'2020-01-01T00:00:00',
@@ -31,7 +31,6 @@ class TravelPlanForm(forms.ModelForm):
         initial=tomorrow_dt,
     )
     eta = forms.DateTimeField(
-        help_text="Format MM/DD/YYYY HH:MM",
         label='Estimated Time of Arrival',
         widget=DateTimeInput(
             attrs={

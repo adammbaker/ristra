@@ -58,7 +58,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
     'qr_code',
-    'bootstrap5',
+    'django_bootstrap5',
     'shortener',
     'simple_history',
     'intake.apps.IntakeConfig',

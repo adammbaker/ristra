@@ -1,15 +1,20 @@
 {% extends 'intake/base.html' %}
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 {% block title %}Login :: {% endblock %}
 
 {% block content %}
-
-  <form method="post">
-    {% csrf_token %}
-    {% bootstrap_form form layout="horizontal" %}
-    {% buttons submit='Login' reset='Reset' layout='horizontal' %}{% endbuttons %}
-  </form>
-
+<div class="row">
+  <div class="col-md-8 col-sm-10 col-12">
+      <h2>{{title}}</h2>
+      <br>
+      <form role="form" class="form-horizontal" method="post">
+          {% csrf_token %}
+          {% bootstrap_form form layout="horizontal" %}
+          {% bootstrap_button button_type="submit" content="Login" %}
+          {% bootstrap_button button_type="reset" content="Reset" %}
+      </form>
+  </div>
+</div>
 
 <br><br>
     <div class="container">

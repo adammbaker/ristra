@@ -29,7 +29,7 @@ class Capacity(models.Model):
     name = models.CharField(max_length=100, verbose_name='Capacity')
 
     def __str__(self):
-        return '%(name)s' % {'name': self.name}
+        return f'{self.name}'
 
 class Language(models.Model):
     language = models.CharField(max_length=100, verbose_name='Language Spoken')
@@ -223,7 +223,7 @@ class SiteCoordinator(models.Model):
         return self.user.to_card()
 
     def __str__(self):
-        return '%(name)s [SC]' % {'name': self.user.name}
+        return f'{self.user.name} [SC]'
 
 class Organization(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -350,11 +350,7 @@ class Organization(models.Model):
         verbose_name_plural = 'Organizations'
 
     def __str__(self):
-        return '%(org_name)s (%(org_city)s, %(org_state)s)' % {
-            'org_name': self.name,
-            'org_city': self.city,
-            'org_state': self.state.upper(),
-        }
+        return f'{self.name} ({self.city}, {self.state.upper()}'
 
 class RequestQueue(models.Model):
     # site_coordinator = models.OneToOneField('SiteCoordinator', on_delete=models.SET(get_sentinel_user), null=True)
@@ -405,9 +401,7 @@ class Location(models.Model):
         return self.organization.test('Loc' + msg)
 
     def __str__(self):
-        return '%(name)s' % {
-            'name': self.name,
-        }
+        return f'{self.name}'
 
 class IntakeBus(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -467,12 +461,7 @@ class IntakeBus(models.Model):
         return self.location.test('Ibus' + msg)
 
     def __str__(self):
-        return 'Bus %(number)s arrived on %(arrived)s from %(origin)s, %(state)s' % {
-            'number': self.number,
-            'arrived': self.arrival_time.strftime("%b %d, '%y %H:%M"),
-            'origin': self.origin,
-            'state': self.state
-        }
+        return f'Bus {self.number} arrived on {self.arrival_time.strftime("%b %d, %y %H:%M")} from {self.origin}, {self.state.upper()}'
 
 class Asylee(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -703,11 +692,7 @@ class Sponsor(models.Model):
         return f'{self.city}, {self.state.upper()} {self.zip_code}'
 
     def __str__(self):
-        return '%(name)s - %(phone)s, lives in %(loc)s' % {
-            'name': self.name,
-            'phone': self.phone_number,
-            'loc': self.location,
-        }
+        return f'{self.name} - {self.phone_number}, lives in {self.location}'
 
     def breadcrumbs(self, bc=''):
         parent = self.headofhousehold
@@ -783,11 +768,7 @@ class TravelPlan(models.Model):
         return mark_safe(''.join(bc))
 
     def __str__(self):
-        return 'Travel Plan for %(hoh_name)s: %(travel_company)s Conf #%(conf)s' % {
-            'hoh_name': self.headofhousehold.name,
-            'travel_company': self.travel_mode.title(),
-            'conf': self.confirmation,
-        }
+        return f'Travel Plan for {self.headofhousehold.name}: {self.travel_mode.title()} Conf #{self.confirmation}'
 
 # class Medical(models.Model):
 #     id = HashidAutoField(primary_key=True)
@@ -853,7 +834,7 @@ class Message(models.Model):
         verbose_name_plural = 'Messages'
 
     def __str__(self):
-        return '%s' % (self.text[:100])
+        return f'{self.text[:100]}'
 
 
 class Donate(models.Model):
