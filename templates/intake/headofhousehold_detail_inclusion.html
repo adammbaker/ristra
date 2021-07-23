@@ -3,13 +3,17 @@
 {% if headofhousehold.travel_plan %}
 {% else %}
   <div class="alert alert-warning" role="alert">
-    Please add a Travel Plan below
+    <a href="#travelplan" style="text-decoration: none; color: inherit;">
+      Please add a Travel Plan below
+    </a>
   </div>
 {% endif %}
 {% if headofhousehold.sponsor %}
 {% else %}
   <div class="alert alert-warning" role="alert">
-    Please add a Sponsor below
+    <a href="#sponsor" style="text-decoration: none; color: inherit;">
+      Please add a Sponsor below
+    </a>
   </div>
 {% endif %}
 {% if headofhousehold.a_number %}
@@ -21,7 +25,8 @@
 {% for asylee in headofhousehold.asylees.all %}
   {% if asylee.sick_covid %}
   <div class="alert alert-danger" role="alert">
-    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
+    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices. See
+    <a href="https://www.cdc.gov/coronavirus/2019-ncov/php/eh-practitioners/general-population-disaster-shelters.html" target="_blank">CDC Guidance</a>
   </div>
   {% endif %}
 {% endfor %}
