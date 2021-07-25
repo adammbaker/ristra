@@ -27,9 +27,12 @@ class AsyleeForm(forms.ModelForm):
         # help_text='Is sick now'
         required=False
     )
+    shirt_size = forms.CharField(
+        help_text="E.g. infant, 2T, children's large, medium, XL",
+    )
     class Meta:
         model = Asylee
-        fields = ['name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine', 'is_currently_sick', 'needs_medical_attention','notes',]
+        fields = ['name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine', 'is_currently_sick', 'needs_medical_attention','shirt_size','pant_size','shoe_size','underwear_size','notes',]
 
 class AsyleeHealthFollowUpForm(forms.ModelForm):
     VACCINATION_CHOICES = [

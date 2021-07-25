@@ -3,13 +3,17 @@
 {% if headofhousehold.travel_plan %}
 {% else %}
   <div class="alert alert-warning" role="alert">
-    Please add a Travel Plan below
+    <a href="#travelplan" style="text-decoration: none; color: inherit;">
+      Please add a Travel Plan below
+    </a>
   </div>
 {% endif %}
 {% if headofhousehold.sponsor %}
 {% else %}
   <div class="alert alert-warning" role="alert">
-    Please add a Sponsor below
+    <a href="#sponsor" style="text-decoration: none; color: inherit;">
+      Please add a Sponsor below
+    </a>
   </div>
 {% endif %}
 {% if headofhousehold.a_number %}
@@ -21,7 +25,8 @@
 {% for asylee in headofhousehold.asylees.all %}
   {% if asylee.sick_covid %}
   <div class="alert alert-danger" role="alert">
-    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices.
+    {{ asylee.name}} is currently sick from COVID-19. Implement proper PPE and COVID-safe practices. See
+    <a href="https://www.cdc.gov/coronavirus/2019-ncov/php/eh-practitioners/general-population-disaster-shelters.html" target="_blank">CDC Guidance</a>
   </div>
   {% endif %}
 {% endfor %}
@@ -61,9 +66,26 @@
 <div class="col-sm-6">
 <table class="table-sm table-striped table-borderless mb-0">
   <tbody>
-    <thead><tr><td>MEMBERS OF THE HOUSEHOLD</td></tr></thead>
+    <thead><tr><td colspan="100">MEMBERS OF THE HOUSEHOLD</td></tr></thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Shirt</th>
+      <th>Pants</th>
+      <th>Shoe</th>
+      <th>Underwear</th>
+      <th>&nbsp;</th>
+    </tr>
     {% for asylee in headofhousehold.asylees.all %}
-      <tr><td>{{ asylee.name }}</td><td>{{ asylee.age }} years old</td><td><a href="{% url 'asylee:detail' asy_id=asylee.id %}">See more</a></td></tr>
+      <tr>
+        <td>{{ asylee.name }}</td>
+        <td>{{ asylee.age }}</td>
+        <td>{% if asylee.shirt_size %}{{ asylee.shirt_size }}{% else %}--{% endif %}</td>
+        <td>{% if asylee.pant_size %}{{ asylee.pant_size }}{% else %}--{% endif %}</td>
+        <td>{% if asylee.shoe_size %}{{ asylee.shoe_size }}{% else %}--{% endif %}</td>
+        <td>{% if asylee.underwear_size %}{{ asylee.underwear_size }}{% else %}--{% endif %}</td>
+        <td><a href="{% url 'asylee:detail' asy_id=asylee.id %}">See more</a></td>
+      </tr>
     {% endfor %}
   </tbody>
 </table><br><br>

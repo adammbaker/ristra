@@ -230,12 +230,19 @@ TRAVEL_MODE_CHOICES = [
     ),
     ('other', 'Other'),
 ]
+# https://en.wikipedia.org/wiki/List_of_COVID-19_vaccine_authorizations
 COVID_VACCINE_CHOICES = [
     ('pfizer', 'Pfizer'),
     ('moderna', 'Moderna'),
     ('j_and_j', 'Johnson & Johnson'),
     ('astra_zeneca', 'AstraZeneca'),
     ('sinovac', 'Sinovac'),
+    ('sinopharm', 'Sinopharm'),
+    ('sputnikv', 'Sputnik V'),
+    ('sputniklite', 'Sputnix Lite'),
+    ('janssen', 'Janssen'),
+    ('convidecia', 'Convidecia'),
+    ('coronavac', 'CoronaVac'),
     ('unknown', 'Unknown'),
     ('other', 'Other'),
 ]

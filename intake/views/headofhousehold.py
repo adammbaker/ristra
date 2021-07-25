@@ -51,6 +51,10 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         hoh_sex = form.cleaned_data.get('sex')
         hoh_date_of_birth = form.cleaned_data.get('date_of_birth')
         hoh_phone_number = form.cleaned_data.get('phone_number')
+        hoh_shirt_size = form.cleaned_data.get('shirt_size')
+        hoh_pant_size = form.cleaned_data.get('pant_size')
+        hoh_shoe_size = form.cleaned_data.get('shoe_size')
+        hoh_underwear_size = form.cleaned_data.get('underwear_size')
         hoh_notes = form.cleaned_data.get('notes')
         hoh_lodging = form.cleaned_data.get('lodging')
         hoh_destination_city = form.cleaned_data.get('destination_city')
@@ -69,6 +73,10 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
         )
         hoh.a_number = hoh_a_number
         hoh.phone_number = hoh_phone_number
+        hoh.shirt_size  = hoh_shirt_size
+        hoh.pant_size = hoh_pant_size
+        hoh.shoe_size = hoh_shoe_size
+        hoh.underwear_size = fo = hoh_underwear_size
         hoh.notes = hoh_notes
         hoh.lodging = hoh_lodging
         hoh.destination_city = hoh_destination_city
@@ -94,10 +102,10 @@ class HeadOfHouseholdCreateView(LoginRequiredMixin, CreateView):
             # return super().form_valid(form)
             self.request.session['had_covid_vaccine'] = form.cleaned_data.get('had_covid_vaccine')
             self.request.session['is_currently_sick'] = form.cleaned_data.get('is_currently_sick')
-            return reverse_lazy('headofhousehold:health follow up', kwargs={'hoh_id': hoh.id})
+            return redirect('headofhousehold:health follow up', hoh_id=hoh.id)
         # return to parent detail
         UpdateHistorical(hoh)
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
+        return redirect('headofhousehold:overview', hoh_id=hoh.id)
 
 # @method_decorator([is_affiliated], name='dispatch')
 class HeadOfHouseholdDetailView(LoginRequiredMixin, DetailView):
@@ -131,7 +139,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
     def get_success_url(self):
         hoh_id = self.kwargs.get('hoh_id')
         hoh_id = HeadOfHousehold.objects.get(id=hoh_id).householdhead
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh_id})
+        return redirect('headofhousehold:overview', hoh_id=hoh_id)
 
     def form_valid(self, vaccine_form_class, sick_form_class):
         hoh_id = self.kwargs.get('hoh_id')
@@ -142,7 +150,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
         hoh.sick_other = sick_form_class.cleaned_data.get('sick_other', False)
         hoh.save()
         UpdateHistorical(hoh)
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
+        return redirect('headofhousehold:overview', hoh_id=hoh.id)
 
     def post(self, request, *args, **kwargs):
         vaccine_form = self.vaccine_form_class(request.POST)
@@ -156,7 +164,7 @@ class HeadOfHouseholdHealthFollowUpTemplateView(LoginRequiredMixin, TemplateView
             hoh.sick_covid = sick_form.cleaned_data.get('sick_covid', False)
             hoh.sick_other = sick_form.cleaned_data.get('sick_other', False)
         hoh.save()
-        return reverse_lazy('headofhousehold:overview', kwargs={'hoh_id': hoh.id})
+        return redirect('headofhousehold:overview', hoh_id=hoh.id)
 
 
 
@@ -185,7 +193,7 @@ class HeadOfHouseholdUpdate(LoginRequiredMixin, UpdateView):
     'Allows a privileged user to to edit/update the instance of an object'
     model = HeadOfHousehold
     parent = IntakeBus
-    fields = ('languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','notes',)
+    fields = ('languages','lodging','destination_city','state','days_traveling','days_detained','country_of_origin','name','a_number','sex','date_of_birth','phone_number','had_covid_disease','had_covid_vaccine','covid_vaccine_doses','vaccine_received','sick_covid','sick_other','shirt_size','pant_size','shoe_size','notes',)
     # form_class = HeadOfHouseholdForm
     pk_url_kwarg = 'hoh_id'
     template_name = 'intake/generic-form.html'

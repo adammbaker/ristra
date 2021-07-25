@@ -143,6 +143,11 @@ class SignUpForm(UserCreationForm):
         queryset = Language.objects.all(),
         required=True
     )
+    # languages = forms.MultipleChoiceField(
+    #     help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
+    #     choices=LANGUAGE_CHOICES,
+    #     required=True,
+    # )
     capacities = forms.ModelMultipleChoiceField(
         help_text='Ctrl-Click to select multiple; Cmd-Click on Mac',
         queryset = Capacity.objects.all(),

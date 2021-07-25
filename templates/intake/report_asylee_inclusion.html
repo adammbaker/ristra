@@ -25,6 +25,10 @@
       <td>{{ unit.householdhead.travel_plan.departure_time|hdYIMp }}</td>
       <td><a href="{% url 'asylee:detail' asy_id=unit.id %}">See more</a>
     </tr>
+    {% empty %}
+    <tr>
+      <td class="bg-light text-center" colspan="10"><em>No results found matching your request</em></td>
+    </tr>
     {% endfor %}
   </tbody>
 </table><br><br>
