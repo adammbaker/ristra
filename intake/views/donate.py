@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.urls.base import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -57,7 +58,7 @@ class DonateDelete(LoginRequiredMixin, DeleteView):
     template_name = 'intake/confirm_delete.html'
 
     def get_success_url(self):
-        return redirect('donate:overview')
+        return reverse('donate:overview')
 
     def test_func(self):
         return self.request.user.is_superuser

@@ -5,22 +5,28 @@
 {% block content %}
 
 <div class="card-group">
+  <div class="card" style="min-width: 18rem; max-width: 36rem;">
+    <div class="card-body">
+      <h5 class="card-title">RistraRefuge.org</h5>
+      <h6 class="card-subtitle mb-2 text-muted">Adam Baker, developer</h6>
+      <p class="card-text">
+        <iframe id='kofiframe' src='https://ko-fi.com/ristrarefuge/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;background:#f9f9f9;' height='550' title='ristrarefuge'></iframe>      </p>
+    </div>
+  </div>
 
     {% for unit in donate_list %}
   <div class="card" style="min-width: 18rem; max-width: 36rem;">
     <div class="card-body">
-        <h5 class="card-title">{{ unit.name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">{{ unit.location }}</h6>
-        <p class="card-text">{{ unit.description|safe }}</p>
-        <a href="{{ unit.url }}" class="card-link">donate</a>
-        {% if user.is_superuser %}
-        <a href="{% url 'donate:update' unit.pk %}" class="btn btn-warning btn-sm active text-light" role="button" aria-pressed="true">Update</a>
-        <a href="{% url 'donate:delete' unit.pk %}" class="btn btn-danger btn-sm active" role="button" aria-pressed="true">Delete</a>
-        {% endif %}
+      <h5 class="card-title">{{ unit.name }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{ unit.location }}</h6>
+      <p class="card-text">{{ unit.description|safe }}</p>
+      <a href="{{ unit.url }}" class="card-link">donate</a>
+      {% if user.is_superuser %}
+      <a href="{% url 'donate:update' unit.pk %}" class="btn btn-warning btn-sm active text-light" role="button" aria-pressed="true">Update</a>
+      <a href="{% url 'donate:delete' unit.pk %}" class="btn btn-danger btn-sm active" role="button" aria-pressed="true">Delete</a>
+      {% endif %}
     </div>
   </div>
-  {% empty %}
-  <h4>There are no recipients</h4>
   {% endfor %}
 
 </div>
